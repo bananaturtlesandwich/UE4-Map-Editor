@@ -1,4 +1,4 @@
-namespace UE4_Map_Editor
+namespace Map_Editor
 {
     public partial class Editor : Form
     {
@@ -7,7 +7,7 @@ namespace UE4_Map_Editor
             InitializeComponent();
         }
 
-        private void Form1_Load(object sender, EventArgs e)
+        private void OnLoad(object sender, EventArgs e)
         {
 
         }
