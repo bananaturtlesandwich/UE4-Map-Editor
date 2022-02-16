@@ -9,4 +9,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\GL_EditorFramework\Gl_EditorFramework\Gl_EditorFramework.csproj" />
+  </ItemGroup>
+
 </Project>
