@@ -5,7 +5,9 @@ VisualStudioVersion = 17.1.32210.238
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gl_EditorFramework", "GL_EditorFramework\Gl_EditorFramework\Gl_EditorFramework.csproj", "{D593A72D-554D-40FB-9967-503CB15A744F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Map Editor", "Map Editor\Map Editor.csproj", "{4E32E0B9-132E-492B-B4FD-FBE729346A2D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Map Editor", "Map Editor\Map Editor.csproj", "{4E32E0B9-132E-492B-B4FD-FBE729346A2D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UAssetAPI", "UAssetAPI\UAssetAPI\UAssetAPI.csproj", "{178417EC-1177-413E-BE85-C83AECD64279}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +53,22 @@ Global
 		{4E32E0B9-132E-492B-B4FD-FBE729346A2D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4E32E0B9-132E-492B-B4FD-FBE729346A2D}.Release|x64.ActiveCfg = Release|Any CPU
 		{4E32E0B9-132E-492B-B4FD-FBE729346A2D}.Release|x64.Build.0 = Release|Any CPU
+		{178417EC-1177-413E-BE85-C83AECD64279}.Debug Odyssey|Any CPU.ActiveCfg = Debug|Any CPU
+		{178417EC-1177-413E-BE85-C83AECD64279}.Debug Odyssey|Any CPU.Build.0 = Debug|Any CPU
+		{178417EC-1177-413E-BE85-C83AECD64279}.Debug Odyssey|x64.ActiveCfg = Debug|Any CPU
+		{178417EC-1177-413E-BE85-C83AECD64279}.Debug Odyssey|x64.Build.0 = Debug|Any CPU
+		{178417EC-1177-413E-BE85-C83AECD64279}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{178417EC-1177-413E-BE85-C83AECD64279}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{178417EC-1177-413E-BE85-C83AECD64279}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{178417EC-1177-413E-BE85-C83AECD64279}.Debug|x64.Build.0 = Debug|Any CPU
+		{178417EC-1177-413E-BE85-C83AECD64279}.Release Odyssey|Any CPU.ActiveCfg = Release|Any CPU
+		{178417EC-1177-413E-BE85-C83AECD64279}.Release Odyssey|Any CPU.Build.0 = Release|Any CPU
+		{178417EC-1177-413E-BE85-C83AECD64279}.Release Odyssey|x64.ActiveCfg = Release|Any CPU
+		{178417EC-1177-413E-BE85-C83AECD64279}.Release Odyssey|x64.Build.0 = Release|Any CPU
+		{178417EC-1177-413E-BE85-C83AECD64279}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{178417EC-1177-413E-BE85-C83AECD64279}.Release|Any CPU.Build.0 = Release|Any CPU
+		{178417EC-1177-413E-BE85-C83AECD64279}.Release|x64.ActiveCfg = Release|Any CPU
+		{178417EC-1177-413E-BE85-C83AECD64279}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
