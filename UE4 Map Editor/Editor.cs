@@ -1,18 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using GL_EditorFramework;
+﻿using GL_EditorFramework;
 using GL_EditorFramework.EditorDrawables;
 using OpenTK;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Windows.Forms;
 using static GL_EditorFramework.Framework;
-using WinInput = System.Windows.Input;
 
-namespace Example
+namespace UE4_Map_Editor
 {
     public partial class Editor : Form
     {
@@ -30,15 +25,15 @@ namespace Example
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
-            
+
             EditableObject obj;
 
-            #region Create scene and add objects to it
+            #region Example object adding code for noobs like me
             scene = new EditorScene();
 
-            scene.objects.Add(obj = new ExampleObject(new Vector3(0, -4, 0)));
+            //scene.objects.Add(obj = new ExampleObject(new Vector3(0, -4, 0)));
 
-            List<PathPoint> pathPoints = new List<PathPoint>
+            /*List<PathPoint> pathPoints = new List<PathPoint>
             {
                 new PathPoint(
                 new Vector3(0, 0, 0),
@@ -55,14 +50,14 @@ namespace Example
                 new Vector3(0, 0, 0),
                 new Vector3(0, 0, 0)
                 )
-            };
-            
-            scene.objects.Add(obj = new Path(pathPoints));
+            };*/
 
-            for (int i = 0; i < 20; i++)
+            //scene.objects.Add(obj = new Path(pathPoints));
+
+            /*for (int i = 0; i < 20; i++)
             {
                 pathPoints = new List<PathPoint>
-            {
+                {
                 new PathPoint(
                 new Vector3(-3, 6+i*2, 0),
                 new Vector3(0, 0, -1.75f),
@@ -82,16 +77,12 @@ namespace Example
                 new Vector3(0, 6+i*2, -3),
                 new Vector3(1.75f, 0, 0),
                 new Vector3(-1.75f, 0, 0)
-                )
-            };
+                )};
 
-                scene.objects.Add(obj = new Path(pathPoints) { Closed = true });
-            }
-            
-            for (int i = 5; i<2000; i++)
-            {
-                scene.objects.Add(obj = new TransformableObject(new Vector3(i,0,0), Vector3.Zero, Vector3.One));
-            }
+                //scene.objects.Add(obj = new Path(pathPoints) { Closed = true });
+            }*/
+
+            for (int i = 5; i < 10; i++) scene.objects.Add(obj = new TransformableObject(new Vector3(i, 0, 0), Vector3.Zero, Vector3.One));
             #endregion
 
             //setup the gl controls
@@ -105,19 +96,19 @@ namespace Example
             scene.ObjectsMoved += Scene_ObjectsMoved;
             scene.ListChanged += Scene_ListChanged;
             scene.ListEntered += Scene_ListEntered;
-            scene.ListInvalidated += Scene_ListInvalidated;
-            Display.KeyDown += GL_ControlModern1_KeyDown;
+            scene.ListInvalidated += MapObjectsInvalidated;
+            Display.KeyDown += Display_KeyDown;
 
             //add categories to sceneListView (in this case 15 references to the same list, 
             //which should never be done and only serves for demonstration purposes)
-            for (int i = 0; i<15; i++)
-                MapObjects.RootLists.Add("Test"+i,scene.objects);
+            for (int i = 0; i < 15; i++)
+                MapObjects.RootLists.Add("Test" + i, scene.objects);
 
             MapObjects.UpdateComboBoxItems();
 
             //link the scenes selected objs to sceneListView
             MapObjects.SelectedItems = scene.SelectedObjects;
-            //set current category (highly recommended to do once all categories are added
+            //set current category (highly recommended to do once all categories are added)
             MapObjects.SetRootList("Test0");
 
             //add event handlers to sceneListView
@@ -126,10 +117,9 @@ namespace Example
             MapObjects.ListExited += SceneListView1_ListExited;
         }
 
-        private void Scene_ListInvalidated(object sender, ListEventArgs e)
+        private void MapObjectsInvalidated(object sender, ListEventArgs e)
         {
-            if (MapObjects.CurrentList == e.List)
-                MapObjects.InvalidateCurrentList();
+            if (MapObjects.CurrentList == e.List) MapObjects.InvalidateCurrentList();
         }
 
         private void SceneListView1_ListExited(object sender, ListEventArgs e)
@@ -191,7 +181,7 @@ namespace Example
             Scene_SelectionChanged(this, null);
         }
 
-        private void GL_ControlModern1_KeyDown(object sender, KeyEventArgs e)
+        private void Display_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Delete)
             {
@@ -207,7 +197,7 @@ namespace Example
         private void Scene_ObjectsMoved(object sender, EventArgs e)
         {
             //update the property control because properties might have changed
-            foreach(IObjectUIContainer objectUIContainer in Properties.ObjectUIContainers)
+            foreach (IObjectUIContainer objectUIContainer in Properties.ObjectUIContainers)
                 objectUIContainer.UpdateProperties();
 
             Properties.Refresh();
@@ -238,14 +228,14 @@ namespace Example
             else
                 //add new TransformableObject to the scene
                 scene.Add(scene.CurrentList, new TransformableObject(Vector3.Zero, Vector3.Zero, Vector3.One));
-            
+
 
             //MapObjects.UpdateAutoScrollHeight();
         }
 
         private void SceneListView1_ItemDoubleClicked(object sender, ItemClickedEventArgs e)
         {
-            if (e.Clicks==2 && e.Item is IEditableObject obj)
+            if (e.Clicks == 2 && e.Item is IEditableObject obj)
                 Display.CameraTarget = obj.GetFocusPoint();
         }
 
@@ -268,9 +258,9 @@ namespace Example
             Display.Refresh();
         }
 
-        private void openToolStripMenuItem_Click(object sender, EventArgs e)
+        private void OpenMapUmap_Click(object sender, EventArgs e)
         {
-
+            if (umapDialog.ShowDialog() == DialogResult.OK) ;
         }
     }
     /*

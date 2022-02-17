@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Example
+namespace UE4_Map_Editor
 {
     static class Program
     {

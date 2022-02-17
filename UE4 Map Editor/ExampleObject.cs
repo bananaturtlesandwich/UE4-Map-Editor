@@ -11,7 +11,7 @@ using GL_EditorFramework.GL_Core;
 using GL_EditorFramework.Interfaces;
 using OpenTK;
 
-namespace Example
+namespace UE4_Map_Editor
 {
     //This class is supposed to show of some very basic animation stuff you could do with this framework
     class ExampleObject : SingleObject
