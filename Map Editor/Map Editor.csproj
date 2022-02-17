@@ -10,14 +10,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Reference Include="GL_EditorFramework">
-      <HintPath>..\..\GL_EditorFramework\Gl_EditorFramework\bin\Debug\GL_EditorFramework.dll</HintPath>
-    </Reference>
+    <ProjectReference Include="..\GL_EditorFramework\Gl_EditorFramework\Gl_EditorFramework.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Reference Include="OpenTK">
-      <HintPath>..\..\packages\OpenTK.3.1.0\lib\net20\OpenTK.dll</HintPath>
+      <HintPath>..\packages\OpenTK.3.1.0\lib\net20\OpenTK.dll</HintPath>
     </Reference>
     <Reference Include="OpenTK.GLControl">
-      <HintPath>..\..\packages\OpenTK.GLControl.3.1.0\lib\net20\OpenTK.GLControl.dll</HintPath>
+      <HintPath>..\packages\OpenTK.GLControl.3.1.0\lib\net20\OpenTK.GLControl.dll</HintPath>
     </Reference>
   </ItemGroup>
 
