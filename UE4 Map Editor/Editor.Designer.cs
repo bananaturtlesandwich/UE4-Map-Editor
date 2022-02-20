@@ -45,8 +45,8 @@
             this.OpenMapPak = new System.Windows.Forms.ToolStripMenuItem();
             this.OpenMapUmap = new System.Windows.Forms.ToolStripMenuItem();
             this.SaveAs = new System.Windows.Forms.ToolStripMenuItem();
-            this.umapDialog = new System.Windows.Forms.OpenFileDialog();
             this.UEVersion = new System.Windows.Forms.ToolStripComboBox();
+            this.umapDialog = new System.Windows.Forms.OpenFileDialog();
             ((System.ComponentModel.ISupportInitialize)(this.Details_Display)).BeginInit();
             this.Details_Display.Panel1.SuspendLayout();
             this.Details_Display.Panel2.SuspendLayout();
@@ -246,10 +246,6 @@
             this.SaveAs.Size = new System.Drawing.Size(294, 26);
             this.SaveAs.Text = "Save As";
             // 
-            // umapDialog
-            // 
-            this.umapDialog.DefaultExt = "umap";
-            // 
             // UEVersion
             // 
             this.UEVersion.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
@@ -287,6 +283,10 @@
             this.UEVersion.Name = "UEVersion";
             this.UEVersion.Size = new System.Drawing.Size(150, 21);
             this.UEVersion.Text = "Unknown Version";
+            // 
+            // umapDialog
+            // 
+            this.umapDialog.DefaultExt = "umap";
             // 
             // Editor
             // 
@@ -334,7 +334,7 @@
         private System.Windows.Forms.TableLayoutPanel Details;
         private System.Windows.Forms.ToolStripMenuItem OpenMapUmap;
         private System.Windows.Forms.OpenFileDialog umapDialog;
-        private System.Windows.Forms.ToolStripComboBox UEVersion;
+        public System.Windows.Forms.ToolStripComboBox UEVersion;
     }
 }
 
