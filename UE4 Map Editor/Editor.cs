@@ -112,7 +112,7 @@ namespace UE4_Map_Editor
             //add event handlers to sceneListView
             MapObjects.SelectionChanged += SceneListView_SelectionChanged;
             MapObjects.ItemsMoved += SceneListView_ItemsMoved;
-            MapObjects.ListExited += SceneListView1_ListExited;
+            MapObjects.ListExited += SceneListView_ListExited;
         }
 
         private void MapObjectsInvalidated(object sender, ListEventArgs e)
@@ -120,7 +120,7 @@ namespace UE4_Map_Editor
             if (MapObjects.CurrentList == e.List) MapObjects.InvalidateCurrentList();
         }
 
-        private void SceneListView1_ListExited(object sender, ListEventArgs e)
+        private void SceneListView_ListExited(object sender, ListEventArgs e)
         {
             scene.CurrentList = e.List;
             //fetch availible properties for list
@@ -231,7 +231,7 @@ namespace UE4_Map_Editor
             //MapObjects.UpdateAutoScrollHeight();
         }
 
-        private void SceneListView1_ItemDoubleClicked(object sender, ItemClickedEventArgs e)
+        private void SceneListView_ItemDoubleClicked(object sender, ItemClickedEventArgs e)
         {
             if (e.Clicks == 2 && e.Item is IEditableObject obj)
                 Display.CameraTarget = obj.GetFocusPoint();
