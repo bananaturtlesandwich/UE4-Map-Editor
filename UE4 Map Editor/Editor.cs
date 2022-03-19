@@ -6,15 +6,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using static GL_EditorFramework.Framework;
+using UAssetAPI;
 
 namespace UE4_Map_Editor
 {
     public partial class Editor : Form
     {
-        public Editor()
-        {
-            InitializeComponent();
-        }
+        public Editor() => InitializeComponent();
 
         //private TestProvider propertyContainer = new TestProvider();
 
@@ -112,8 +110,8 @@ namespace UE4_Map_Editor
             MapObjects.SetRootList("Test0");
 
             //add event handlers to sceneListView
-            MapObjects.SelectionChanged += SceneListView1_SelectionChanged;
-            MapObjects.ItemsMoved += SceneListView1_ItemsMoved;
+            MapObjects.SelectionChanged += SceneListView_SelectionChanged;
+            MapObjects.ItemsMoved += SceneListView_ItemsMoved;
             MapObjects.ListExited += SceneListView1_ListExited;
         }
 
@@ -138,7 +136,7 @@ namespace UE4_Map_Editor
                 btnAdd.Text = "Add Object";
         }
 
-        private void SceneListView1_ItemsMoved(object sender, ItemsMovedEventArgs e)
+        private void SceneListView_ItemsMoved(object sender, ItemsMovedEventArgs e)
         {
             scene.ReorderObjects(MapObjects.CurrentList, e.OriginalIndex, e.Count, e.Offset);
             e.Handled = true;
@@ -154,7 +152,7 @@ namespace UE4_Map_Editor
             }
         }
 
-        private void SceneListView1_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void SceneListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             //apply selection changes to scene
             if (e.SelectionChangeMode == SelectionChangeMode.SET)
@@ -260,7 +258,14 @@ namespace UE4_Map_Editor
 
         private void OpenMapUmap_Click(object sender, EventArgs e)
         {
+            /*EditorScene newscene = new EditorScene();
+            UAsset LoadedMap = new UAsset(umapDialog.FileName);
             if (umapDialog.ShowDialog() == DialogResult.OK) ;
+            foreach (var obj in umaps.LoadUmap(umapDialog.FileName, UEVersion.Text))
+            {
+                if(LoadedMap.Exports[obj.Value])
+            }
+                newscene.Add(new TransformableObject(LoadedMap.Exports[obj.Value][0]))*/
         }
     }
     /*
