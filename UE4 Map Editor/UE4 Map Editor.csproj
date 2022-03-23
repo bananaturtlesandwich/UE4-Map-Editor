@@ -89,7 +89,7 @@
       <DependentUpon>Editor.cs</DependentUpon>
     </Compile>
     <Compile Include="File Handling\umaps.cs" />
-    <Compile Include="Program.cs" />
+    <Compile Include="Startup.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Editor.resx">
       <DependentUpon>Editor.cs</DependentUpon>

@@ -132,7 +132,7 @@
             this.MapObjects.RootLists = ((System.Collections.Generic.Dictionary<string, System.Collections.IList>)(resources.GetObject("MapObjects.RootLists")));
             this.MapObjects.Size = new System.Drawing.Size(357, 419);
             this.MapObjects.TabIndex = 6;
-            this.MapObjects.ItemClicked += new GL_EditorFramework.ItemClickedEventHandler(this.SceneListView1_ItemDoubleClicked);
+            this.MapObjects.ItemClicked += new GL_EditorFramework.ItemClickedEventHandler(this.SceneListView_ItemDoubleClicked);
             // 
             // Display
             // 

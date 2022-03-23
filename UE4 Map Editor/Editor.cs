@@ -112,7 +112,7 @@ namespace UE4_Map_Editor
             MapObjects.SetRootList("Test0");
 
             //add event handlers to sceneListView
-            MapObjects.SelectionChanged += SceneListView1_SelectionChanged;
+            MapObjects.SelectionChanged += SceneListView_SelectionChanged;
             MapObjects.ItemsMoved += SceneListView1_ItemsMoved;
             MapObjects.ListExited += SceneListView1_ListExited;
         }
@@ -154,7 +154,7 @@ namespace UE4_Map_Editor
             }
         }
 
-        private void SceneListView1_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void SceneListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             //apply selection changes to scene
             if (e.SelectionChangeMode == SelectionChangeMode.SET)
@@ -233,7 +233,7 @@ namespace UE4_Map_Editor
             //MapObjects.UpdateAutoScrollHeight();
         }
 
-        private void SceneListView1_ItemDoubleClicked(object sender, ItemClickedEventArgs e)
+        private void SceneListView_ItemDoubleClicked(object sender, ItemClickedEventArgs e)
         {
             if (e.Clicks == 2 && e.Item is IEditableObject obj)
                 Display.CameraTarget = obj.GetFocusPoint();
@@ -260,7 +260,10 @@ namespace UE4_Map_Editor
 
         private void OpenMapUmap_Click(object sender, EventArgs e)
         {
-            if (umapDialog.ShowDialog() == DialogResult.OK) ;
+            if (umapDialog.ShowDialog() == DialogResult.OK)
+            {
+
+            }
         }
     }
     /*
