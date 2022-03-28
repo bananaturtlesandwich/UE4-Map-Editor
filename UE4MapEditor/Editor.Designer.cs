@@ -43,7 +43,6 @@
             this.Split.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Sidebar)).BeginInit();
             this.Sidebar.Panel1.SuspendLayout();
-            this.Sidebar.Panel2.SuspendLayout();
             this.Sidebar.SuspendLayout();
             this.SuspendLayout();
             // 
