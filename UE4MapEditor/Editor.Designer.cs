@@ -35,6 +35,7 @@
             this.Sidebar = new System.Windows.Forms.SplitContainer();
             this.Objects = new GL_EditorFramework.SceneListView();
             this.Display = new GL_EditorFramework.GL_Core.GL_ControlModern();
+            this.Properties = new GL_EditorFramework.ObjectUIControl();
             this.MenuStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Split)).BeginInit();
             this.Split.Panel1.SuspendLayout();
