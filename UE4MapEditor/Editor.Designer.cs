@@ -137,6 +137,7 @@
             this.Objects.RootLists = ((System.Collections.Generic.Dictionary<string, System.Collections.IList>)(resources.GetObject("Objects.RootLists")));
             this.Objects.Size = new System.Drawing.Size(309, 352);
             this.Objects.TabIndex = 0;
+            this.Objects.ItemClicked += new GL_EditorFramework.ItemClickedEventHandler(this.FocusObject);
             // 
             // Display
             // 
