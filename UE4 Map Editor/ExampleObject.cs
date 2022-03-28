@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using GL_EditorFramework;
+﻿using GL_EditorFramework;
 using GL_EditorFramework.EditorDrawables;
 using GL_EditorFramework.GL_Core;
 using GL_EditorFramework.Interfaces;
 using OpenTK;
+using System;
 
 namespace UE4_Map_Editor
 {
@@ -39,7 +33,7 @@ namespace UE4_Map_Editor
             mtx *= Matrix4.CreateTranslation(Selected ? editorScene.SelectionTransformAction.NewPos(Position) : Position);
 
             Vector4 pickingColor = control.NextPickingColor();
-            
+
             Vector4 lineBoxColor;
 
             if (hovered && Selected)
@@ -51,8 +45,8 @@ namespace UE4_Map_Editor
             else
                 lineBoxColor = new Vector4(0.75f, 0.75f, 0.75f, 1);
 
-            if(Selected)
-                control.UpdateModelMatrix(mtx * Matrix4.CreateTranslation(Vector3.UnitX * (3f - Math.Abs((control.RedrawerFrame-animationStartFrame) * 0.0625f % 6f - 3f))));
+            if (Selected)
+                control.UpdateModelMatrix(mtx * Matrix4.CreateTranslation(Vector3.UnitX * (3f - Math.Abs((control.RedrawerFrame - animationStartFrame) * 0.0625f % 6f - 3f))));
             else
                 control.UpdateModelMatrix(mtx);
 
@@ -82,7 +76,7 @@ namespace UE4_Map_Editor
             Vector4 lineBoxColor = new Vector4(0.75f, 0.75f, 0.75f, 1);
 
             if (Selected)
-                control.UpdateModelMatrix(mtx * Matrix4.CreateTranslation(Vector3.UnitX * (3f - Math.Abs((control.RedrawerFrame-animationStartFrame) * 0.0625f % 6f - 3f))));
+                control.UpdateModelMatrix(mtx * Matrix4.CreateTranslation(Vector3.UnitX * (3f - Math.Abs((control.RedrawerFrame - animationStartFrame) * 0.0625f % 6f - 3f))));
             else
                 control.UpdateModelMatrix(mtx);
 
@@ -122,7 +116,7 @@ namespace UE4_Map_Editor
                 lineBoxColor = new Vector4(0.75f, 0.75f, 0.75f, 1);
 
             if (Selected)
-                control.UpdateModelMatrix(mtx * Matrix4.CreateTranslation(Vector3.UnitX * (3f - Math.Abs((control.RedrawerFrame-animationStartFrame) * 0.0625f % 6f - 3f))));
+                control.UpdateModelMatrix(mtx * Matrix4.CreateTranslation(Vector3.UnitX * (3f - Math.Abs((control.RedrawerFrame - animationStartFrame) * 0.0625f % 6f - 3f))));
             else
                 control.UpdateModelMatrix(mtx);
 
@@ -152,7 +146,7 @@ namespace UE4_Map_Editor
             Vector4 lineBoxColor = new Vector4(0.75f, 0.75f, 0.75f, 1);
 
             if (Selected)
-                control.UpdateModelMatrix(mtx * Matrix4.CreateTranslation(Vector3.UnitX * (3f - Math.Abs((control.RedrawerFrame-animationStartFrame) * 0.0625f % 6f - 3f))));
+                control.UpdateModelMatrix(mtx * Matrix4.CreateTranslation(Vector3.UnitX * (3f - Math.Abs((control.RedrawerFrame - animationStartFrame) * 0.0625f % 6f - 3f))));
             else
                 control.UpdateModelMatrix(mtx);
 
@@ -169,7 +163,7 @@ namespace UE4_Map_Editor
 
         public override uint Select(int index, GL_ControlBase control)
         {
-            
+
             if (!Selected)
             {
                 Selected = true;
@@ -181,7 +175,7 @@ namespace UE4_Map_Editor
 
         public override uint SelectDefault(GL_ControlBase control)
         {
-            
+
             if (!Selected)
             {
                 Selected = true;
@@ -193,7 +187,7 @@ namespace UE4_Map_Editor
 
         public override uint SelectAll(GL_ControlBase control)
         {
-            
+
             if (!Selected)
             {
                 Selected = true;
@@ -205,7 +199,7 @@ namespace UE4_Map_Editor
 
         public override uint Deselect(int index, GL_ControlBase control)
         {
-            
+
             if (Selected)
             {
                 Selected = false;
@@ -216,7 +210,7 @@ namespace UE4_Map_Editor
 
         public override uint DeselectAll(GL_ControlBase control)
         {
-            
+
             if (Selected)
             {
                 Selected = false;
@@ -278,8 +272,8 @@ namespace UE4_Map_Editor
 
                 control.DoubleButton("Add", "Remove");
                 control.TripleButton("Add", "Remove", "Insert");
-                control.QuadripleButton("+", "-", "*","/");
-                enemyType =  (EnemyType)control.ChoicePicker("Enemy1 Type", enemyType,  Enum.GetValues(typeof(EnemyType)));
+                control.QuadripleButton("+", "-", "*", "/");
+                enemyType = (EnemyType)control.ChoicePicker("Enemy1 Type", enemyType, Enum.GetValues(typeof(EnemyType)));
                 enemyType2 = (EnemyType)control.ChoicePicker("Enemy2 Type", enemyType2, Enum.GetValues(typeof(EnemyType)));
                 control.VerticalSeperator();
                 objectType = control.DropDownTextInput("Object Type", objectType, objectTypes);
@@ -300,7 +294,7 @@ namespace UE4_Map_Editor
 
             public void OnValueSet()
             {
-                
+
             }
 
             public void UpdateProperties()
