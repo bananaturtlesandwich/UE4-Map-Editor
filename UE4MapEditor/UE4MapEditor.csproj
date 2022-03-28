@@ -6,12 +6,17 @@
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
-    <StartupObject></StartupObject>
+    <StartupObject>UE4MapEditor.Startup</StartupObject>
+    <ApplicationIcon>Editor.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Include="Editor.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="fasterflect" Version="3.0.0" />
-    <PackageReference Include="OpenTK" Version="4.7.1" />
+    <PackageReference Include="OpenTK" Version="3.1.0" />
     <PackageReference Include="OpenTK.GLControl" Version="3.1.0" />
   </ItemGroup>
 

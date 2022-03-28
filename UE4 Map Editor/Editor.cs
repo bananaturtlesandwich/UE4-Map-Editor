@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using static GL_EditorFramework.Framework;
-using UAssetAPI;
 
 namespace UE4_Map_Editor
 {
@@ -107,7 +106,7 @@ namespace UE4_Map_Editor
             //link the scenes selected objs to sceneListView
             MapObjects.SelectedItems = scene.SelectedObjects;
             //set current category (highly recommended to do once all categories are added)
-            MapObjects.SetRootList("Test0");
+            MapObjects.SetRootList("Test");
 
             //add event handlers to sceneListView
             MapObjects.SelectionChanged += SceneListView_SelectionChanged;
