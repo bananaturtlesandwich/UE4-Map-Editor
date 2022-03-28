@@ -42,6 +42,7 @@
             this.Split.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Sidebar)).BeginInit();
             this.Sidebar.Panel1.SuspendLayout();
+            this.Sidebar.Panel2.SuspendLayout();
             this.Sidebar.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -126,6 +127,10 @@
             this.Sidebar.SplitterDistance = 352;
             this.Sidebar.SplitterWidth = 3;
             this.Sidebar.TabIndex = 0;
+            //
+            // Sidebar.Panel2
+            //
+            this.Sidebar.Panel2.Controls.Add(this.Properties);
             // 
             // Objects
             // 
