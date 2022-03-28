@@ -233,7 +233,7 @@ namespace UE4_Map_Editor
             // 
             this.UEVersion.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
             this.UEVersion.Items.AddRange(new object[] {
-            "Unknown Version",
+            "Unknown version",
             "4.0",
             "4.1",
             "4.2",

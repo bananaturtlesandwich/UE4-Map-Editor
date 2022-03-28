@@ -6,15 +6,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using static GL_EditorFramework.Framework;
+using UAssetAPI;
 
 namespace UE4_Map_Editor
 {
     public partial class Editor : Form
     {
-        public Editor()
-        {
-            InitializeComponent();
-        }
+        public Editor() => InitializeComponent();
 
         //private TestProvider propertyContainer = new TestProvider();
 
