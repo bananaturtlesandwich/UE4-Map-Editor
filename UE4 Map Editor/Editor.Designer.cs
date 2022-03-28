@@ -1,4 +1,6 @@
-﻿namespace UE4_Map_Editor
+﻿using System.Windows.Forms;
+
+namespace UE4_Map_Editor
 {
     partial class Editor
     {
@@ -36,9 +38,6 @@
             this.Properties = new GL_EditorFramework.ObjectUIControl();
             this.MapObjects = new GL_EditorFramework.SceneListView();
             this.Display = new GL_EditorFramework.GL_Core.GL_ControlModern();
-            this.ContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.hideToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.showAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.MenuStrip_Editor = new System.Windows.Forms.SplitContainer();
             this.MenuStrip = new System.Windows.Forms.MenuStrip();
             this.FileStrip = new System.Windows.Forms.ToolStripMenuItem();
@@ -47,17 +46,20 @@
             this.SaveAs = new System.Windows.Forms.ToolStripMenuItem();
             this.UEVersion = new System.Windows.Forms.ToolStripComboBox();
             this.umapDialog = new System.Windows.Forms.OpenFileDialog();
+            this.hideToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.showAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.Details_Display)).BeginInit();
             this.Details_Display.Panel1.SuspendLayout();
             this.Details_Display.Panel2.SuspendLayout();
             this.Details_Display.SuspendLayout();
             this.Details.SuspendLayout();
-            this.ContextMenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.MenuStrip_Editor)).BeginInit();
             this.MenuStrip_Editor.Panel1.SuspendLayout();
             this.MenuStrip_Editor.Panel2.SuspendLayout();
             this.MenuStrip_Editor.SuspendLayout();
             this.MenuStrip.SuspendLayout();
+            this.ContextMenu.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnAdd
@@ -157,29 +159,6 @@
             this.Display.VSync = false;
             this.Display.ZFar = 32000F;
             this.Display.ZNear = 0.32F;
-            // 
-            // ContextMenu
-            // 
-            this.ContextMenu.ImageScalingSize = new System.Drawing.Size(20, 20);
-            this.ContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.hideToolStripMenuItem,
-            this.showAllToolStripMenuItem});
-            this.ContextMenu.Name = "ContextMenu";
-            this.ContextMenu.Size = new System.Drawing.Size(154, 68);
-            // 
-            // hideToolStripMenuItem
-            // 
-            this.hideToolStripMenuItem.Name = "hideToolStripMenuItem";
-            this.hideToolStripMenuItem.Size = new System.Drawing.Size(153, 32);
-            this.hideToolStripMenuItem.Text = "Hide";
-            this.hideToolStripMenuItem.Click += new System.EventHandler(this.HideToolStripMenuItem_Click);
-            // 
-            // showAllToolStripMenuItem
-            // 
-            this.showAllToolStripMenuItem.Name = "showAllToolStripMenuItem";
-            this.showAllToolStripMenuItem.Size = new System.Drawing.Size(153, 32);
-            this.showAllToolStripMenuItem.Text = "Show All";
-            this.showAllToolStripMenuItem.Click += new System.EventHandler(this.ShowAllToolStripMenuItem_Click);
             // 
             // MenuStrip_Editor
             // 
@@ -285,12 +264,35 @@
             "4.27"});
             this.UEVersion.Margin = new System.Windows.Forms.Padding(1, 0, 10, 0);
             this.UEVersion.Name = "UEVersion";
-            this.UEVersion.Size = new System.Drawing.Size(180, 24);
-            this.UEVersion.Text = "Unknown version";
+            this.UEVersion.Size = new System.Drawing.Size(168, 24);
+            this.UEVersion.Text = "Unknown Version";
             // 
             // umapDialog
             // 
             this.umapDialog.DefaultExt = "umap";
+            // 
+            // hideToolStripMenuItem
+            // 
+            this.hideToolStripMenuItem.Name = "hideToolStripMenuItem";
+            this.hideToolStripMenuItem.Size = new System.Drawing.Size(240, 32);
+            this.hideToolStripMenuItem.Text = "Hide";
+            this.hideToolStripMenuItem.Click += new System.EventHandler(this.HideToolStripMenuItem_Click);
+            // 
+            // showAllToolStripMenuItem
+            // 
+            this.showAllToolStripMenuItem.Name = "showAllToolStripMenuItem";
+            this.showAllToolStripMenuItem.Size = new System.Drawing.Size(240, 32);
+            this.showAllToolStripMenuItem.Text = "Show All";
+            this.showAllToolStripMenuItem.Click += new System.EventHandler(this.ShowAllToolStripMenuItem_Click);
+            // 
+            // ContextMenu
+            // 
+            this.ContextMenu.ImageScalingSize = new System.Drawing.Size(20, 20);
+            this.ContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.hideToolStripMenuItem,
+            this.showAllToolStripMenuItem});
+            this.ContextMenu.Name = "ContextMenu";
+            this.ContextMenu.Size = new System.Drawing.Size(241, 101);
             // 
             // Editor
             // 
@@ -308,7 +310,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.Details_Display)).EndInit();
             this.Details_Display.ResumeLayout(false);
             this.Details.ResumeLayout(false);
-            this.ContextMenu.ResumeLayout(false);
             this.MenuStrip_Editor.Panel1.ResumeLayout(false);
             this.MenuStrip_Editor.Panel1.PerformLayout();
             this.MenuStrip_Editor.Panel2.ResumeLayout(false);
@@ -316,6 +317,7 @@
             this.MenuStrip_Editor.ResumeLayout(false);
             this.MenuStrip.ResumeLayout(false);
             this.MenuStrip.PerformLayout();
+            this.ContextMenu.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -326,9 +328,6 @@
         private GL_EditorFramework.ObjectUIControl Properties;
         private GL_EditorFramework.SceneListView MapObjects;
         private System.Windows.Forms.SplitContainer Details_Display;
-        private new System.Windows.Forms.ContextMenuStrip ContextMenu;
-        private System.Windows.Forms.ToolStripMenuItem hideToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem showAllToolStripMenuItem;
         private GL_EditorFramework.GL_Core.GL_ControlModern Display;
         private System.Windows.Forms.SplitContainer MenuStrip_Editor;
         private System.Windows.Forms.MenuStrip MenuStrip;
@@ -338,7 +337,10 @@
         private System.Windows.Forms.TableLayoutPanel Details;
         private System.Windows.Forms.ToolStripMenuItem OpenMapUmap;
         private System.Windows.Forms.OpenFileDialog umapDialog;
-        public System.Windows.Forms.ToolStripComboBox UEVersion;
+        private System.Windows.Forms.ToolStripComboBox UEVersion;
+        private ContextMenuStrip ContextMenu;
+        private ToolStripMenuItem hideToolStripMenuItem;
+        private ToolStripMenuItem showAllToolStripMenuItem;
     }
 }
 

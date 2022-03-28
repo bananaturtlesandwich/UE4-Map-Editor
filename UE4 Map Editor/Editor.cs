@@ -258,14 +258,10 @@ namespace UE4_Map_Editor
 
         private void OpenMapUmap_Click(object sender, EventArgs e)
         {
-            /*EditorScene newscene = new EditorScene();
-            UAsset LoadedMap = new UAsset(umapDialog.FileName);
-            if (umapDialog.ShowDialog() == DialogResult.OK) ;
-            foreach (var obj in umaps.LoadUmap(umapDialog.FileName, UEVersion.Text))
+            if (umapDialog.ShowDialog() == DialogResult.OK)
             {
-                if(LoadedMap.Exports[obj.Value])
+
             }
-                newscene.Add(new TransformableObject(LoadedMap.Exports[obj.Value][0]))*/
         }
     }
     /*
