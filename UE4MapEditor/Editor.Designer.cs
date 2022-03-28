@@ -167,6 +167,14 @@
             this.Display.ZFar = 32000F;
             this.Display.ZNear = 0.32F;
             // 
+            // Properties
+            // 
+            this.Properties.AutoScroll = true;
+            this.Properties.BackColor = System.Drawing.SystemColors.Control;
+            this.Properties.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.Properties.Name = "Properties";
+            this.Properties.Size = new System.Drawing.Size(398, 509);
+            // 
             // Editor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
