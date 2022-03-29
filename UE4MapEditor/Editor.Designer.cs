@@ -169,10 +169,12 @@
             // Properties
             // 
             this.Properties.AutoScroll = true;
-            this.Properties.BackColor = System.Drawing.SystemColors.Control;
             this.Properties.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.Properties.Location=new System.Drawing.Point(0, 0);
+            this.Properties.Margin = new Padding(4, 4, 4, 4);
             this.Properties.Name = "Properties";
             this.Properties.Size = new System.Drawing.Size(398, 509);
+            this.Properties.BackColor = System.Drawing.SystemColors.Control;
             // 
             // Editor
             // 
