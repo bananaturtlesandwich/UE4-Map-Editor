@@ -22,7 +22,7 @@
 
   <ItemGroup>
     <Reference Include="GL_EditorFramework">
-      <HintPath>..\GL_EditorFramework\GL_EditorFramework.dll</HintPath>
+      <HintPath>..\libraries\GL_EditorFramework.dll</HintPath>
     </Reference>
   </ItemGroup>
 
