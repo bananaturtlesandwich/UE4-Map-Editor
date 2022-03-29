@@ -149,7 +149,7 @@
             this.Display.Dock = System.Windows.Forms.DockStyle.Fill;
             this.Display.Fov = 0.7853982F;
             this.Display.Location = new System.Drawing.Point(0, 0);
-            this.Display.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.Display.Margin = new System.Windows.Forms.Padding(5);
             this.Display.Name = "Display";
             this.Display.NormPickingDepth = 0F;
             this.Display.ShowOrientationCube = true;
@@ -162,7 +162,7 @@
             // 
             // OpenMapDialog
             // 
-            this.OpenMapDialog.Filter = "\"unreal map files|*.umap\".";
+            this.OpenMapDialog.Filter = "\"Unreal map files|*.umap\"";
             this.OpenMapDialog.InitialDirectory = ".\\";
             // 
             // Editor
@@ -207,7 +207,7 @@
         //GL Editor Controls
         private GL_EditorFramework.GL_Core.GL_ControlModern Display;
         private GL_EditorFramework.SceneListView Objects;
-        private GL_EditorFramework.ObjectUIControl Properties;
+        private GL_EditorFramework.ObjectUIControl Properties = new GL_EditorFramework.ObjectUIControl();
         private OpenFileDialog OpenMapDialog;
     }
 }
