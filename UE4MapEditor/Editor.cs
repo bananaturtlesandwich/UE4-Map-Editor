@@ -35,6 +35,8 @@ namespace UE4MapEditor
 
             //Add this to the scene list view
             Objects.RootLists.Add("Test", scene.objects);
+
+            Objects.UpdateComboBoxItems();
             //link the scenes selected objs to sceneListView
             Objects.SelectedItems = scene.SelectedObjects;
             //set current category (highly recommended to do once all categories are added)
