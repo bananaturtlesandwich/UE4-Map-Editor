@@ -207,7 +207,7 @@
         //GL Editor Controls
         private GL_EditorFramework.GL_Core.GL_ControlModern Display;
         private GL_EditorFramework.SceneListView Objects;
-        private GL_EditorFramework.ObjectUIControl Properties=new GL_EditorFramework.ObjectUIControl();
+        private GL_EditorFramework.ObjectUIControl Properties = new GL_EditorFramework.ObjectUIControl();
         private OpenFileDialog OpenMapDialog;
     }
 }

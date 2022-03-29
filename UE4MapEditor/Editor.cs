@@ -105,7 +105,7 @@ namespace UE4MapEditor
 
         private void OpenMap(object sender, EventArgs e)
         {
-            if (OpenMapDialog.ShowDialog()==DialogResult.OK)
+            if (OpenMapDialog.ShowDialog() == DialogResult.OK)
             {
 
             }
