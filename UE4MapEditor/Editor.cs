@@ -102,5 +102,13 @@ namespace UE4MapEditor
         }
 
         private void FocusObject(object sender, ItemClickedEventArgs e) { if (e.Clicks == 2 && e.Item is IEditableObject obj) Display.CameraTarget = obj.GetFocusPoint(); }
+
+        private void OpenMap(object sender, EventArgs e)
+        {
+            if (OpenMapDialog.ShowDialog()==DialogResult.OK)
+            {
+
+            }
+        }
     }
 }

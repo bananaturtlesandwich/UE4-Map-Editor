@@ -35,7 +35,7 @@
             this.Sidebar = new System.Windows.Forms.SplitContainer();
             this.Objects = new GL_EditorFramework.SceneListView();
             this.Display = new GL_EditorFramework.GL_Core.GL_ControlModern();
-            this.Properties = new GL_EditorFramework.ObjectUIControl();
+            this.OpenMapDialog = new System.Windows.Forms.OpenFileDialog();
             this.MenuStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Split)).BeginInit();
             this.Split.Panel1.SuspendLayout();
@@ -54,8 +54,7 @@
             this.FileToolStrip});
             this.MenuStrip.Location = new System.Drawing.Point(0, 0);
             this.MenuStrip.Name = "MenuStrip";
-            this.MenuStrip.Padding = new System.Windows.Forms.Padding(5, 2, 0, 2);
-            this.MenuStrip.Size = new System.Drawing.Size(1198, 28);
+            this.MenuStrip.Size = new System.Drawing.Size(1498, 33);
             this.MenuStrip.TabIndex = 0;
             this.MenuStrip.Text = "MenuStrip";
             // 
@@ -67,21 +66,22 @@
             this.SaveAs});
             this.FileToolStrip.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.FileToolStrip.Name = "FileToolStrip";
-            this.FileToolStrip.Size = new System.Drawing.Size(46, 24);
+            this.FileToolStrip.Size = new System.Drawing.Size(54, 29);
             this.FileToolStrip.Text = "File";
             // 
             // Open
             // 
             this.Open.Name = "Open";
             this.Open.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
-            this.Open.Size = new System.Drawing.Size(233, 26);
+            this.Open.Size = new System.Drawing.Size(285, 34);
             this.Open.Text = "Open";
+            this.Open.Click += new System.EventHandler(this.OpenMap);
             // 
             // Save
             // 
             this.Save.Name = "Save";
             this.Save.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-            this.Save.Size = new System.Drawing.Size(233, 26);
+            this.Save.Size = new System.Drawing.Size(285, 34);
             this.Save.Text = "Save";
             // 
             // SaveAs
@@ -89,13 +89,13 @@
             this.SaveAs.Name = "SaveAs";
             this.SaveAs.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
             | System.Windows.Forms.Keys.S)));
-            this.SaveAs.Size = new System.Drawing.Size(233, 26);
+            this.SaveAs.Size = new System.Drawing.Size(285, 34);
             this.SaveAs.Text = "Save As";
             // 
             // Split
             // 
             this.Split.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.Split.Location = new System.Drawing.Point(0, 28);
+            this.Split.Location = new System.Drawing.Point(0, 33);
             this.Split.Margin = new System.Windows.Forms.Padding(2);
             this.Split.Name = "Split";
             // 
@@ -107,9 +107,8 @@
             // Split.Panel2
             // 
             this.Split.Panel2.Controls.Add(this.Display);
-            this.Split.Size = new System.Drawing.Size(1198, 812);
-            this.Split.SplitterDistance = 309;
-            this.Split.SplitterWidth = 3;
+            this.Split.Size = new System.Drawing.Size(1498, 1017);
+            this.Split.SplitterDistance = 386;
             this.Split.TabIndex = 1;
             // 
             // Sidebar
@@ -123,24 +122,19 @@
             // Sidebar.Panel1
             // 
             this.Sidebar.Panel1.Controls.Add(this.Objects);
-            this.Sidebar.Size = new System.Drawing.Size(309, 812);
-            this.Sidebar.SplitterDistance = 352;
-            this.Sidebar.SplitterWidth = 3;
+            this.Sidebar.Size = new System.Drawing.Size(386, 1017);
+            this.Sidebar.SplitterDistance = 440;
             this.Sidebar.TabIndex = 0;
-            //
-            // Sidebar.Panel2
-            //
-            this.Sidebar.Panel2.Controls.Add(this.Properties);
             // 
             // Objects
             // 
             this.Objects.AutoScroll = true;
             this.Objects.Dock = System.Windows.Forms.DockStyle.Fill;
             this.Objects.Location = new System.Drawing.Point(0, 0);
-            this.Objects.Margin = new System.Windows.Forms.Padding(10, 3, 10, 3);
+            this.Objects.Margin = new System.Windows.Forms.Padding(12, 4, 12, 4);
             this.Objects.Name = "Objects";
             this.Objects.RootLists = ((System.Collections.Generic.Dictionary<string, System.Collections.IList>)(resources.GetObject("Objects.RootLists")));
-            this.Objects.Size = new System.Drawing.Size(309, 352);
+            this.Objects.Size = new System.Drawing.Size(386, 440);
             this.Objects.TabIndex = 0;
             this.Objects.ItemClicked += new GL_EditorFramework.ItemClickedEventHandler(this.FocusObject);
             // 
@@ -155,32 +149,27 @@
             this.Display.Dock = System.Windows.Forms.DockStyle.Fill;
             this.Display.Fov = 0.7853982F;
             this.Display.Location = new System.Drawing.Point(0, 0);
-            this.Display.Margin = new System.Windows.Forms.Padding(4);
+            this.Display.Margin = new System.Windows.Forms.Padding(5);
             this.Display.Name = "Display";
             this.Display.NormPickingDepth = 0F;
             this.Display.ShowOrientationCube = true;
-            this.Display.Size = new System.Drawing.Size(886, 812);
+            this.Display.Size = new System.Drawing.Size(1108, 1017);
             this.Display.Stereoscopy = GL_EditorFramework.GL_Core.GL_ControlBase.StereoscopyType.DISABLED;
             this.Display.TabIndex = 1;
             this.Display.VSync = false;
             this.Display.ZFar = 32000F;
             this.Display.ZNear = 0.32F;
             // 
-            // Properties
+            // OpenMapDialog
             // 
-            this.Properties.AutoScroll = true;
-            this.Properties.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.Properties.Location=new System.Drawing.Point(0, 0);
-            this.Properties.Margin = new Padding(4, 4, 4, 4);
-            this.Properties.Name = "Properties";
-            this.Properties.Size = new System.Drawing.Size(398, 509);
-            this.Properties.BackColor = System.Drawing.SystemColors.Control;
+            this.OpenMapDialog.Filter = "\"Unreal map files|*.umap\"";
+            this.OpenMapDialog.InitialDirectory = ".\\";
             // 
             // Editor
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1198, 840);
+            this.ClientSize = new System.Drawing.Size(1498, 1050);
             this.Controls.Add(this.Split);
             this.Controls.Add(this.MenuStrip);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -218,6 +207,7 @@
         //GL Editor Controls
         private GL_EditorFramework.GL_Core.GL_ControlModern Display;
         private GL_EditorFramework.SceneListView Objects;
-        private GL_EditorFramework.ObjectUIControl Properties;
+        private GL_EditorFramework.ObjectUIControl Properties=new GL_EditorFramework.ObjectUIControl();
+        private OpenFileDialog OpenMapDialog;
     }
 }
