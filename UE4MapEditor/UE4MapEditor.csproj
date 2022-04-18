@@ -27,6 +27,9 @@
     <Reference Include="OpenTK.GLControl">
       <HintPath>..\GL_EditorFramework\OpenTK.GLControl.dll</HintPath>
     </Reference>
+    <Reference Include="UAssetAPI">
+      <HintPath>..\..\Tools\UassetGUI\bin\Debug\UAssetAPI.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
   <ItemGroup>

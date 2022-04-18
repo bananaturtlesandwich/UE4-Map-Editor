@@ -1,5 +1,5 @@
 using GL_EditorFramework.EditorDrawables;
-using OpenTK;
+using UAssetAPI;
 
 namespace UE4MapEditor;
 
@@ -18,15 +18,15 @@ public partial class Editor : Form
     private void OnLoad(object sender, EventArgs e)
     {
         //Example object adding code
-        EditableObject obj;
-        for (int i = 5; i < 10; i++) scene.objects.Add(obj = new TransformableObject(new Vector3(i, 0, 0), Vector3.Zero, Vector3.One));
+        //EditableObject obj;
+        //for (int i = 5; i < 10; i++) scene.objects.Add(obj = new TransformableObject(new Vector3(i, 0, 0), Vector3.Zero, Vector3.One));
 
         //Setup the gl controls
         Display.MainDrawable = scene;
         Display.ActiveCamera = new GL_EditorFramework.StandardCameras.InspectCamera(1f);
         Display.CameraDistance = 20;
 
-        //Making this a funcion doesn't affect performance as the compiler already detects this
+        //Making this a function doesn't affect performance as the compiler detects and extracts it in compilation
         AddHandlers();
 
         //Add this to the scene list view
@@ -35,7 +35,7 @@ public partial class Editor : Form
         Objects.UpdateComboBoxItems();
         //link the scenes selected objs to sceneListView
         Objects.SelectedItems = scene.SelectedObjects;
-        //set current category (highly recommended to do once all categories are added)
+        //set current category
         Objects.SetRootList("Test");
     }
 
@@ -47,4 +47,10 @@ public partial class Editor : Form
 
         }
     }
+
+    /*private EditorScene ParseMap(string filepath)
+    {
+        UAsset Map = new UAsset(filepath);
+
+    }*/
 }

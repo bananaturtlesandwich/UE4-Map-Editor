@@ -8,6 +8,7 @@ public partial class Editor
 {
     void AddHandlers()
     {
+        //MessageBox.Show("don't worry I am actually being called :L");
         scene.SelectionChanged += OnSelectionChanged;
         scene.ObjectsMoved += OnObjectsMoved;
         scene.ListChanged += OnListChanged;
@@ -15,16 +16,8 @@ public partial class Editor
         Display.KeyDown += OnDisplayKeyDown;
 
         Objects.SelectionChanged += OnObjectSelectionChanged;
-        //Objects.ItemsMoved += OnObjectItemsMoved;
         Objects.ListExited += OnObjectListExited;
-    }
-
-
-    private void OnObjectListExited(object sender, Framework.ListEventArgs e)
-    {
-        scene.CurrentList = e.List;
-        //fetch availible properties for list
-        scene.SetupObjectUIControl(Properties);
+        //Objects.ItemsMoved += OnObjectItemsMoved;
     }
 
     /*private void OnObjectItemsMoved(object sender, ItemsMovedEventArgs e)
@@ -33,6 +26,13 @@ public partial class Editor
         e.Handled = true;
         Display.Refresh();
     }*/
+
+    private void OnObjectListExited(object sender, Framework.ListEventArgs e)
+    {
+        scene.CurrentList = e.List;
+        //fetch availible properties for list
+        scene.SetupObjectUIControl(Properties);
+    }
 
     private void OnObjectSelectionChanged(object sender, SelectionChangedEventArgs e)
     {//apply selection changes to scene
@@ -88,5 +88,4 @@ public partial class Editor
     {
         if (e.Clicks == 2 && e.Item is IEditableObject obj) Display.CameraTarget = obj.GetFocusPoint();
     }
-
 }
