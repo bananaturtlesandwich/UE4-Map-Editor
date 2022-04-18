@@ -15,11 +15,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="OpenTK" Version="4.7.1" />
-    <PackageReference Include="OpenTK.WinForms" Version="4.0.0-pre.6" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Reference Include="Fasterflect">
       <HintPath>..\GL_EditorFramework\Fasterflect.dll</HintPath>
     </Reference>

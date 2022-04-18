@@ -6,7 +6,12 @@ namespace UE4MapEditor
 {
     public partial class Editor : Form
     {
-        public Editor() { InitializeComponent(); }
+        private string[] arguments;
+        public Editor(string[] args) 
+        { 
+            InitializeComponent();
+            arguments = args;
+        }
 
         private EditorScene scene = new EditorScene();
 
@@ -30,7 +35,7 @@ namespace UE4MapEditor
             Display.KeyDown += OnDisplayKeyDown;
 
             Objects.SelectionChanged += OnObjectSelectionChanged;
-            Objects.ItemsMoved += OnObjectItemsMoved;
+            //Objects.ItemsMoved += OnObjectItemsMoved;
             Objects.ListExited += OnObjectListExited;
 
             //Add this to the scene list view
@@ -50,12 +55,12 @@ namespace UE4MapEditor
             scene.SetupObjectUIControl(Properties);
         }
 
-        private void OnObjectItemsMoved(object sender, ItemsMovedEventArgs e)
+        /*private void OnObjectItemsMoved(object sender, ItemsMovedEventArgs e)
         {
             scene.ReorderObjects(Objects.CurrentList, e.OriginalIndex, e.Count, e.Offset);
             e.Handled = true;
             Display.Refresh();
-        }
+        }*/
 
         private void OnObjectSelectionChanged(object sender, SelectionChangedEventArgs e)
         {//apply selection changes to scene
