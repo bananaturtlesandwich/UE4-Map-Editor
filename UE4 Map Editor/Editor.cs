@@ -110,7 +110,7 @@ namespace UE4_Map_Editor
 
             //add event handlers to sceneListView
             MapObjects.SelectionChanged += SceneListView_SelectionChanged;
-            MapObjects.ItemsMoved += SceneListView_ItemsMoved;
+            //MapObjects.ItemsMoved += SceneListView_ItemsMoved;
             MapObjects.ListExited += SceneListView_ListExited;
         }
 
@@ -135,12 +135,12 @@ namespace UE4_Map_Editor
                 btnAdd.Text = "Add Object";
         }
 
-        private void SceneListView_ItemsMoved(object sender, ItemsMovedEventArgs e)
+        /*private void SceneListView_ItemsMoved(object sender, ItemsMovedEventArgs e)
         {
             scene.ReorderObjects(MapObjects.CurrentList, e.OriginalIndex, e.Count, e.Offset);
             e.Handled = true;
             Display.Refresh();
-        }
+        }*/
 
         private void Scene_ListChanged(object sender, ListChangedEventArgs e)
         {
