@@ -15,3 +15,5 @@ https://github.com/EpicGames/UnrealEngine/blob/4.25.4-release/Engine/Source/Runt
 https://github.com/EpicGames/UnrealEngine/blob/99b6e203a15d04fc7bbbf554c421a985c1ccb8f1/Engine/Source/Editor/UnrealEd/Private/Cooker/CookPackageData.h
 
 https://github.com/EpicGames/UnrealEngine/blob/4.25.4-release/Engine/Source/Runtime/Engine/Private/Level.cpp
+
+https://gist.github.com/Tectors/a994e11dd6dd8b03d28e2102b41e34e4
