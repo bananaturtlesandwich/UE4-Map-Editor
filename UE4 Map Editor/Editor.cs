@@ -28,7 +28,7 @@ namespace UE4_Map_Editor
             #region Example object adding code for noobs like me
             scene = new EditorScene();
 
-            //scene.objects.Add(obj = new ExampleObject(new Vector3(0, -4, 0)));
+            scene.objects.Add(obj = new ExampleObject(new Vector3(0, -4, 0)));
 
             /*List<PathPoint> pathPoints = new List<PathPoint>
             {

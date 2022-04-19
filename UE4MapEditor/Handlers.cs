@@ -4,7 +4,7 @@ using GL_EditorFramework.EditorDrawables;
 namespace UE4MapEditor;
 
 //Separating handlers to a separate file enhances readablility by reducing arbitrary boilerplate
-public partial class Editor
+public partial class Editor : Form
 {
     void AddHandlers()
     {
