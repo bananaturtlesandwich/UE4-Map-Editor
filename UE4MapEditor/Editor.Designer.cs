@@ -31,13 +31,13 @@
             this.Open = new System.Windows.Forms.ToolStripMenuItem();
             this.Save = new System.Windows.Forms.ToolStripMenuItem();
             this.SaveAs = new System.Windows.Forms.ToolStripMenuItem();
+            this.UEVersion = new System.Windows.Forms.ToolStripComboBox();
             this.Split = new System.Windows.Forms.SplitContainer();
             this.Sidebar = new System.Windows.Forms.SplitContainer();
             this.Objects = new GL_EditorFramework.SceneListView();
             this.Display = new GL_EditorFramework.GL_Core.GL_ControlModern();
             this.Properties = new GL_EditorFramework.ObjectUIControl();
             this.OpenMapDialog = new System.Windows.Forms.OpenFileDialog();
-            this.UEVersion = new System.Windows.Forms.ToolStripComboBox();
             this.MenuStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Split)).BeginInit();
             this.Split.Panel1.SuspendLayout();
@@ -95,6 +95,43 @@
             | System.Windows.Forms.Keys.S)));
             this.SaveAs.Size = new System.Drawing.Size(233, 26);
             this.SaveAs.Text = "Save As";
+            // 
+            // UEVersion
+            // 
+            this.UEVersion.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.UEVersion.BackColor = System.Drawing.SystemColors.Window;
+            this.UEVersion.Items.AddRange(new object[] {
+            "Unknown version",
+            "4.0",
+            "4.1",
+            "4.2",
+            "4.3",
+            "4.4",
+            "4.5",
+            "4.6",
+            "4.7",
+            "4.8",
+            "4.9",
+            "4.10",
+            "4.11",
+            "4.12",
+            "4.13",
+            "4.14",
+            "4.15",
+            "4.16",
+            "4.17",
+            "4.18",
+            "4.19",
+            "4.20",
+            "4.21",
+            "4.22",
+            "4.23",
+            "4.24",
+            "4.25",
+            "4.26",
+            "4.27"});
+            this.UEVersion.Name = "UEVersion";
+            this.UEVersion.Size = new System.Drawing.Size(121, 28);
             // 
             // Split
             // 
@@ -184,13 +221,6 @@
             // 
             this.OpenMapDialog.Filter = "\"Unreal map files|*.umap\"";
             this.OpenMapDialog.InitialDirectory = ".\\";
-            // 
-            // UEVersion
-            // 
-            this.UEVersion.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
-            this.UEVersion.BackColor = System.Drawing.SystemColors.Window;
-            this.UEVersion.Name = "UEVersion";
-            this.UEVersion.Size = new System.Drawing.Size(121, 28);
             // 
             // Editor
             // 

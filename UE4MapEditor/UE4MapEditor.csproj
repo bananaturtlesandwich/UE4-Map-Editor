@@ -15,20 +15,17 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="Fasterflect">
-      <HintPath>..\GL_EditorFramework\Fasterflect.dll</HintPath>
-    </Reference>
     <Reference Include="GL_EditorFramework">
-      <HintPath>..\GL_EditorFramework\GL_EditorFramework.dll</HintPath>
+      <HintPath>..\Libraries\GL_EditorFramework.dll</HintPath>
     </Reference>
     <Reference Include="OpenTK">
-      <HintPath>..\GL_EditorFramework\OpenTK.dll</HintPath>
+      <HintPath>..\Libraries\OpenTK.dll</HintPath>
     </Reference>
     <Reference Include="OpenTK.GLControl">
-      <HintPath>..\GL_EditorFramework\OpenTK.GLControl.dll</HintPath>
+      <HintPath>..\Libraries\OpenTK.GLControl.dll</HintPath>
     </Reference>
     <Reference Include="UAssetAPI">
-      <HintPath>..\..\Tools\UassetGUI\bin\Debug\UAssetAPI.dll</HintPath>
+      <HintPath>..\Libraries\UAssetAPI.dll</HintPath>
     </Reference>
   </ItemGroup>
 

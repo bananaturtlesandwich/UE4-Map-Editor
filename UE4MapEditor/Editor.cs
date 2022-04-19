@@ -1,4 +1,5 @@
 using GL_EditorFramework.EditorDrawables;
+using OpenTK;
 using UAssetAPI;
 
 namespace UE4MapEditor;
@@ -18,8 +19,7 @@ public partial class Editor : Form
     private void OnLoad(object sender, EventArgs e)
     {
         //Example object adding code
-        //EditableObject obj;
-        //for (int i = 5; i < 10; i++) scene.objects.Add(obj = new TransformableObject(new Vector3(i, 0, 0), Vector3.Zero, Vector3.One));
+        for (int i = 0; i < 10; i++) scene.objects.Add(new TransformableObject(new Vector3(i, 0, 0), Vector3.Zero, Vector3.One));
 
         //Setup the gl controls
         Display.MainDrawable = scene;
@@ -48,9 +48,9 @@ public partial class Editor : Form
         }
     }
 
-    /*private EditorScene ParseMap(string filepath)
+    private EditorScene MapToScene(string filepath)
     {
         UAsset Map = new UAsset(filepath);
-
-    }*/
+        return new EditorScene();
+    }
 }
