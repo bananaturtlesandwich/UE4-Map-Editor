@@ -52,7 +52,7 @@ public partial class Editor : Form
 
     Dictionary<int, int> GetMapActors(string filepath)
     {
-        #region Set Map Value with correct UEVersion
+        #region set Map value with correct UEVersion
         string ue4version = UEVersion.Text.Replace("4.", "VER_UE4_");
         UE4Version version = UE4Version.UNKNOWN;
         foreach (UE4Version option in ue4version) if (option.ToString() == ue4version) version = option;
@@ -65,22 +65,23 @@ public partial class Editor : Form
         for (int exnum = 0; exnum < Map.Exports.Count; exnum++) if (Map.Exports[exnum] is NormalExport norm)
                 foreach (PropertyData property in norm.Data)
 
-                    //find the transform component
-                    if (property.Name == FName.FromString("RootComponent(0)") && property is ObjectPropertyData RootComponent)
+                    #region find the transform component
+                    ;/*if (property.Name == FName.FromString("RootComponent(0)") && property is ObjectPropertyData RootComponent)
 
                         //find out if the first property of the objectproperty's value is the location of the object
                         if (Map.Exports[int.Parse(RootComponent.Value.ToString())] is NormalExport transform)
 
                             if (transform.Data[0].Name == FName.FromString("RelativeLocation(0)"))
 
-                                Actors.Add(exnum, int.Parse(RootComponent.Value.ToString()));
+                                Actors.Add(exnum, int.Parse(RootComponent.Value.ToString()));*/
+        #endregion
         return Actors;
     }
 
     EditorScene SpawnActors(Dictionary<int, int> Actors)
     {
         EditorScene scene = new EditorScene();
-        foreach (var actor in Actors) scene.objects.Add(new Actor(actor.Value));
+        //foreach (var actor in Actors) scene.objects.Add(new Actor());
         return scene;
     }
 }
