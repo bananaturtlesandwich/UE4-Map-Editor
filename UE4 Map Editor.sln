@@ -3,54 +3,18 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32210.238
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UE4 Map Editor", "UE4 Map Editor\UE4 Map Editor.csproj", "{860B49C9-54E3-4E10-830D-6497B845ED11}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UE4MapEditor", "UE4MapEditor\UE4MapEditor.csproj", "{23E540FD-C699-4655-BEBC-4F0F9396E372}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UE4 Map Editor", "UE4 Map Editor\UE4 Map Editor.csproj", "{3C635EEF-8523-4A7A-AB1A-AF42BB902C14}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug Odyssey|Any CPU = Debug Odyssey|Any CPU
-		Debug Odyssey|x64 = Debug Odyssey|x64
 		Debug|Any CPU = Debug|Any CPU
-		Debug|x64 = Debug|x64
-		Release Odyssey|Any CPU = Release Odyssey|Any CPU
-		Release Odyssey|x64 = Release Odyssey|x64
 		Release|Any CPU = Release|Any CPU
-		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{860B49C9-54E3-4E10-830D-6497B845ED11}.Debug Odyssey|Any CPU.ActiveCfg = Debug|Any CPU
-		{860B49C9-54E3-4E10-830D-6497B845ED11}.Debug Odyssey|Any CPU.Build.0 = Debug|Any CPU
-		{860B49C9-54E3-4E10-830D-6497B845ED11}.Debug Odyssey|x64.ActiveCfg = Debug|x64
-		{860B49C9-54E3-4E10-830D-6497B845ED11}.Debug Odyssey|x64.Build.0 = Debug|x64
-		{860B49C9-54E3-4E10-830D-6497B845ED11}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{860B49C9-54E3-4E10-830D-6497B845ED11}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{860B49C9-54E3-4E10-830D-6497B845ED11}.Debug|x64.ActiveCfg = Debug|x64
-		{860B49C9-54E3-4E10-830D-6497B845ED11}.Debug|x64.Build.0 = Debug|x64
-		{860B49C9-54E3-4E10-830D-6497B845ED11}.Release Odyssey|Any CPU.ActiveCfg = Release|Any CPU
-		{860B49C9-54E3-4E10-830D-6497B845ED11}.Release Odyssey|Any CPU.Build.0 = Release|Any CPU
-		{860B49C9-54E3-4E10-830D-6497B845ED11}.Release Odyssey|x64.ActiveCfg = Release|x64
-		{860B49C9-54E3-4E10-830D-6497B845ED11}.Release Odyssey|x64.Build.0 = Release|x64
-		{860B49C9-54E3-4E10-830D-6497B845ED11}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{860B49C9-54E3-4E10-830D-6497B845ED11}.Release|Any CPU.Build.0 = Release|Any CPU
-		{860B49C9-54E3-4E10-830D-6497B845ED11}.Release|x64.ActiveCfg = Release|x64
-		{860B49C9-54E3-4E10-830D-6497B845ED11}.Release|x64.Build.0 = Release|x64
-		{23E540FD-C699-4655-BEBC-4F0F9396E372}.Debug Odyssey|Any CPU.ActiveCfg = Debug|Any CPU
-		{23E540FD-C699-4655-BEBC-4F0F9396E372}.Debug Odyssey|Any CPU.Build.0 = Debug|Any CPU
-		{23E540FD-C699-4655-BEBC-4F0F9396E372}.Debug Odyssey|x64.ActiveCfg = Debug|Any CPU
-		{23E540FD-C699-4655-BEBC-4F0F9396E372}.Debug Odyssey|x64.Build.0 = Debug|Any CPU
-		{23E540FD-C699-4655-BEBC-4F0F9396E372}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{23E540FD-C699-4655-BEBC-4F0F9396E372}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{23E540FD-C699-4655-BEBC-4F0F9396E372}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{23E540FD-C699-4655-BEBC-4F0F9396E372}.Debug|x64.Build.0 = Debug|Any CPU
-		{23E540FD-C699-4655-BEBC-4F0F9396E372}.Release Odyssey|Any CPU.ActiveCfg = Release|Any CPU
-		{23E540FD-C699-4655-BEBC-4F0F9396E372}.Release Odyssey|Any CPU.Build.0 = Release|Any CPU
-		{23E540FD-C699-4655-BEBC-4F0F9396E372}.Release Odyssey|x64.ActiveCfg = Release|Any CPU
-		{23E540FD-C699-4655-BEBC-4F0F9396E372}.Release Odyssey|x64.Build.0 = Release|Any CPU
-		{23E540FD-C699-4655-BEBC-4F0F9396E372}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{23E540FD-C699-4655-BEBC-4F0F9396E372}.Release|Any CPU.Build.0 = Release|Any CPU
-		{23E540FD-C699-4655-BEBC-4F0F9396E372}.Release|x64.ActiveCfg = Release|Any CPU
-		{23E540FD-C699-4655-BEBC-4F0F9396E372}.Release|x64.Build.0 = Release|Any CPU
+		{3C635EEF-8523-4A7A-AB1A-AF42BB902C14}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3C635EEF-8523-4A7A-AB1A-AF42BB902C14}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3C635EEF-8523-4A7A-AB1A-AF42BB902C14}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3C635EEF-8523-4A7A-AB1A-AF42BB902C14}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
