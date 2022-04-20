@@ -7,7 +7,7 @@ namespace UE4MapEditor;
 
 public partial class Editor : Form
 {
-    private string[] arguments;
+    string[] arguments;
     public Editor(string[] args)
     {
         InitializeComponent();
@@ -20,8 +20,8 @@ public partial class Editor : Form
     void OnLoad(object sender, EventArgs e)
     {
         //Example object adding code
-        for (int i = 0; i < 10; i++) scene.objects.Add(new TransformableObject(new Vector3(i, 0, 0), Vector3.Zero, Vector3.One));
-        scene.objects.Add(new ActorObject(new Vector3(5, 5, 5)));
+        //for (int i = 0; i < 10; i++) scene.objects.Add(new TransformableObject(new Vector3(i, 0, 0), Vector3.Zero, Vector3.One));
+        scene.objects.Add(new Actor(new Vector3(0, 1, 0)));
 
         //Setup the gl controls
         Display.MainDrawable = scene;
@@ -40,28 +40,32 @@ public partial class Editor : Form
         //set current category
         Objects.SetRootList("Test");
 
-        if (arguments.Length > 0) MapToScene(arguments[0], UEVersion.Text);
+        if (arguments.Length > 0) Display.MainDrawable = SpawnActors(GetMapActors(arguments[0]));
     }
 
+    UAsset Map = new();
 
     void OpenMap(object sender, EventArgs e)
     {
-        if (OpenMapDialog.ShowDialog() == DialogResult.OK) MapToScene(OpenMapDialog.FileName, UEVersion.Text);
+        if (OpenMapDialog.ShowDialog() == DialogResult.OK) Display.MainDrawable = SpawnActors(GetMapActors(OpenMapDialog.FileName));
     }
 
-    static (List<Actor>, UAsset) MapToScene(string filepath, string UEVersion)
+    Dictionary<int, int> GetMapActors(string filepath)
     {
-        List<Actor> Actors = new List<Actor>();
-        UEVersion = UEVersion.Replace("4.", "VER_UE4_");
+        #region Set Map Value with correct UEVersion
+        string ue4version = UEVersion.Text.Replace("4.", "VER_UE4_");
         UE4Version version = UE4Version.UNKNOWN;
-        foreach (UE4Version option in UEVersion) if (option.ToString() == UEVersion) version = option;
+        foreach (UE4Version option in ue4version) if (option.ToString() == ue4version) version = option;
         UAsset Map = new UAsset(filepath, version);
+        #endregion
+
+        Dictionary<int, int> Actors = new Dictionary<int, int>();
         //There is a negligable difference (less than a nanosecond) in the performance of
-        //foreach(NormalExport norm in Map.Exports) and the line below
-        //I just need the export number for the actor constructor
-        for (int exnum = 0; exnum < Map.Exports.Count; exnum++) if(Map.Exports[exnum] is NormalExport norm)
+        //foreach(NormalExport norm in Map.Exports) and the line below: I just need the export number for the actor index
+        for (int exnum = 0; exnum < Map.Exports.Count; exnum++) if (Map.Exports[exnum] is NormalExport norm)
                 foreach (PropertyData property in norm.Data)
 
+                    //find the transform component
                     if (property.Name == FName.FromString("RootComponent(0)") && property is ObjectPropertyData RootComponent)
 
                         //find out if the first property of the objectproperty's value is the location of the object
@@ -69,13 +73,14 @@ public partial class Editor : Form
 
                             if (transform.Data[0].Name == FName.FromString("RelativeLocation(0)"))
 
-                                Actors.Add(new Actor(exnum, int.Parse(RootComponent.Value.ToString()), Map.Exports[exnum].ObjectName.ToString(), Map));
-        return (Actors, Map);
+                                Actors.Add(exnum, int.Parse(RootComponent.Value.ToString()));
+        return Actors;
     }
 
-    static EditorScene SpawnActors(List<Actor> Actors, UAsset Map)
+    EditorScene SpawnActors(Dictionary<int, int> Actors)
     {
         EditorScene scene = new EditorScene();
+        foreach (var actor in Actors) scene.objects.Add(new Actor(actor.Value));
         return scene;
     }
 }
