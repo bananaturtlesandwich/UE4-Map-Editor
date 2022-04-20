@@ -219,8 +219,14 @@
             // 
             // OpenMapDialog
             // 
-            this.OpenMapDialog.Filter = "\"Unreal map files|*.umap\"";
+            this.OpenMapDialog.Filter = "Unreal map files|*.umap";
             this.OpenMapDialog.InitialDirectory = ".\\";
+            //
+            //Properties
+            //
+            this.Properties.Size = new System.Drawing.Size(123, 123);
+            this.Properties.AutoScroll=true;
+            this.Properties.Dock= System.Windows.Forms.DockStyle.Fill;
             // 
             // Editor
             // 

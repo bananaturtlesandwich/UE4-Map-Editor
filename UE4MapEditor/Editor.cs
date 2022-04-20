@@ -56,16 +56,20 @@ public partial class Editor : Form
         UE4Version version = UE4Version.UNKNOWN;
         foreach (UE4Version option in UEVersion) if (option.ToString() == UEVersion) version = option;
         UAsset Map = new UAsset(filepath, version);
-        for (int i = 0; i < Map.Exports.Count; i++) foreach (NormalExport export in Map.Exports) foreach (PropertyData property in export.Data)
+        //There is a negligable difference (less than a nanosecond) in the performance of
+        //foreach(NormalExport norm in Map.Exports) and the line below
+        //I just need the export number for the actor constructor
+        for (int exnum = 0; exnum < Map.Exports.Count; exnum++) if(Map.Exports[exnum] is NormalExport norm)
+                foreach (PropertyData property in norm.Data)
 
-                    if (property.Name==FName.FromString("RootComponent(0)")&&property is ObjectPropertyData RootComponent)
+                    if (property.Name == FName.FromString("RootComponent(0)") && property is ObjectPropertyData RootComponent)
 
                         //find out if the first property of the objectproperty's value is the location of the object
                         if (Map.Exports[int.Parse(RootComponent.Value.ToString())] is NormalExport transform)
 
                             if (transform.Data[0].Name == FName.FromString("RelativeLocation(0)"))
 
-                                Actors.Add(new Actor(i, int.Parse(RootComponent.Value.ToString()), Map.Exports[i].ObjectName.ToString(),Map));
+                                Actors.Add(new Actor(exnum, int.Parse(RootComponent.Value.ToString()), Map.Exports[exnum].ObjectName.ToString(), Map));
         return (Actors, Map);
     }
 
