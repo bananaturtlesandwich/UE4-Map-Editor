@@ -1,32 +1,35 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <OutputType>WinExe</OutputType>
-    <TargetFramework>net6.0-windows</TargetFramework>
-    <Nullable>enable</Nullable>
-    <UseWindowsForms>true</UseWindowsForms>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <StartupObject>UE4MapEditor.Startup</StartupObject>
-    <ApplicationIcon>Editor.ico</ApplicationIcon>
-  </PropertyGroup>
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<TargetFramework>net6.0-windows</TargetFramework>
+		<UseWindowsForms>true</UseWindowsForms>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<StartupObject>UE4MapEditor.Startup</StartupObject>
+		<ApplicationIcon>Editor.ico</ApplicationIcon>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <Content Include="Editor.ico" />
-  </ItemGroup>
+	<ItemGroup>
+		<Content Include="Editor.ico" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Reference Include="GL_EditorFramework">
-      <HintPath>..\Libraries\GL_EditorFramework.dll</HintPath>
-    </Reference>
-    <Reference Include="OpenTK">
-      <HintPath>..\Libraries\OpenTK.dll</HintPath>
-    </Reference>
-    <Reference Include="OpenTK.GLControl">
-      <HintPath>..\Libraries\OpenTK.GLControl.dll</HintPath>
-    </Reference>
-    <Reference Include="UAssetAPI">
-      <HintPath>..\Libraries\UAssetAPI.dll</HintPath>
-    </Reference>
-  </ItemGroup>
+	<ItemGroup>
+		<Reference Include="GL_EditorFramework">
+			<HintPath>..\Libraries\GL_EditorFramework.dll</HintPath>
+			<CopyLocal></CopyLocal>
+		</Reference>
+		<Reference Include="OpenTK">
+			<HintPath>..\Libraries\OpenTK.dll</HintPath>
+			<CopyLocal></CopyLocal>
+		</Reference>
+		<Reference Include="OpenTK.GLControl">
+			<HintPath>..\Libraries\OpenTK.GLControl.dll</HintPath>
+			<CopyLocal></CopyLocal>
+		</Reference>
+		<Reference Include="UAssetAPI">
+			<HintPath>..\Libraries\UAssetAPI.dll</HintPath>
+			<CopyLocal></CopyLocal>
+		</Reference>
+	</ItemGroup>
 
 </Project>

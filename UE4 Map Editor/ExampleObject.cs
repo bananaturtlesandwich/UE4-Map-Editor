@@ -3,7 +3,6 @@ using GL_EditorFramework.EditorDrawables;
 using GL_EditorFramework.GL_Core;
 using GL_EditorFramework.Interfaces;
 using OpenTK;
-using System;
 
 namespace UE4_Map_Editor
 {

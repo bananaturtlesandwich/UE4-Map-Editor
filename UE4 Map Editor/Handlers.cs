@@ -3,8 +3,8 @@ using GL_EditorFramework.EditorDrawables;
 
 namespace UE4MapEditor;
 
-//Separating handlers to a separate file enhances readablility by reducing arbitrary boilerplate
-public partial class Editor : Form
+//Separating handlers to a separate file so my life is easier
+public partial class Editor
 {
     void AddHandlers()
     {
@@ -27,15 +27,16 @@ public partial class Editor : Form
         Display.Refresh();
     }*/
 
-    private void OnObjectListExited(object sender, Framework.ListEventArgs e)
+    void OnObjectListExited(object sender, Framework.ListEventArgs e)
     {
         scene.CurrentList = e.List;
         //fetch availible properties for list
         scene.SetupObjectUIControl(Properties);
     }
 
-    private void OnObjectSelectionChanged(object sender, SelectionChangedEventArgs e)
-    {//apply selection changes to scene
+    void OnObjectSelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        //apply selection changes to scene
         if (e.SelectionChangeMode == SelectionChangeMode.SET)
         {
             scene.SelectedObjects.Clear();
@@ -52,29 +53,29 @@ public partial class Editor : Form
         OnSelectionChanged(this, null);
     }
 
-    private void OnSelectionChanged(object? sender, EventArgs? e)
+    void OnSelectionChanged(object? sender, EventArgs? e)
     {
         Objects.Refresh();
         scene.SetupObjectUIControl(Properties);
     }
 
-    private void OnObjectsMoved(object? sender, EventArgs e)
+    void OnObjectsMoved(object? sender, EventArgs e)
     {
         foreach (IObjectUIContainer UIContainer in Properties.ObjectUIContainers) UIContainer.UpdateProperties();
         Properties.Refresh();
     }
 
-    private void OnListChanged(object sender, ListChangedEventArgs e)
+    void OnListChanged(object sender, ListChangedEventArgs e)
     {
         if (e.Lists.Contains(Objects.CurrentList)) Objects.Refresh();
     }
 
-    private void OnListInvalidated(object sender, Framework.ListEventArgs e)
+    void OnListInvalidated(object sender, Framework.ListEventArgs e)
     {
         if (Objects.CurrentList == e.List) Objects.InvalidateCurrentList();
     }
 
-    private void OnDisplayKeyDown(object? sender, KeyEventArgs e)
+    void OnDisplayKeyDown(object? sender, KeyEventArgs e)
     {
         if (e.KeyCode == Keys.Delete)
         {
@@ -84,7 +85,7 @@ public partial class Editor : Form
         }
     }
 
-    private void FocusObject(object sender, ItemClickedEventArgs e)
+    void FocusObject(object sender, ItemClickedEventArgs e)
     {
         if (e.Clicks == 2 && e.Item is IEditableObject obj) Display.CameraTarget = obj.GetFocusPoint();
     }

@@ -12,6 +12,6 @@ internal static class Startup
         Application.EnableVisualStyles();
         Application.SetCompatibleTextRenderingDefault(false);
         ApplicationConfiguration.Initialize();
-        Application.Run(new Editor(args));
+        Application.Run(new Editor());
     }
 }

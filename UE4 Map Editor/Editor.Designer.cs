@@ -91,7 +91,7 @@
             // SaveAs
             // 
             this.SaveAs.Name = "SaveAs";
-            this.SaveAs.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
+            this.SaveAs.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift)
             | System.Windows.Forms.Keys.S)));
             this.SaveAs.Size = new System.Drawing.Size(233, 26);
             this.SaveAs.Text = "Save As";
@@ -188,7 +188,7 @@
             // Display
             // 
             this.Display.BackColor = System.Drawing.Color.Black;
-            this.Display.CameraDistance = 10F;
+            this.Display.CameraDistance = 20F;
             this.Display.CameraTarget = ((OpenTK.Vector3)(resources.GetObject("Display.CameraTarget")));
             this.Display.CamRotX = 0F;
             this.Display.CamRotY = 0F;
@@ -212,7 +212,7 @@
             this.Properties.AutoScroll = true;
             this.Properties.BackColor = System.Drawing.SystemColors.Control;
             this.Properties.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.Properties.Location = new System.Drawing.Point(0,0);
+            this.Properties.Location = new System.Drawing.Point(0, 0);
             this.Properties.Margin = new System.Windows.Forms.Padding(6);
             this.Properties.Name = "Properties";
             this.Properties.Size = new System.Drawing.Size(398, 509);
@@ -225,8 +225,8 @@
             //Properties
             //
             this.Properties.Size = new System.Drawing.Size(123, 123);
-            this.Properties.AutoScroll=true;
-            this.Properties.Dock= System.Windows.Forms.DockStyle.Fill;
+            this.Properties.AutoScroll = true;
+            this.Properties.Dock = System.Windows.Forms.DockStyle.Fill;
             // 
             // Editor
             // 
