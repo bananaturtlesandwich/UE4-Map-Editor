@@ -131,7 +131,7 @@
             "4.26",
             "4.27"});
             this.UEVersion.Name = "UEVersion";
-            this.UEVersion.Size = new System.Drawing.Size(121, 28);
+            this.UEVersion.Size = new System.Drawing.Size(150, 28);
             // 
             // Split
             // 
@@ -204,7 +204,7 @@
             this.Display.Stereoscopy = GL_EditorFramework.GL_Core.GL_ControlBase.StereoscopyType.DISABLED;
             this.Display.TabIndex = 0;
             this.Display.VSync = false;
-            this.Display.ZFar = 32000F;
+            this.Display.ZFar = 100000F;
             this.Display.ZNear = 0.32F;
             // 
             // Properties

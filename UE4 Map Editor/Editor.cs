@@ -1,6 +1,7 @@
 using GL_EditorFramework.EditorDrawables;
 using OpenTK;
 using UAssetAPI;
+using UAssetAPI.PropertyTypes;
 using UAssetAPI.StructTypes;
 
 namespace UE4MapEditor;
@@ -13,47 +14,50 @@ public partial class Editor : Form
 
     void OnLoad(object sender, EventArgs e)
     {
-        //Example object adding code
-        //for (int i = 0; i < 10; i++) scene.objects.Add(new TransformableObject(new Vector3(i, 0, 0), Vector3.Zero, Vector3.One));
-        scene.objects.Add(new Actor(new Vector3(0, 0, 0)));
-
-        Display.MainDrawable = scene;
-        Display.ActiveCamera = new GL_EditorFramework.StandardCameras.InspectCamera(1f);
+        //I have to account for UE's scaling
+        Display.ActiveCamera = new GL_EditorFramework.StandardCameras.InspectCamera(500f);
+        UEVersion.Text = "Unknown version";
 
         AddHandlers();
 
-        Objects.RootLists.Add("Test", scene.objects);
-
-        Objects.UpdateComboBoxItems();
-        //link the scenes selected objs to sceneListView
-        Objects.SelectedItems = scene.SelectedObjects;
-        //set current category
-        Objects.SetRootList("Test");
-
         var arguments = Environment.GetCommandLineArgs();
-        if (arguments.Length > 1) Display.MainDrawable = SpawnActors(GetMapActors(arguments[1]));
+        if (arguments.Length > 1) Display.MainDrawable = GetMapActors(arguments[1]);
     }
 
-    Dictionary<int, int> GetMapActors(string filepath)
+    EditorScene GetMapActors(string filepath)
     {
-        UAsset Map = new UAsset(filepath, versions[Array.IndexOf(versionstrings, UEVersion.Text)]);
+        UAsset Map = new UAsset(@filepath, versions[Array.IndexOf(versionstrings, UEVersion.Text)]);
 
-        Dictionary<int, int> Actors = new Dictionary<int, int>();
-        Export[] TransformComponents = Map.Exports.Where(ex => ((NormalExport)ex).Data[0].Name == FName.FromString("RelativeLocation")).ToArray();
-        foreach (var TransformComponent in TransformComponents) scene.objects.Add(new Actor(ToVector3((VectorPropertyData)(TransformComponent as NormalExport).Data[0])));
-        return Actors;
-    }
-
-    EditorScene SpawnActors(Dictionary<int, int> Actors)
-    {
+        List<(int, int)> Actors = new();
+        List<int> Transforms = new();
+        //First scan for transforms
+        for (int i = 0; i < Map.Exports.Count; i++)
+            if (((NormalExport)Map.Exports[i]).Data.Count > 0)
+                if (((NormalExport)Map.Exports[i]).Data[0].Name == FName.FromString("RelativeLocation"))
+                    Transforms.Add(i);
+        //second scan for actors with refs to those transforms
+        for (int i = 0; i < Map.Exports.Count; i++)
+            foreach (PropertyData prop in ((NormalExport)Map.Exports[i]).Data)
+                if (prop is ObjectPropertyData obj && Transforms.Contains(obj.Value.Index))
+                    Actors.Add((i, obj.Value.Index));
         EditorScene scene = new EditorScene();
-        //foreach (var actor in Actors) scene.objects.Add(new Actor());
+        //Again to account for UE4's scaling I divide the vector by 100 (kinda like you do when importing to blender)
+        foreach (var actor in Actors)
+            scene.objects.Add(new NamedTransformableObject(Map.Exports[actor.Item1].ObjectName.ToString(), ToVector3((VectorPropertyData)((StructPropertyData)((NormalExport)Map.Exports[actor.Item2]).Data[0]).Value[0]) / 100, Vector3.Zero, Vector3.One));
         return scene;
     }
 
     void OpenMap(object sender, EventArgs e)
     {
-        if (OpenMapDialog.ShowDialog() == DialogResult.OK) Display.MainDrawable = SpawnActors(GetMapActors(OpenMapDialog.FileName));
+        if (OpenMapDialog.ShowDialog() == DialogResult.OK) scene = GetMapActors(OpenMapDialog.FileName);
+        string file = OpenMapDialog.FileName.Split('\\')[OpenMapDialog.FileName.Split('\\').Length - 1];
+        Display.MainDrawable = scene;
+        Objects.RootLists.Add(file, scene.objects);
+        Objects.UpdateComboBoxItems();
+        //link the scenes selected objs to sceneListView
+        Objects.SelectedItems = scene.SelectedObjects;
+        //set current category
+        Objects.SetRootList(file);
     }
 
     readonly string[] versionstrings = new string[]

@@ -8,7 +8,6 @@ public partial class Editor
 {
     void AddHandlers()
     {
-        //MessageBox.Show("don't worry I am actually being called :L");
         scene.SelectionChanged += OnSelectionChanged;
         scene.ObjectsMoved += OnObjectsMoved;
         scene.ListChanged += OnListChanged;
