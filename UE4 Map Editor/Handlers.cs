@@ -88,7 +88,7 @@ partial class Editor
 
         if (KeyPress.KeyCode == Keys.F)
             if (Objects.SelectedItems.Count > 0)
-                Display.CameraTarget = ((TransformableObject)Objects.SelectedItems.ToArray()[0]).GetFocusPoint();
+                Display.CameraTarget = ((IEditableObject)Objects.SelectedItems.ToArray()[0]).GetFocusPoint();
     }
 
     void FocusObject(object sender, ItemClickedEventArgs Click)

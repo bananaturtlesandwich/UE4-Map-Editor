@@ -79,7 +79,6 @@
             this.Open.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
             this.Open.Size = new System.Drawing.Size(233, 26);
             this.Open.Text = "Open";
-            this.Open.Click += new System.EventHandler(this.OpenMap);
             // 
             // Save
             // 
@@ -87,7 +86,6 @@
             this.Save.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
             this.Save.Size = new System.Drawing.Size(233, 26);
             this.Save.Text = "Save";
-            this.Save.Click += new System.EventHandler(this.SaveMap);
             // 
             // SaveAs
             // 
@@ -238,6 +236,7 @@
             this.Text = "UE4 Map Editor";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.Load += new System.EventHandler(this.OnLoad);
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.OnClose);
             this.MenuStrip.ResumeLayout(false);
             this.MenuStrip.PerformLayout();
             this.Split.Panel1.ResumeLayout(false);

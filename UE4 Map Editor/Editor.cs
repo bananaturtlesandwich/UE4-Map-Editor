@@ -1,60 +1,48 @@
+using DiscordRPC;
 using GL_EditorFramework.EditorDrawables;
+using GL_EditorFramework.StandardCameras;
 using OpenTK;
 using UAssetAPI;
-using UAssetAPI.PropertyTypes;
-using UAssetAPI.StructTypes;
 
 namespace UE4MapEditor;
 
 public partial class Editor : Form
 {
+    static DiscordRpcClient discord = new("975340497071669271");
+
     public Editor() => InitializeComponent();
 
     EditorScene scene = new EditorScene();
 
-    List<MapDetails> Maps = new();
-
     void OnLoad(object sender, EventArgs e)
     {
-        //I have to account for UE's scaling
-        Display.ActiveCamera = new GL_EditorFramework.StandardCameras.WalkaroundCamera(500F);
+        discord.Initialize();
+        discord.SetPresence(new()
+        {
+            State = "Idle",
+            Assets = new() { LargeImageKey = "icon" },
+            Timestamps = new() { Start = DateTime.UtcNow },
+        });
+
+        //I have to account for UE's scaling so make camera fast
+        Display.ActiveCamera = new WalkaroundCamera(500F);
         UEVersion.Text = "Unknown version";
 
         AddHandlers();
 
+        scene.objects.Add(new ExampleObject(Vector3.Zero));
+        LinkScene();
+
         var arguments = Environment.GetCommandLineArgs();
-        if (arguments.Length > 1) scene = MapToScene(arguments[1]);
-        DisplayScene();
+        if (arguments.Length > 1) ;
     }
 
-    EditorScene MapToScene(string filepath)
-    {
-        UAsset Map = new UAsset(@filepath, versions[Array.IndexOf(versionstrings, UEVersion.Text)]);
+    void OnClose(object sender, EventArgs e) => discord.Dispose();
 
-        //Item1 is the object while Item2 is the transform component
-        List<(int, int)> Objects = new();
-        List<int> Transforms = new();
-        //First scan for transforms
-        for (int i = 0; i < Map.Exports.Count; i++)
-            if (((NormalExport)Map.Exports[i]).Data.Count > 0)
-                if (((NormalExport)Map.Exports[i]).Data[0].Name == FName.FromString("RelativeLocation"))
-                    Transforms.Add(i);
-        //second scan for actors with refs to those transforms
-        for (int i = 0; i < Map.Exports.Count; i++)
-            foreach (PropertyData prop in ((NormalExport)Map.Exports[i]).Data)
-                if (prop is ObjectPropertyData obj && Transforms.Contains(obj.Value.Index))
-                    Objects.Add((i, obj.Value.Index));
-        Maps.Add(new() { Map = Map, filepath = filepath, Objects = Objects });
-        EditorScene scene = new EditorScene();
-        //Again to account for UE4's scaling I divide the vector by 100 (kinda like you do when importing to blender)
-        foreach (var actor in Objects)
-            scene.objects.Add(new NamedTransformableObject(actor, Map.Exports[actor.Item1].ObjectName.ToString(), ToVector3((VectorPropertyData)((StructPropertyData)((NormalExport)Map.Exports[actor.Item2]).Data[0]).Value[0]) / 100, Vector3.Zero, Vector3.One));
-        return scene;
-    }
-
-    void DisplayScene()
+    void LinkScene()
     {
         string file = OpenMapDialog.FileName.Split('\\')[OpenMapDialog.FileName.Split('\\').Length - 1];
+        discord.UpdateState("Editing " + file);
         Display.MainDrawable = scene;
         Objects.RootLists.Add(file, scene.objects);
         Objects.UpdateComboBoxItems();
@@ -62,25 +50,6 @@ public partial class Editor : Form
         Objects.SelectedItems = scene.SelectedObjects;
         //set current category
         Objects.SetRootList(file);
-    }
-
-    Vector3 ToVector3(VectorPropertyData Vector) =>
-        new Vector3(Vector.Value.X, Vector.Value.Y, Vector.Value.Z);
-
-    VectorPropertyData ToVectorPropertyData(Vector3 Vector) =>
-        new VectorPropertyData(FName.FromString("RelativeLocation")) { Value = new(Vector.X, Vector.Y, Vector.Z) };
-
-    void SaveMap(object sender, EventArgs e)
-    {
-        int index = 0;
-        for (int i = 0; i < Maps.Count; i++) if (Maps[i].filepath.EndsWith(Objects.CurrentRootListName)) index = i;
-        Maps[index].Map.Write(Maps[index].filepath);
-    }
-
-    void OpenMap(object sender, EventArgs e)
-    {
-        if (OpenMapDialog.ShowDialog() == DialogResult.OK) scene = MapToScene(OpenMapDialog.FileName);
-        DisplayScene();
     }
 
     readonly string[] versionstrings = new string[]
