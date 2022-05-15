@@ -74,18 +74,22 @@ partial class Editor
         if (Objects.CurrentList == e.List) Objects.InvalidateCurrentList();
     }
 
-    void OnDisplayKeyDown(object? sender, KeyEventArgs e)
+    void OnDisplayKeyDown(object? sender, KeyEventArgs KeyPress)
     {
-        if (e.KeyCode == Keys.Delete)
+        if (KeyPress.KeyCode == Keys.Delete)
         {
             scene.DeleteSelected();
             Display.Refresh();
             OnSelectionChanged(this, null);
         }
+
+        if (KeyPress.KeyCode == Keys.F)
+            if (Objects.SelectedItems.Count > 0)
+                Display.CameraTarget = ((TransformableObject)Objects.SelectedItems.ToArray()[0]).GetFocusPoint();
     }
 
-    void FocusObject(object sender, ItemClickedEventArgs e)
+    void FocusObject(object sender, ItemClickedEventArgs Click)
     {
-        if (e.Clicks == 2 && e.Item is IEditableObject obj) Display.CameraTarget = obj.GetFocusPoint();
+        if (Click.Clicks == 2 && Click.Item is IEditableObject obj) Display.CameraTarget = obj.GetFocusPoint();
     }
 }

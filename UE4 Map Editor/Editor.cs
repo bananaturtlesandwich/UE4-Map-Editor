@@ -136,8 +136,6 @@ public partial class Editor : Form
     VectorPropertyData ToVectorPropertyData(Vector3 Vector) =>
         new VectorPropertyData(FName.FromString("RelativeLocation")) { Value = new(Vector.X, Vector.Y, Vector.Z) };
 
-    void Focus_Click(object sender, EventArgs e) => Display.CameraTarget = ((TransformableObject)Objects.SelectedItems.ToArray()[0]).GetFocusPoint();
-
     void SaveMap(object sender, EventArgs e)
     {
         int index = 0;
