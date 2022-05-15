@@ -3,6 +3,8 @@ using GL_EditorFramework.EditorDrawables;
 using GL_EditorFramework.StandardCameras;
 using OpenTK;
 using UAssetAPI;
+using UAssetAPI.PropertyTypes;
+using UAssetAPI.StructTypes;
 
 namespace UE4MapEditor;
 
@@ -13,6 +15,8 @@ public partial class Editor : Form
     public Editor() => InitializeComponent();
 
     EditorScene scene = new EditorScene();
+
+    UAsset Map = new();
 
     void OnLoad(object sender, EventArgs e)
     {
@@ -30,14 +34,41 @@ public partial class Editor : Form
 
         AddHandlers();
 
-        scene.objects.Add(new ExampleObject(Vector3.Zero));
-        LinkScene();
-
         var arguments = Environment.GetCommandLineArgs();
-        if (arguments.Length > 1) ;
+        if (arguments.Length > 1) TryParseMap(arguments[1]);
     }
 
     void OnClose(object sender, EventArgs e) => discord.Dispose();
+
+    void TryParseMap(string filepath)
+    {
+        if (UEVersion.Text == "Unknown version")
+        {
+            MessageBox.Show("Please set a UE version for the map");
+            return;
+        }
+        Map = new UAsset(@filepath, versions[Array.IndexOf(versionstrings, UEVersion.Text)]);
+        if (!Map.VerifyBinaryEquality())
+        {
+            MessageBox.Show("Map failed to parse. Please create a github issue on the main UAssetAPI repository");
+            return;
+        }
+        List<int> Transforms = new();
+        //First scan for transforms
+        for (int i = 0; i < Map.Exports.Count; i++)
+            if (((NormalExport)Map.Exports[i]).Data.Count > 0)
+                if (((NormalExport)Map.Exports[i]).Data[0].Name == FName.FromString("RelativeLocation"))
+                    Transforms.Add(i);
+        List<(int, int)> ActorObjects = new();
+        //second scan for actors with refs to those transforms
+        for (int i = 0; i < Map.Exports.Count; i++)
+            foreach (PropertyData prop in ((NormalExport)Map.Exports[i]).Data)
+                if (prop is ObjectPropertyData obj && Transforms.Contains(obj.Value.Index))
+                    ActorObjects.Add((i, obj.Value.Index));
+        foreach (var actor in ActorObjects)
+            scene.objects.Add(new ActorObject(actor, Map.Exports[actor.Item1].ObjectName.ToString(), ToVector3((VectorPropertyData)((StructPropertyData)((NormalExport)Map.Exports[actor.Item2]).Data[0]).Value[0]) / 100, Vector3.Zero, Vector3.One));
+        LinkScene();
+    }
 
     void LinkScene()
     {
@@ -50,7 +81,14 @@ public partial class Editor : Form
         Objects.SelectedItems = scene.SelectedObjects;
         //set current category
         Objects.SetRootList(file);
+        scene.objects.Clear();
     }
+
+    Vector3 ToVector3(VectorPropertyData Vector) =>
+    new Vector3(Vector.Value.X, Vector.Value.Y, Vector.Value.Z);
+
+    FVector ToFVector(Vector3 Vector) =>
+        new FVector(Vector.X, Vector.Y, Vector.Z);
 
     readonly string[] versionstrings = new string[]
     {
@@ -117,4 +155,16 @@ public partial class Editor : Form
         UE4Version.VER_UE4_26,
         UE4Version.VER_UE4_27,
     };
+
+    void OpenMap(object sender, EventArgs e)
+    {
+        if (OpenMapDialog.ShowDialog() == DialogResult.OK) TryParseMap(OpenMapDialog.FileName);
+    }
+
+    void SaveMap(object sender, EventArgs e) => Map.Write(Map.FilePath);
+
+    void SaveMapAs(object sender, EventArgs e)
+    {
+        if (SaveMapDialog.ShowDialog() == DialogResult.OK) Map.Write(SaveMapDialog.FileName);
+    }
 }
