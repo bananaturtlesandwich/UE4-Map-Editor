@@ -12,6 +12,8 @@ public partial class Editor : Form
 
     EditorScene scene = new EditorScene();
 
+    List<MapDetails> Maps = new();
+
     void OnLoad(object sender, EventArgs e)
     {
         //I have to account for UE's scaling
@@ -21,14 +23,16 @@ public partial class Editor : Form
         AddHandlers();
 
         var arguments = Environment.GetCommandLineArgs();
-        if (arguments.Length > 1) Display.MainDrawable = GetMapActors(arguments[1]);
+        if (arguments.Length > 1) scene = MapToScene(arguments[1]);
+        DisplayScene();
     }
 
-    EditorScene GetMapActors(string filepath)
+    EditorScene MapToScene(string filepath)
     {
         UAsset Map = new UAsset(@filepath, versions[Array.IndexOf(versionstrings, UEVersion.Text)]);
 
-        List<(int, int)> Actors = new();
+        //Item1 is the object while Item2 is the transform component
+        List<(int, int)> Objects = new();
         List<int> Transforms = new();
         //First scan for transforms
         for (int i = 0; i < Map.Exports.Count; i++)
@@ -39,25 +43,13 @@ public partial class Editor : Form
         for (int i = 0; i < Map.Exports.Count; i++)
             foreach (PropertyData prop in ((NormalExport)Map.Exports[i]).Data)
                 if (prop is ObjectPropertyData obj && Transforms.Contains(obj.Value.Index))
-                    Actors.Add((i, obj.Value.Index));
+                    Objects.Add((i, obj.Value.Index));
+        Maps.Add(new() { Map = Map, filepath = filepath, Objects = Objects });
         EditorScene scene = new EditorScene();
         //Again to account for UE4's scaling I divide the vector by 100 (kinda like you do when importing to blender)
-        foreach (var actor in Actors)
+        foreach (var actor in Objects)
             scene.objects.Add(new NamedTransformableObject(Map.Exports[actor.Item1].ObjectName.ToString(), ToVector3((VectorPropertyData)((StructPropertyData)((NormalExport)Map.Exports[actor.Item2]).Data[0]).Value[0]) / 100, Vector3.Zero, Vector3.One));
         return scene;
-    }
-
-    void OpenMap(object sender, EventArgs e)
-    {
-        if (OpenMapDialog.ShowDialog() == DialogResult.OK) scene = GetMapActors(OpenMapDialog.FileName);
-        string file = OpenMapDialog.FileName.Split('\\')[OpenMapDialog.FileName.Split('\\').Length - 1];
-        Display.MainDrawable = scene;
-        Objects.RootLists.Add(file, scene.objects);
-        Objects.UpdateComboBoxItems();
-        //link the scenes selected objs to sceneListView
-        Objects.SelectedItems = scene.SelectedObjects;
-        //set current category
-        Objects.SetRootList(file);
     }
 
     readonly string[] versionstrings = new string[]
@@ -126,14 +118,36 @@ public partial class Editor : Form
         UE4Version.VER_UE4_27,
     };
 
+    void DisplayScene()
+    {
+        string file = OpenMapDialog.FileName.Split('\\')[OpenMapDialog.FileName.Split('\\').Length - 1];
+        Display.MainDrawable = scene;
+        Objects.RootLists.Add(file, scene.objects);
+        Objects.UpdateComboBoxItems();
+        //link the scene's selected objs to sceneListView
+        Objects.SelectedItems = scene.SelectedObjects;
+        //set current category
+        Objects.SetRootList(file);
+    }
+
     Vector3 ToVector3(VectorPropertyData Vector) =>
         new Vector3(Vector.Value.X, Vector.Value.Y, Vector.Value.Z);
 
     VectorPropertyData ToVectorPropertyData(Vector3 Vector) =>
         new VectorPropertyData(FName.FromString("RelativeLocation")) { Value = new(Vector.X, Vector.Y, Vector.Z) };
 
-    void Focus_Click(object sender, EventArgs e)
+    void Focus_Click(object sender, EventArgs e) => Display.CameraTarget = ((TransformableObject)Objects.SelectedItems.ToArray()[0]).GetFocusPoint();
+
+    void SaveMap(object sender, EventArgs e)
     {
-        MessageBox.Show(sender.GetType().ToString());
+        int index = 0;
+        for (int i = 0; i < Maps.Count; i++) if (Maps[i].filepath.EndsWith(Objects.CurrentRootListName)) index = i;
+        Maps[index].Map.Write(Maps[index].filepath);
+    }
+
+    void OpenMap(object sender, EventArgs e)
+    {
+        if (OpenMapDialog.ShowDialog() == DialogResult.OK) scene = MapToScene(OpenMapDialog.FileName);
+        DisplayScene();
     }
 }

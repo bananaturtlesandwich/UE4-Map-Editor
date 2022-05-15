@@ -91,6 +91,7 @@
             this.Save.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
             this.Save.Size = new System.Drawing.Size(233, 26);
             this.Save.Text = "Save";
+            this.Save.Click += new System.EventHandler(this.SaveMap);
             // 
             // SaveAs
             // 

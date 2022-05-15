@@ -4,7 +4,7 @@ using GL_EditorFramework.EditorDrawables;
 namespace UE4MapEditor;
 
 //Separating handlers to a separate file so my life is easier
-public partial class Editor
+partial class Editor
 {
     void AddHandlers()
     {
