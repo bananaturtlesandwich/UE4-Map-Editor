@@ -67,8 +67,8 @@ partial class Editor
     {
         foreach (IObjectUIContainer UIContainer in Properties.ObjectUIContainers) UIContainer.UpdateProperties();
         Properties.Refresh();
-        var ChangedObject = (ActorObject)Objects.SelectedItems.ToArray()[0];
-        ((VectorPropertyData)((StructPropertyData)((NormalExport)Map.Exports[ChangedObject.indexes.Item2]).Data[0]).Value[0]).Value = ToFVector(ChangedObject.Position);
+        foreach (ActorObject ChangedObject in Objects.SelectedItems.ToArray())
+            ((VectorPropertyData)((StructPropertyData)((NormalExport)Map.Exports[ChangedObject.indexes.Item2]).Data[0]).Value[0]).Value = ToFVector(ChangedObject.Position);
     }
 
     void OnListChanged(object sender, ListChangedEventArgs e)
@@ -85,6 +85,7 @@ partial class Editor
     {
         if (KeyPress.KeyCode == Keys.Delete)
         {
+
             scene.DeleteSelected();
             Display.Refresh();
             OnSelectionChanged(this, null);

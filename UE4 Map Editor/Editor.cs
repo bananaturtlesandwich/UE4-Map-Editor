@@ -29,7 +29,7 @@ public partial class Editor : Form
         });
 
         //I have to account for UE's scaling so make camera fast
-        Display.ActiveCamera = new WalkaroundCamera(500F);
+        Display.ActiveCamera = new WalkaroundCamera(100F);
         UEVersion.Text = "Unknown version";
 
         AddHandlers();
@@ -42,6 +42,7 @@ public partial class Editor : Form
 
     void TryParseMap(string filepath)
     {
+        scene.objects.Clear();
         if (UEVersion.Text == "Unknown version")
         {
             MessageBox.Show("Please set a UE version for the map");
@@ -50,7 +51,7 @@ public partial class Editor : Form
         Map = new UAsset(@filepath, versions[Array.IndexOf(versionstrings, UEVersion.Text)]);
         if (!Map.VerifyBinaryEquality())
         {
-            MessageBox.Show("Map failed to parse. Please create a github issue on the main UAssetAPI repository");
+            MessageBox.Show("Map will not maintain binary equality. Please create a github issue on the main UAssetAPI repository");
             return;
         }
         List<int> Transforms = new();
@@ -66,7 +67,7 @@ public partial class Editor : Form
                 if (prop is ObjectPropertyData obj && Transforms.Contains(obj.Value.Index))
                     ActorObjects.Add((i, obj.Value.Index));
         foreach (var actor in ActorObjects)
-            scene.objects.Add(new ActorObject(actor, Map.Exports[actor.Item1].ObjectName.ToString(), ToVector3((VectorPropertyData)((StructPropertyData)((NormalExport)Map.Exports[actor.Item2]).Data[0]).Value[0]) / 100, Vector3.Zero, Vector3.One));
+            scene.objects.Add(new ActorObject(actor, Map.Exports[actor.Item1].ObjectName.ToString() + ':' + Map.Exports[actor.Item2].ObjectName.ToString(), ToVector3((VectorPropertyData)((StructPropertyData)((NormalExport)Map.Exports[actor.Item2]).Data[0]).Value[0]), Vector3.Zero, Vector3.One));
         LinkScene();
     }
 
@@ -81,14 +82,14 @@ public partial class Editor : Form
         Objects.SelectedItems = scene.SelectedObjects;
         //set current category
         Objects.SetRootList(file);
-        scene.objects.Clear();
     }
 
     Vector3 ToVector3(VectorPropertyData Vector) =>
-    new Vector3(Vector.Value.X, Vector.Value.Y, Vector.Value.Z);
+    new Vector3(Vector.Value.X, Vector.Value.Y, Vector.Value.Z) / 100;
 
+    //FVector has no operator overload so this'll do for now
     FVector ToFVector(Vector3 Vector) =>
-        new FVector(Vector.X, Vector.Y, Vector.Z);
+        new FVector(Vector.X * 100, Vector.Y * 100, Vector.Z * 100);
 
     readonly string[] versionstrings = new string[]
     {
