@@ -25,7 +25,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Editor));
             this.MenuStrip = new System.Windows.Forms.MenuStrip();
             this.FileToolStrip = new System.Windows.Forms.ToolStripMenuItem();
@@ -38,8 +37,6 @@
             this.Objects = new GL_EditorFramework.SceneListView();
             this.Display = new GL_EditorFramework.GL_Core.GL_ControlModern();
             this.Properties = new GL_EditorFramework.ObjectUIControl();
-            this.DisplayContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.Focus = new System.Windows.Forms.ToolStripMenuItem();
             this.OpenMapDialog = new System.Windows.Forms.OpenFileDialog();
             this.MenuStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Split)).BeginInit();
@@ -49,7 +46,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.Sidebar)).BeginInit();
             this.Sidebar.Panel1.SuspendLayout();
             this.Sidebar.SuspendLayout();
-            this.DisplayContextMenu.SuspendLayout();
             this.SuspendLayout();
             // 
             // MenuStrip
@@ -197,7 +193,6 @@
             this.Display.CameraTarget = ((OpenTK.Vector3)(resources.GetObject("Display.CameraTarget")));
             this.Display.CamRotX = 0F;
             this.Display.CamRotY = 0F;
-            this.Display.ContextMenuStrip = this.DisplayContextMenu;
             this.Display.CurrentShader = null;
             this.Display.Dock = System.Windows.Forms.DockStyle.Fill;
             this.Display.Fov = 0.7853982F;
@@ -223,21 +218,6 @@
             this.Properties.Name = "Properties";
             this.Properties.Size = new System.Drawing.Size(398, 509);
             //
-            // DisplayContextMenu
-            // 
-            this.DisplayContextMenu.ImageScalingSize = new System.Drawing.Size(20, 20);
-            this.DisplayContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.Focus});
-            this.DisplayContextMenu.Name = "DisplayContextMenu";
-            this.DisplayContextMenu.Size = new System.Drawing.Size(211, 56);
-            // 
-            // Focus
-            // 
-            this.Focus.Name = "Focus";
-            this.Focus.Size = new System.Drawing.Size(210, 24);
-            this.Focus.Text = "Focus";
-            this.Focus.Click += new System.EventHandler(this.Focus_Click);
-            // 
             // OpenMapDialog
             // 
             this.OpenMapDialog.Filter = "Unreal map files|*.umap";
@@ -267,7 +247,6 @@
             this.Sidebar.Panel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.Sidebar)).EndInit();
             this.Sidebar.ResumeLayout(false);
-            this.DisplayContextMenu.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -289,7 +268,5 @@
         private GL_EditorFramework.ObjectUIControl Properties;
         private OpenFileDialog OpenMapDialog;
         private ToolStripComboBox UEVersion;
-        private ContextMenuStrip DisplayContextMenu;
-        private ToolStripMenuItem Focus;
     }
 }
