@@ -17,7 +17,7 @@ public partial class Editor : Form
     void OnLoad(object sender, EventArgs e)
     {
         //I have to account for UE's scaling
-        Display.ActiveCamera = new GL_EditorFramework.StandardCameras.InspectCamera(500f);
+        Display.ActiveCamera = new GL_EditorFramework.StandardCameras.WalkaroundCamera(500F);
         UEVersion.Text = "Unknown version";
 
         AddHandlers();
@@ -48,8 +48,39 @@ public partial class Editor : Form
         EditorScene scene = new EditorScene();
         //Again to account for UE4's scaling I divide the vector by 100 (kinda like you do when importing to blender)
         foreach (var actor in Objects)
-            scene.objects.Add(new NamedTransformableObject(Map.Exports[actor.Item1].ObjectName.ToString(), ToVector3((VectorPropertyData)((StructPropertyData)((NormalExport)Map.Exports[actor.Item2]).Data[0]).Value[0]) / 100, Vector3.Zero, Vector3.One));
+            scene.objects.Add(new NamedTransformableObject(actor, Map.Exports[actor.Item1].ObjectName.ToString(), ToVector3((VectorPropertyData)((StructPropertyData)((NormalExport)Map.Exports[actor.Item2]).Data[0]).Value[0]) / 100, Vector3.Zero, Vector3.One));
         return scene;
+    }
+
+    void DisplayScene()
+    {
+        string file = OpenMapDialog.FileName.Split('\\')[OpenMapDialog.FileName.Split('\\').Length - 1];
+        Display.MainDrawable = scene;
+        Objects.RootLists.Add(file, scene.objects);
+        Objects.UpdateComboBoxItems();
+        //link the scene's selected objs to sceneListView
+        Objects.SelectedItems = scene.SelectedObjects;
+        //set current category
+        Objects.SetRootList(file);
+    }
+
+    Vector3 ToVector3(VectorPropertyData Vector) =>
+        new Vector3(Vector.Value.X, Vector.Value.Y, Vector.Value.Z);
+
+    VectorPropertyData ToVectorPropertyData(Vector3 Vector) =>
+        new VectorPropertyData(FName.FromString("RelativeLocation")) { Value = new(Vector.X, Vector.Y, Vector.Z) };
+
+    void SaveMap(object sender, EventArgs e)
+    {
+        int index = 0;
+        for (int i = 0; i < Maps.Count; i++) if (Maps[i].filepath.EndsWith(Objects.CurrentRootListName)) index = i;
+        Maps[index].Map.Write(Maps[index].filepath);
+    }
+
+    void OpenMap(object sender, EventArgs e)
+    {
+        if (OpenMapDialog.ShowDialog() == DialogResult.OK) scene = MapToScene(OpenMapDialog.FileName);
+        DisplayScene();
     }
 
     readonly string[] versionstrings = new string[]
@@ -117,35 +148,4 @@ public partial class Editor : Form
         UE4Version.VER_UE4_26,
         UE4Version.VER_UE4_27,
     };
-
-    void DisplayScene()
-    {
-        string file = OpenMapDialog.FileName.Split('\\')[OpenMapDialog.FileName.Split('\\').Length - 1];
-        Display.MainDrawable = scene;
-        Objects.RootLists.Add(file, scene.objects);
-        Objects.UpdateComboBoxItems();
-        //link the scene's selected objs to sceneListView
-        Objects.SelectedItems = scene.SelectedObjects;
-        //set current category
-        Objects.SetRootList(file);
-    }
-
-    Vector3 ToVector3(VectorPropertyData Vector) =>
-        new Vector3(Vector.Value.X, Vector.Value.Y, Vector.Value.Z);
-
-    VectorPropertyData ToVectorPropertyData(Vector3 Vector) =>
-        new VectorPropertyData(FName.FromString("RelativeLocation")) { Value = new(Vector.X, Vector.Y, Vector.Z) };
-
-    void SaveMap(object sender, EventArgs e)
-    {
-        int index = 0;
-        for (int i = 0; i < Maps.Count; i++) if (Maps[i].filepath.EndsWith(Objects.CurrentRootListName)) index = i;
-        Maps[index].Map.Write(Maps[index].filepath);
-    }
-
-    void OpenMap(object sender, EventArgs e)
-    {
-        if (OpenMapDialog.ShowDialog() == DialogResult.OK) scene = MapToScene(OpenMapDialog.FileName);
-        DisplayScene();
-    }
 }

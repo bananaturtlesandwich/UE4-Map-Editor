@@ -29,6 +29,9 @@ partial class Editor
     void OnObjectListExited(object sender, Framework.ListEventArgs e)
     {
         scene.CurrentList = e.List;
+        Display.MainDrawable = scene;
+        Objects.UpdateComboBoxItems();
+        Objects.SelectedItems = scene.SelectedObjects;
         //fetch availible properties for list
         scene.SetupObjectUIControl(Properties);
     }
