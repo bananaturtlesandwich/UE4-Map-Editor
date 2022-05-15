@@ -8,6 +8,7 @@
 		<Nullable>enable</Nullable>
 		<StartupObject>UE4MapEditor.Startup</StartupObject>
 		<ApplicationIcon>Editor.ico</ApplicationIcon>
+		<RootNamespace>UE4MapEditor</RootNamespace>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -15,21 +16,23 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<PackageReference Include="DiscordRichPresence" Version="1.0.175" />
+		<PackageReference Include="fasterflect" Version="3.0.0" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<Reference Include="GL_EditorFramework">
 			<HintPath>..\Libraries\GL_EditorFramework.dll</HintPath>
-			<CopyLocal></CopyLocal>
 		</Reference>
 		<Reference Include="OpenTK">
 			<HintPath>..\Libraries\OpenTK.dll</HintPath>
-			<CopyLocal></CopyLocal>
 		</Reference>
 		<Reference Include="OpenTK.GLControl">
 			<HintPath>..\Libraries\OpenTK.GLControl.dll</HintPath>
-			<CopyLocal></CopyLocal>
 		</Reference>
 		<Reference Include="UAssetAPI">
 			<HintPath>..\Libraries\UAssetAPI.dll</HintPath>
-			<CopyLocal></CopyLocal>
 		</Reference>
 	</ItemGroup>
 

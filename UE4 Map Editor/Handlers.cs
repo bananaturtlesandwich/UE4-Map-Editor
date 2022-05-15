@@ -1,5 +1,7 @@
 ﻿using GL_EditorFramework;
 using GL_EditorFramework.EditorDrawables;
+using UAssetAPI;
+using UAssetAPI.StructTypes;
 
 namespace UE4MapEditor;
 
@@ -65,6 +67,8 @@ partial class Editor
     {
         foreach (IObjectUIContainer UIContainer in Properties.ObjectUIContainers) UIContainer.UpdateProperties();
         Properties.Refresh();
+        foreach (ActorObject ChangedObject in Objects.SelectedItems.ToArray())
+            ((VectorPropertyData)((StructPropertyData)((NormalExport)Map.Exports[ChangedObject.indexes.Item2]).Data[0]).Value[0]).Value = ToFVector(ChangedObject.Position);
     }
 
     void OnListChanged(object sender, ListChangedEventArgs e)
@@ -81,6 +85,7 @@ partial class Editor
     {
         if (KeyPress.KeyCode == Keys.Delete)
         {
+
             scene.DeleteSelected();
             Display.Refresh();
             OnSelectionChanged(this, null);
@@ -88,7 +93,7 @@ partial class Editor
 
         if (KeyPress.KeyCode == Keys.F)
             if (Objects.SelectedItems.Count > 0)
-                Display.CameraTarget = ((TransformableObject)Objects.SelectedItems.ToArray()[0]).GetFocusPoint();
+                Display.CameraTarget = ((IEditableObject)Objects.SelectedItems.ToArray()[0]).GetFocusPoint();
     }
 
     void FocusObject(object sender, ItemClickedEventArgs Click)

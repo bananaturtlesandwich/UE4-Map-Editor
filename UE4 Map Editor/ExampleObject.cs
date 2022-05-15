@@ -4,7 +4,8 @@ using GL_EditorFramework.GL_Core;
 using GL_EditorFramework.Interfaces;
 using OpenTK;
 
-namespace UE4_Map_Editor
+//taken from the example project in GL_EditorFramework
+namespace UE4MapEditor
 {
     //This class is supposed to show of some very basic animation stuff you could do with this framework
     class ExampleObject : SingleObject
@@ -61,76 +62,6 @@ namespace UE4_Map_Editor
         }
 
         public override void Draw(GL_ControlModern control, Pass pass)
-        {
-            if (pass == Pass.TRANSPARENT)
-                return;
-
-            Matrix4 mtx = Matrix4.CreateScale(2f, 0.5f, 2f);
-            mtx *= Matrix4.CreateFromAxisAngle(Vector3.UnitY, -Framework.HALF_PI);
-            mtx *= Matrix4.CreateTranslation(Position);
-            control.UpdateModelMatrix(mtx);
-
-            Vector4 pickingColor = control.NextPickingColor();
-
-            Vector4 lineBoxColor = new Vector4(0.75f, 0.75f, 0.75f, 1);
-
-            if (Selected)
-                control.UpdateModelMatrix(mtx * Matrix4.CreateTranslation(Vector3.UnitX * (3f - Math.Abs((control.RedrawerFrame - animationStartFrame) * 0.0625f % 6f - 3f))));
-            else
-                control.UpdateModelMatrix(mtx);
-
-            Renderers.ColorCubeRenderer.Draw(control, pass, Color, Color, pickingColor);
-
-            control.UpdateModelMatrix(mtx);
-
-            Renderers.ColorCubeRenderer.DrawLineBox(control, pass, lineBoxColor, pickingColor);
-
-            control.UpdateModelMatrix(mtx * Matrix4.CreateTranslation(Vector3.UnitX * 3f));
-
-            Renderers.ColorCubeRenderer.DrawLineBox(control, pass, lineBoxColor, pickingColor);
-        }
-
-        public override void Draw(GL_ControlLegacy control, Pass pass, EditorSceneBase editorScene)
-        {
-            if (pass == Pass.TRANSPARENT)
-                return;
-
-            bool hovered = editorScene.Hovered == this;
-
-            Matrix4 mtx = Matrix4.CreateScale(2f, 0.5f, 2f);
-            mtx *= Matrix4.CreateFromAxisAngle(Vector3.UnitY, -Framework.HALF_PI);
-            mtx *= Matrix4.CreateTranslation(Selected ? editorScene.SelectionTransformAction.NewPos(Position) : Position);
-
-            Vector4 pickingColor = control.NextPickingColor();
-
-            Vector4 lineBoxColor;
-
-            if (hovered && Selected)
-                lineBoxColor = hoverSelectColor;
-            else if (Selected)
-                lineBoxColor = selectColor;
-            else if (hovered)
-                lineBoxColor = hoverColor;
-            else
-                lineBoxColor = new Vector4(0.75f, 0.75f, 0.75f, 1);
-
-            if (Selected)
-                control.UpdateModelMatrix(mtx * Matrix4.CreateTranslation(Vector3.UnitX * (3f - Math.Abs((control.RedrawerFrame - animationStartFrame) * 0.0625f % 6f - 3f))));
-            else
-                control.UpdateModelMatrix(mtx);
-
-            Renderers.ColorCubeRenderer.Draw(control, pass, Color, Color, pickingColor);
-
-            control.UpdateModelMatrix(mtx);
-
-            Renderers.ColorCubeRenderer.DrawLineBox(control, pass, lineBoxColor, pickingColor);
-
-            control.UpdateModelMatrix(mtx * Matrix4.CreateTranslation(Vector3.UnitX * 3f));
-
-            Renderers.ColorCubeRenderer.DrawLineBox(control, pass, lineBoxColor, pickingColor);
-        }
-
-        public override void Draw(GL_ControlLegacy control, Pass pass)
         {
             if (pass == Pass.TRANSPARENT)
                 return;

@@ -38,6 +38,7 @@
             this.Display = new GL_EditorFramework.GL_Core.GL_ControlModern();
             this.Properties = new GL_EditorFramework.ObjectUIControl();
             this.OpenMapDialog = new System.Windows.Forms.OpenFileDialog();
+            this.SaveMapDialog = new System.Windows.Forms.SaveFileDialog();
             this.MenuStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Split)).BeginInit();
             this.Split.Panel1.SuspendLayout();
@@ -92,10 +93,11 @@
             // SaveAs
             // 
             this.SaveAs.Name = "SaveAs";
-            this.SaveAs.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift)
+            this.SaveAs.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
             | System.Windows.Forms.Keys.S)));
             this.SaveAs.Size = new System.Drawing.Size(233, 26);
             this.SaveAs.Text = "Save As";
+            this.SaveAs.Click += new System.EventHandler(this.SaveMapAs);
             // 
             // UEVersion
             // 
@@ -222,6 +224,13 @@
             // 
             this.OpenMapDialog.Filter = "Unreal map files|*.umap";
             this.OpenMapDialog.InitialDirectory = ".\\";
+            this.OpenMapDialog.Title = "Select the map you want to edit";
+            // 
+            // SaveMapDialog
+            // 
+            this.SaveMapDialog.Filter = "Unreal map files|*.umap";
+            this.SaveMapDialog.InitialDirectory = ".\\";
+            this.SaveMapDialog.Title = "Navigate to where you want to save the file";
             // 
             // Editor
             // 
@@ -237,6 +246,7 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "UE4 Map Editor";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.OnClose);
             this.Load += new System.EventHandler(this.OnLoad);
             this.MenuStrip.ResumeLayout(false);
             this.MenuStrip.PerformLayout();
@@ -268,5 +278,6 @@
         private GL_EditorFramework.ObjectUIControl Properties;
         private OpenFileDialog OpenMapDialog;
         private ToolStripComboBox UEVersion;
+        private SaveFileDialog SaveMapDialog;
     }
 }
