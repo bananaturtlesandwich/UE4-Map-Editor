@@ -1,7 +1,6 @@
 ﻿using GL_EditorFramework;
 using GL_EditorFramework.EditorDrawables;
 using UAssetAPI;
-using UAssetAPI.StructTypes;
 
 namespace UE4MapEditor;
 
@@ -89,9 +88,7 @@ partial class Editor
             OnSelectionChanged(this, null);
         }
 
-        if (KeyPress.KeyCode == Keys.F)
-            if (Objects.SelectedItems.Count > 0)
-                Display.CameraTarget = ((IEditableObject)Objects.SelectedItems.ToArray()[0]).GetFocusPoint();
+        if (KeyPress.KeyCode == Keys.F) FocusMultiple(Objects.SelectedItems.ToArray());
     }
 
     void FocusObject(object sender, ItemClickedEventArgs Click)

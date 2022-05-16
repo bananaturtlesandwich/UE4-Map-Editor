@@ -14,6 +14,12 @@ public partial class Editor : Form
 
     public Editor() => InitializeComponent();
 
+    readonly string configfile = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) +
+                                 System.IO.Path.DirectorySeparatorChar
+                                 + "UE4MapEditor" +
+                                 System.IO.Path.DirectorySeparatorChar +
+                                 "config.txt";
+
     EditorScene scene = new EditorScene();
 
     UAsset Map = new();
@@ -29,8 +35,9 @@ public partial class Editor : Form
         });
 
         //I have to account for UE's scaling so make camera fast
-        Display.ActiveCamera = new WalkaroundCamera(100F);
+        Display.ActiveCamera = new WalkaroundCamera(1F);
         UEVersion.Text = "Unknown version";
+        if (File.Exists(configfile)) UEVersion.Text = File.ReadAllText(configfile);
 
         AddHandlers();
 
@@ -38,7 +45,12 @@ public partial class Editor : Form
         if (arguments.Length > 1) TryParseMap(arguments[1]);
     }
 
-    void OnClose(object sender, EventArgs e) => discord.Dispose();
+    void OnClose(object sender, EventArgs e)
+    {
+        Directory.CreateDirectory(configfile.Replace(System.IO.Path.DirectorySeparatorChar + "config.txt", ""));
+        File.WriteAllText(configfile, UEVersion.Text);
+        discord.Dispose();
+    }
 
     void TryParseMap(string filepath)
     {
@@ -82,6 +94,7 @@ public partial class Editor : Form
         Objects.SelectedItems = scene.SelectedObjects;
         //set current category
         Objects.SetRootList(file);
+        FocusMultiple(scene.objects.ToArray());
     }
 
     Vector3 ToVector3(VectorPropertyData Vector) =>
@@ -167,5 +180,39 @@ public partial class Editor : Form
     void SaveMapAs(object sender, EventArgs e)
     {
         if (SaveMapDialog.ShowDialog() == DialogResult.OK) Map.Write(SaveMapDialog.FileName);
+    }
+
+    void FocusMultiple(object[] targets)
+    {
+        if (Objects.SelectedItems.Count == 1)
+        {
+            Display.CameraTarget = ((TransformableObject)Objects.SelectedItems.ToArray()[0]).GetFocusPoint();
+            Display.CameraDistance = 10F;
+            return;
+        }
+        if (Objects.SelectedItems.Count > 0)
+        {
+            Vector3[] positions = new Vector3[targets.Length];
+            Vector3 target = ((IEditableObject)targets[0]).GetFocusPoint();
+            positions[0] = ((TransformableObject)targets[0]).Position;
+            for (int i = 1; i < Objects.SelectedItems.Count; i++)
+            {
+                target = Vector3.Lerp(target, ((IEditableObject)targets[i]).GetFocusPoint(), 0.5f);
+                positions[i] = ((TransformableObject)targets[i]).Position;
+            }
+            Vector3 max = positions[0];
+            Vector3 min = max;
+            for (int i = 1; i < positions.Length; i++)
+            {
+                if (max.X < positions[i].X) max.X = positions[i].X;
+                if (max.Y < positions[i].Y) max.Y = positions[i].Y;
+                if (max.Z < positions[i].Z) max.Z = positions[i].Z;
+                if (min.X > positions[i].X) min.X = positions[i].X;
+                if (min.Y > positions[i].Y) min.Y = positions[i].Y;
+                if (min.Z > positions[i].Z) min.Z = positions[i].Z;
+            }
+            Display.CameraTarget = target;
+            Display.CameraDistance = Vector3.Distance(max, min);
+        }
     }
 }
