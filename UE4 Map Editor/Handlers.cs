@@ -82,7 +82,7 @@ partial class Editor
     {
         if (KeyPress.KeyCode == Keys.Delete)
         {
-            foreach (ActorObject item in Objects.SelectedItems) ((NormalExport)Map.Exports[item.indexes.Item1]).Data.Clear();
+            foreach (Actor item in Objects.SelectedItems) ((NormalExport)Map.Exports[Map.Exports.IndexOf(item.export)]).Data.Clear();
             scene.DeleteSelected();
             Display.Refresh();
             OnSelectionChanged(this, null);

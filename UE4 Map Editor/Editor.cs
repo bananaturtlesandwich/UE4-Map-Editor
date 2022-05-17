@@ -66,7 +66,8 @@ public partial class Editor : Form
             MessageBox.Show("Map will not maintain binary equality. Please create a github issue on the main UAssetAPI repository");
             return;
         }
-        List<int> Transforms = new();
+        foreach (var export in Map.Exports) scene.objects.Add(new Actor((NormalExport)export, Vector3.Zero, Vector3.Zero, Vector3.One));
+        /*List<int> Transforms = new();
         //First scan for transforms
         for (int i = 0; i < Map.Exports.Count; i++)
             if (((NormalExport)Map.Exports[i]).Data.Count > 0)
@@ -79,7 +80,8 @@ public partial class Editor : Form
                 if (prop is ObjectPropertyData obj && Transforms.Contains(obj.Value.Index))
                     ActorObjects.Add((i, obj.Value.Index));
         foreach (var actor in ActorObjects)
-            scene.objects.Add(new ActorObject(actor, Map.Exports[actor.Item1].ObjectName.ToString() + ':' + Map.Exports[actor.Item2].ObjectName.ToString(), ToVector3((VectorPropertyData)((StructPropertyData)((NormalExport)Map.Exports[actor.Item2]).Data[0]).Value[0]), Vector3.Zero, Vector3.One));
+            scene.objects.Add(new Actor((NormalExport)Map.Exports[actor.Item1], Map.Exports[actor.Item1].ObjectName.ToString() + ':' + Map.Exports[actor.Item2].ObjectName.ToString(), ToVector3((VectorPropertyData)((StructPropertyData)((NormalExport)Map.Exports[actor.Item2]).Data[0]).Value[0]), Vector3.Zero, Vector3.One));
+        */
         LinkScene();
     }
 
