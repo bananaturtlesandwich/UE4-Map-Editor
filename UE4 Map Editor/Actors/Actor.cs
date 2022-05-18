@@ -14,6 +14,9 @@ public class Actor : TransformableObject
         foreach (var item in export.Data)
             if (item.Name.Value.Value == "RelativeLocation")
                 return ToVector3((VectorPropertyData)((StructPropertyData)item).Value[0]);
+        StructPropertyData RelativeLocation = new StructPropertyData(FName.FromString("RelativeLocation"), FName.FromString("Vector"));
+        RelativeLocation.Value.Add(new VectorPropertyData(FName.FromString("RelativeLocation")) { Value = new(0, 0, 0) });
+        export.Data.Add(RelativeLocation);
         return Vector3.Zero;
     }
 
@@ -22,6 +25,9 @@ public class Actor : TransformableObject
         foreach (var item in export.Data)
             if (item.Name.Value.Value == "RelativeRotation")
                 return ToVector3((RotatorPropertyData)((StructPropertyData)item).Value[0]);
+        StructPropertyData RelativeRotation = new StructPropertyData(FName.FromString("RelativeRotation"), FName.FromString("Rotator"));
+        RelativeRotation.Value.Add(new RotatorPropertyData(FName.FromString("RelativeRotation")) { Value = new(0, 0, 0) });
+        export.Data.Add(RelativeRotation);
         return Vector3.Zero;
     }
 
@@ -30,6 +36,9 @@ public class Actor : TransformableObject
         foreach (var item in export.Data)
             if (item.Name.Value.Value == "RelativeScale3D")
                 return ToVector3((VectorPropertyData)((StructPropertyData)item).Value[0]);
+        StructPropertyData RelativeScale3D = new StructPropertyData(FName.FromString("RelativeScale3D"), FName.FromString("Vector"));
+        RelativeScale3D.Value.Add(new VectorPropertyData(FName.FromString("RelativeScale3D")) { Value = new(1, 1, 1) });
+        export.Data.Add(RelativeScale3D);
         return Vector3.One;
     }
 
@@ -54,13 +63,13 @@ public class Actor : TransformableObject
     }
 
     static Vector3 ToVector3(VectorPropertyData Vector) =>
-        new Vector3(Vector.Value.X, Vector.Value.Y, Vector.Value.Z) / 100;
+        new Vector3(Vector.Value.X, Vector.Value.Y, Vector.Value.Z);
     static Vector3 ToVector3(RotatorPropertyData Rotator) =>
         new Vector3(Rotator.Value.Pitch, Rotator.Value.Yaw, Rotator.Value.Roll);
 
     //FVector has no operator overload so this'll do for now
     static FVector ToFVector(Vector3 Vector) =>
-        new FVector(Vector.X * 100, Vector.Y * 100, Vector.Z * 100);
+        new FVector(Vector.X, Vector.Y, Vector.Z);
     static FRotator ToFRotator(Vector3 Rotator) =>
         new FRotator(Rotator.X, Rotator.Y, Rotator.Z);
 
@@ -219,19 +228,19 @@ public class Actor : TransformableObject
 
         public void DoUI(IObjectUIControl control)
         {
-            obj.Position = control.Vector3Input(obj.Position, "Position", 1f, 16);
-            obj.Rotation = control.Vector3Input(obj.Rotation, "Rotation", 5f, 2, -180f, 180f, wrapAround: true);
-            obj.Scale = control.Vector3Input(obj.Scale, "Scale", 0.125f, 2);
             foreach (var item in export.Data) switch (item.Name.Value.Value)
                 {
                     case "RelativeLocation":
-                        ((VectorPropertyData)((StructPropertyData)item).Value[0]).Value = ToFVector(obj.Position);
+                        ((VectorPropertyData)((StructPropertyData)item).Value[0]).Value = ToFVector(
+                        obj.Position = control.Vector3Input(obj.Position, "Position", 1f, 16));
                         break;
                     case "RelativeRotation":
-                        ((RotatorPropertyData)((StructPropertyData)item).Value[0]).Value = ToFRotator(obj.Position);
+                        ((RotatorPropertyData)((StructPropertyData)item).Value[0]).Value = ToFRotator(
+                         obj.Rotation = control.Vector3Input(obj.Rotation, "Rotation", 5f, 2, -180f, 180f, wrapAround: true));
                         break;
                     case "RelativeScale3D":
-                        ((VectorPropertyData)((StructPropertyData)item).Value[0]).Value = ToFVector(obj.Scale);
+                        ((VectorPropertyData)((StructPropertyData)item).Value[0]).Value = ToFVector(
+                        obj.Scale = control.Vector3Input(obj.Scale, "Scale", 0.125f, 2));
                         break;
                 }
         }

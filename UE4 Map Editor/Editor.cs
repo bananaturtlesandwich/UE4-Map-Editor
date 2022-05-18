@@ -3,8 +3,6 @@ using GL_EditorFramework.EditorDrawables;
 using GL_EditorFramework.StandardCameras;
 using OpenTK;
 using UAssetAPI;
-using UAssetAPI.PropertyTypes;
-using UAssetAPI.StructTypes;
 
 namespace UE4MapEditor;
 
@@ -71,7 +69,10 @@ public partial class Editor : Form
             if (export is FunctionExport || export is RawExport) continue;
             if (export is NormalExport norm)
                 foreach (var property in norm.Data) if (property.Name.Value.Value == "RelativeLocation" || property.Name.Value.Value == "RelativeRotation" || property.Name.Value.Value == "RelativeScale3D")
+                    {
                         scene.objects.Add(new Actor(norm));
+                        break;
+                    }
         }
         //remove duplicates
         for (int i = 0; i < scene.objects.Count; i++)
