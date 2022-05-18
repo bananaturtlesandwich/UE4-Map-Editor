@@ -14,6 +14,7 @@ public class Actor : TransformableObject
         foreach (var item in export.Data)
             if (item.Name.Value.Value == "RelativeLocation")
                 return ToVector3((VectorPropertyData)((StructPropertyData)item).Value[0]);
+        //if doesn't exist make one so it can be edited
         StructPropertyData RelativeLocation = new StructPropertyData(FName.FromString("RelativeLocation"), FName.FromString("Vector"));
         RelativeLocation.Value.Add(new VectorPropertyData(FName.FromString("RelativeLocation")) { Value = new(0, 0, 0) });
         export.Data.Add(RelativeLocation);
@@ -25,6 +26,7 @@ public class Actor : TransformableObject
         foreach (var item in export.Data)
             if (item.Name.Value.Value == "RelativeRotation")
                 return ToVector3((RotatorPropertyData)((StructPropertyData)item).Value[0]);
+        //if doesn't exist make one so it can be edited
         StructPropertyData RelativeRotation = new StructPropertyData(FName.FromString("RelativeRotation"), FName.FromString("Rotator"));
         RelativeRotation.Value.Add(new RotatorPropertyData(FName.FromString("RelativeRotation")) { Value = new(0, 0, 0) });
         export.Data.Add(RelativeRotation);
@@ -36,6 +38,7 @@ public class Actor : TransformableObject
         foreach (var item in export.Data)
             if (item.Name.Value.Value == "RelativeScale3D")
                 return ToVector3((VectorPropertyData)((StructPropertyData)item).Value[0]);
+        //if doesn't exist make one so it can be edited
         StructPropertyData RelativeScale3D = new StructPropertyData(FName.FromString("RelativeScale3D"), FName.FromString("Vector"));
         RelativeScale3D.Value.Add(new VectorPropertyData(FName.FromString("RelativeScale3D")) { Value = new(1, 1, 1) });
         export.Data.Add(RelativeScale3D);
@@ -58,36 +61,51 @@ public class Actor : TransformableObject
     {
         if (!Selected) return false;
         objectUIControl.AddObjectUIContainer(new UMapPropertyProvider(this, scene, export), "Transform");
-        objectUIControl.AddObjectUIContainer(new ActorUIControl(this, scene, export), "Properties");
+        objectUIControl.AddObjectUIContainer(new ActorUIControl(scene, export), "Properties");
         return true;
     }
 
     static Vector3 ToVector3(VectorPropertyData Vector) =>
         new Vector3(Vector.Value.X, Vector.Value.Y, Vector.Value.Z);
+
     static Vector3 ToVector3(RotatorPropertyData Rotator) =>
         new Vector3(Rotator.Value.Pitch, Rotator.Value.Yaw, Rotator.Value.Roll);
 
     //FVector has no operator overload so this'll do for now
     static FVector ToFVector(Vector3 Vector) =>
         new FVector(Vector.X, Vector.Y, Vector.Z);
+
     static FRotator ToFRotator(Vector3 Rotator) =>
         new FRotator(Rotator.X, Rotator.Y, Rotator.Z);
 
     class ActorUIControl : IObjectUIContainer
     {
-        SingleObject obj;
         EditorSceneBase scene;
         NormalExport export;
 
-        public ActorUIControl(SingleObject obj, EditorSceneBase scene, NormalExport export)
+        public ActorUIControl(EditorSceneBase scene, NormalExport export)
         {
-            this.obj = obj;
             this.scene = scene;
             this.export = export;
         }
         public void DoUI(IObjectUIControl control)
         {
-            foreach (var data in export.Data) AssignValue(data, control);
+            foreach (var data in ((NormalExport)export.Asset.Exports[export.OuterIndex.Index]).Data) AssignValue(data, control);
+            //not in AssignValue because it would cause a stack overflow with objects referencing back to the original
+            List<ObjectPropertyData> references = new();
+            foreach (var data in ((NormalExport)export.Asset.Exports[export.OuterIndex.Index]).Data)
+                if (data is ObjectPropertyData) references.Add((ObjectPropertyData)data);
+            //Remove duplicate references
+            for (int i = 0; i < references.Count; i++)
+                for (int j = 0; j < references.Count; j++)
+                    if (references[i].Value.Index == references[j].Value.Index) references.RemoveAt(j);
+            foreach (ObjectPropertyData ObjectProperty in references)
+            {
+                if (ObjectProperty.Value.Index < 0) continue;
+                control.Heading(export.Asset.Exports[ObjectProperty.Value.Index].ObjectName.Value.Value);
+                foreach (var item in ((NormalExport)export.Asset.Exports[ObjectProperty.Value.Index]).Data)
+                    AssignValue(item, control);
+            }
         }
 
         void AssignValue(PropertyData data, IObjectUIControl control)
@@ -97,14 +115,20 @@ public class Actor : TransformableObject
             {
                 #region collection inputs
                 case ArrayPropertyData ArrayProperty:
+                    if (name == "BlueprintCreatedComponents" || name == "UCSModifiedProperties") break;
                     foreach (var item in ArrayProperty.Value) AssignValue(item, control);
                     break;
 
                 case MapPropertyData MapProperty:
-                    foreach (var item in MapProperty.Value) AssignValue(item.Value, control);
+                    foreach (var item in MapProperty.Value)
+                    {
+                        AssignValue(item.Key, control);
+                        AssignValue(item.Value, control);
+                    }
                     break;
 
                 case StructPropertyData StructProperty:
+                    if (name == "RelativeLocation" || name == "RelativeRotation" || name == "RelativeScale3D") break;
                     foreach (var item in StructProperty.Value) AssignValue(item, control);
                     break;
 
@@ -113,23 +137,7 @@ public class Actor : TransformableObject
                     break;
                 #endregion
 
-                case BoolPropertyData BoolProperty:
-                    BoolProperty.Value = control.CheckBox(name, BoolProperty.Value);
-                    break;
-
-                case LinearColorPropertyData LinearColorProperty:
-                    var ColourVector = new Vector3(LinearColorProperty.Value.R, LinearColorProperty.Value.G, LinearColorProperty.Value.B);
-                    var pointer = control.FullWidthVector3Input(ColourVector, name);
-                    LinearColorProperty.Value = new LinearColor(pointer.X, pointer.Y, pointer.Z, 1);
-                    break;
-
-                case ColorPropertyData ColorProperty:
-                    var Vector = new Vector3(ColorProperty.Value.R, ColorProperty.Value.G, ColorProperty.Value.B);
-                    var input = control.FullWidthVector3Input(Vector, name);
-                    ColorProperty.Value = System.Drawing.Color.FromArgb(255, (int)input.X, (int)input.Y, (int)input.Z);
-                    break;
-
-                #region text inputs
+                #region text properties
                 case EnumPropertyData EnumProperty:
                     EnumProperty.Value = FName.FromString(control.TextInput(EnumProperty.Value.ToString(), name));
                     break;
@@ -137,6 +145,7 @@ public class Actor : TransformableObject
                 case NamePropertyData NameProperty:
                     NameProperty.Value = FName.FromString(control.TextInput(NameProperty.Value.ToString(), name));
                     break;
+
                 case TextPropertyData TextProperty:
                     TextProperty.Value = FString.FromString(control.TextInput(TextProperty.Value.ToString(), name));
                     break;
@@ -146,23 +155,12 @@ public class Actor : TransformableObject
                     break;
 
                 case BytePropertyData ByteProperty:
+                    //bytes are now fucking broken now and always have a value of 0
                     ByteProperty.Value = (byte)export.Asset.AddNameReference(FString.FromString(control.TextInput(export.Asset.GetNameReference(ByteProperty.Value).Value, name)));
-                    break;
-
-                case SoftObjectPropertyData SoftObjectProperty:
-                    SoftObjectProperty.Value = FName.FromString(control.TextInput(SoftObjectProperty.Value.ToString(), name));
-                    break;
-
-                case AssetObjectPropertyData AssetObjectProperty:
-                    AssetObjectProperty.Value = FString.FromString(control.TextInput(AssetObjectProperty.Value.ToString(), name));
                     break;
                 #endregion
 
-                #region number inputs
-                case ObjectPropertyData ObjectProperty:
-                    ObjectProperty.Value.Index = (int)control.NumberInput(ObjectProperty.Value.Index, name);
-                    break;
-
+                #region number properties
                 case Int8PropertyData Int8Property:
                     Int8Property.Value = (sbyte)control.NumberInput(Int8Property.Value, name);
                     break;
@@ -198,7 +196,23 @@ public class Actor : TransformableObject
                 case DoublePropertyData DoubleProperty:
                     DoubleProperty.Value = control.NumberInput((float)DoubleProperty.Value, name);
                     break;
-                    #endregion
+                #endregion
+
+                case BoolPropertyData BoolProperty:
+                    BoolProperty.Value = control.CheckBox(name, BoolProperty.Value);
+                    break;
+
+                case LinearColorPropertyData LinearColorProperty:
+                    var ColourVector = new Vector3(LinearColorProperty.Value.R, LinearColorProperty.Value.G, LinearColorProperty.Value.B);
+                    var pointer = control.FullWidthVector3Input(ColourVector, name);
+                    LinearColorProperty.Value = new LinearColor(pointer.X, pointer.Y, pointer.Z, 1);
+                    break;
+
+                case ColorPropertyData ColorProperty:
+                    var Vector = new Vector3(ColorProperty.Value.R, ColorProperty.Value.G, ColorProperty.Value.B);
+                    var input = control.FullWidthVector3Input(Vector, name);
+                    ColorProperty.Value = System.Drawing.Color.FromArgb(255, (int)input.X, (int)input.Y, (int)input.Z);
+                    break;
             }
         }
 
@@ -211,6 +225,7 @@ public class Actor : TransformableObject
         public void UpdateProperties() { }
     }
 
+    //PropertyProvider's function DoUI isn't virtual so I had to rewrite it to rewrite DoUI and link transforms
     class UMapPropertyProvider : IObjectUIContainer
     {
         public UMapPropertyProvider(TransformableObject obj, EditorSceneBase scene, NormalExport export)

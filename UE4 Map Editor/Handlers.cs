@@ -17,43 +17,6 @@ partial class Editor
 
         Objects.SelectionChanged += OnObjectSelectionChanged;
         Objects.ListExited += OnObjectListExited;
-        //Objects.ItemsMoved += OnObjectItemsMoved;
-    }
-
-    /*private void OnObjectItemsMoved(object sender, ItemsMovedEventArgs e)
-    {
-        scene.ReorderObjects(Objects.CurrentList, e.OriginalIndex, e.Count, e.Offset);
-        e.Handled = true;
-        Display.Refresh();
-    }*/
-
-    void OnObjectListExited(object sender, Framework.ListEventArgs e)
-    {
-        scene.CurrentList = e.List;
-        Display.MainDrawable = scene;
-        Objects.UpdateComboBoxItems();
-        Objects.SelectedItems = scene.SelectedObjects;
-        //fetch availible properties for list
-        scene.SetupObjectUIControl(Properties);
-    }
-
-    void OnObjectSelectionChanged(object sender, SelectionChangedEventArgs e)
-    {
-        //apply selection changes to scene
-        if (e.SelectionChangeMode == SelectionChangeMode.SET)
-        {
-            scene.SelectedObjects.Clear();
-            foreach (ISelectable obj in e.Items) obj.SelectDefault(Display);
-        }
-        else if (e.SelectionChangeMode == SelectionChangeMode.ADD)
-            foreach (ISelectable obj in e.Items) obj.SelectDefault(Display);
-        else
-            foreach (ISelectable obj in e.Items) obj.DeselectAll(Display);
-
-        e.Handled = true;
-        Display.Refresh();
-
-        OnSelectionChanged(this, null);
     }
 
     void OnSelectionChanged(object? sender, EventArgs? e)
@@ -89,6 +52,35 @@ partial class Editor
         }
 
         if (KeyPress.KeyCode == Keys.F) FocusCam(Objects.SelectedItems.ToArray());
+    }
+
+    void OnObjectSelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        //apply selection changes to scene
+        if (e.SelectionChangeMode == SelectionChangeMode.SET)
+        {
+            scene.SelectedObjects.Clear();
+            foreach (ISelectable obj in e.Items) obj.SelectDefault(Display);
+        }
+        else if (e.SelectionChangeMode == SelectionChangeMode.ADD)
+            foreach (ISelectable obj in e.Items) obj.SelectDefault(Display);
+        else
+            foreach (ISelectable obj in e.Items) obj.DeselectAll(Display);
+
+        e.Handled = true;
+        Display.Refresh();
+
+        OnSelectionChanged(this, null);
+    }
+
+    void OnObjectListExited(object sender, Framework.ListEventArgs e)
+    {
+        scene.CurrentList = e.List;
+        Display.MainDrawable = scene;
+        Objects.UpdateComboBoxItems();
+        Objects.SelectedItems = scene.SelectedObjects;
+        //fetch available properties for list
+        scene.SetupObjectUIControl(Properties);
     }
 
     void FocusObject(object sender, ItemClickedEventArgs Click)

@@ -12,11 +12,8 @@ public partial class Editor : Form
 
     public Editor() => InitializeComponent();
 
-    readonly string configfile = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) +
-                                 System.IO.Path.DirectorySeparatorChar
-                                 + "UE4MapEditor" +
-                                 System.IO.Path.DirectorySeparatorChar +
-                                 "config.txt";
+    //no need to use Path.DirectorySeparatorChar because this is winforms and there's a name clash anyway
+    readonly string configfile = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\UE4MapEditor\config.txt";
 
     EditorScene scene = new EditorScene();
 
@@ -33,7 +30,7 @@ public partial class Editor : Form
         });
 
         //I have to account for UE's scaling so make camera fast
-        Display.ActiveCamera = new WalkaroundCamera(1F);
+        Display.ActiveCamera = new WalkaroundCamera(100F);
         UEVersion.Text = "Unknown version";
         if (File.Exists(configfile)) UEVersion.Text = File.ReadAllText(configfile);
 
@@ -66,7 +63,6 @@ public partial class Editor : Form
         }
         foreach (var export in Map.Exports)
         {
-            if (export is FunctionExport || export is RawExport) continue;
             if (export is NormalExport norm)
                 foreach (var property in norm.Data) if (property.Name.Value.Value == "RelativeLocation" || property.Name.Value.Value == "RelativeRotation" || property.Name.Value.Value == "RelativeScale3D")
                     {
@@ -74,17 +70,14 @@ public partial class Editor : Form
                         break;
                     }
         }
-        //remove duplicates
-        for (int i = 0; i < scene.objects.Count; i++)
-            for (int j = 0; j < scene.objects.Count; j++)
-                if (scene.objects[i] == scene.objects[j])
-                    scene.objects.RemoveAt(i);
         LinkScene();
     }
 
     void LinkScene()
     {
-        string file = OpenMapDialog.FileName.Split('\\')[OpenMapDialog.FileName.Split('\\').Length - 1];
+        //not sure if I want to support multi-tab editing-not sure if there's a point
+        Objects.RootLists.Clear();
+        string file = OpenMapDialog.FileName.Split('\\')[^1];
         discord.UpdateState("Editing " + file);
         Display.MainDrawable = scene;
         Objects.RootLists.Add(file, scene.objects);
@@ -94,6 +87,51 @@ public partial class Editor : Form
         //set current category
         Objects.SetRootList(file);
         FocusCam(scene.objects.ToArray());
+    }
+
+    void FocusCam(object[] targets)
+    {
+        if (Objects.SelectedItems.Count == 0) return;
+
+        if (Objects.SelectedItems.Count == 1)
+        {
+            Display.CameraTarget = ((TransformableObject)Objects.SelectedItems.ToArray()[0]).GetFocusPoint();
+            Display.CameraDistance = 20F;
+            return;
+        }
+        Vector3[] positions = new Vector3[targets.Length];
+        Vector3 target = ((IEditableObject)targets[0]).GetFocusPoint();
+        positions[0] = ((TransformableObject)targets[0]).Position;
+        for (int i = 1; i < Objects.SelectedItems.Count; i++)
+        {
+            target = Vector3.Lerp(target, ((IEditableObject)targets[i]).GetFocusPoint(), 0.5f);
+            positions[i] = ((TransformableObject)targets[i]).Position;
+        }
+        Vector3 max = positions[0];
+        Vector3 min = max;
+        for (int i = 1; i < positions.Length; i++)
+        {
+            if (max.X < positions[i].X) max.X = positions[i].X;
+            if (max.Y < positions[i].Y) max.Y = positions[i].Y;
+            if (max.Z < positions[i].Z) max.Z = positions[i].Z;
+            if (min.X > positions[i].X) min.X = positions[i].X;
+            if (min.Y > positions[i].Y) min.Y = positions[i].Y;
+            if (min.Z > positions[i].Z) min.Z = positions[i].Z;
+        }
+        Display.CameraTarget = target;
+        Display.CameraDistance = Vector3.Distance(max, min);
+    }
+
+    void OpenMap(object sender, EventArgs e)
+    {
+        if (OpenMapDialog.ShowDialog() == DialogResult.OK) ParseMap(OpenMapDialog.FileName);
+    }
+
+    void SaveMap(object sender, EventArgs e) => Map.Write(Map.FilePath);
+
+    void SaveMapAs(object sender, EventArgs e)
+    {
+        if (SaveMapDialog.ShowDialog() == DialogResult.OK) Map.Write(SaveMapDialog.FileName);
     }
 
     readonly string[] versionstrings = new string[]
@@ -161,50 +199,4 @@ public partial class Editor : Form
         UE4Version.VER_UE4_26,
         UE4Version.VER_UE4_27,
     };
-
-    void OpenMap(object sender, EventArgs e)
-    {
-        if (OpenMapDialog.ShowDialog() == DialogResult.OK) ParseMap(OpenMapDialog.FileName);
-    }
-
-    void SaveMap(object sender, EventArgs e) => Map.Write(Map.FilePath);
-
-    void SaveMapAs(object sender, EventArgs e)
-    {
-        if (SaveMapDialog.ShowDialog() == DialogResult.OK) Map.Write(SaveMapDialog.FileName);
-    }
-
-    void FocusCam(object[] targets)
-    {
-        if (Objects.SelectedItems.Count == 1)
-        {
-            Display.CameraTarget = ((TransformableObject)Objects.SelectedItems.ToArray()[0]).GetFocusPoint();
-            Display.CameraDistance = 20F;
-            return;
-        }
-        if (Objects.SelectedItems.Count > 0)
-        {
-            Vector3[] positions = new Vector3[targets.Length];
-            Vector3 target = ((IEditableObject)targets[0]).GetFocusPoint();
-            positions[0] = ((TransformableObject)targets[0]).Position;
-            for (int i = 1; i < Objects.SelectedItems.Count; i++)
-            {
-                target = Vector3.Lerp(target, ((IEditableObject)targets[i]).GetFocusPoint(), 0.5f);
-                positions[i] = ((TransformableObject)targets[i]).Position;
-            }
-            Vector3 max = positions[0];
-            Vector3 min = max;
-            for (int i = 1; i < positions.Length; i++)
-            {
-                if (max.X < positions[i].X) max.X = positions[i].X;
-                if (max.Y < positions[i].Y) max.Y = positions[i].Y;
-                if (max.Z < positions[i].Z) max.Z = positions[i].Z;
-                if (min.X > positions[i].X) min.X = positions[i].X;
-                if (min.Y > positions[i].Y) min.Y = positions[i].Y;
-                if (min.Z > positions[i].Z) min.Z = positions[i].Z;
-            }
-            Display.CameraTarget = target;
-            Display.CameraDistance = Vector3.Distance(max, min);
-        }
-    }
 }
