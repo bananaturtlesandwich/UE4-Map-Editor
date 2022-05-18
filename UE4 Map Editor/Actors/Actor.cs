@@ -3,15 +3,40 @@ using GL_EditorFramework.EditorDrawables;
 using OpenTK;
 using UAssetAPI;
 using UAssetAPI.PropertyTypes;
+using UAssetAPI.StructTypes;
 
 namespace UE4MapEditor;
 
 public class Actor : TransformableObject
 {
-    public Actor(NormalExport export, Vector3 pos, Vector3 rot, Vector3 scale) : base(pos, rot, scale)
+    static Vector3 GetRelativeLocation(NormalExport export)
+    {
+        foreach (var item in export.Data)
+            if (item.Name.Value.Value == "RelativeLocation")
+                return ToVector3((VectorPropertyData)((StructPropertyData)item).Value[0]);
+        return Vector3.Zero;
+    }
+
+    static Vector3 GetRelativeRotation(NormalExport export)
+    {
+        foreach (var item in export.Data)
+            if (item.Name.Value.Value == "RelativeRotation")
+                return ToVector3((RotatorPropertyData)((StructPropertyData)item).Value[0]);
+        return Vector3.Zero;
+    }
+
+    static Vector3 GetRelativeScale3D(NormalExport export)
+    {
+        foreach (var item in export.Data)
+            if (item.Name.Value.Value == "RelativeScale3D")
+                return ToVector3((VectorPropertyData)((StructPropertyData)item).Value[0]);
+        return Vector3.One;
+    }
+
+    public Actor(NormalExport export) : base(GetRelativeLocation(export), GetRelativeRotation(export), GetRelativeScale3D(export))
     {
         this.export = export;
-        name = export.ObjectName.ToString().Replace("(0)","");
+        name = export.Asset.Exports[export.OuterIndex.Index].ObjectName.Value.Value;
     }
 
     public NormalExport export;
@@ -23,10 +48,21 @@ public class Actor : TransformableObject
     public override bool TrySetupObjectUIControl(EditorSceneBase scene, ObjectUIControl objectUIControl)
     {
         if (!Selected) return false;
-        objectUIControl.AddObjectUIContainer(new PropertyProvider(this, scene), "Transform");
-        objectUIControl.AddObjectUIContainer(new ActorUIControl(this, scene,export), "Properties");
+        objectUIControl.AddObjectUIContainer(new UMapPropertyProvider(this, scene, export), "Transform");
+        objectUIControl.AddObjectUIContainer(new ActorUIControl(this, scene, export), "Properties");
         return true;
     }
+
+    static Vector3 ToVector3(VectorPropertyData Vector) =>
+        new Vector3(Vector.Value.X, Vector.Value.Y, Vector.Value.Z) / 100;
+    static Vector3 ToVector3(RotatorPropertyData Rotator) =>
+        new Vector3(Rotator.Value.Pitch, Rotator.Value.Yaw, Rotator.Value.Roll);
+
+    //FVector has no operator overload so this'll do for now
+    static FVector ToFVector(Vector3 Vector) =>
+        new FVector(Vector.X * 100, Vector.Y * 100, Vector.Z * 100);
+    static FRotator ToFRotator(Vector3 Rotator) =>
+        new FRotator(Rotator.X, Rotator.Y, Rotator.Z);
 
     class ActorUIControl : IObjectUIContainer
     {
@@ -34,112 +70,126 @@ public class Actor : TransformableObject
         EditorSceneBase scene;
         NormalExport export;
 
-        public ActorUIControl(SingleObject obj,EditorSceneBase scene,NormalExport export)
+        public ActorUIControl(SingleObject obj, EditorSceneBase scene, NormalExport export)
         {
-            this.obj= obj;
+            this.obj = obj;
             this.scene = scene;
             this.export = export;
         }
         public void DoUI(IObjectUIControl control)
         {
-            foreach(var data in export.Data)
+            foreach (var data in export.Data) AssignValue(data, control);
+        }
+
+        void AssignValue(PropertyData data, IObjectUIControl control)
+        {
+            string name = data.Name.Value.Value;
+            switch (data)
             {
-                string name = data.Name.ToString().Replace("(0)","");
-                if (data is BoolPropertyData BoolProperty) 
-                { 
-                    BoolProperty.Value = control.CheckBox(name, BoolProperty.Value); 
-                    continue; 
-                }
-                #region string inputs
-                if (data is EnumPropertyData EnumProperty)
-                {
+                #region collection inputs
+                case ArrayPropertyData ArrayProperty:
+                    foreach (var item in ArrayProperty.Value) AssignValue(item, control);
+                    break;
+
+                case MapPropertyData MapProperty:
+                    foreach (var item in MapProperty.Value) AssignValue(item.Value, control);
+                    break;
+
+                case StructPropertyData StructProperty:
+                    foreach (var item in StructProperty.Value) AssignValue(item, control);
+                    break;
+
+                case BoxPropertyData BoxProperty:
+                    foreach (var vector in BoxProperty.Value) AssignValue(vector, control);
+                    break;
+                #endregion
+
+                case BoolPropertyData BoolProperty:
+                    BoolProperty.Value = control.CheckBox(name, BoolProperty.Value);
+                    break;
+
+                case LinearColorPropertyData LinearColorProperty:
+                    var ColourVector = new Vector3(LinearColorProperty.Value.R, LinearColorProperty.Value.G, LinearColorProperty.Value.B);
+                    var pointer = control.FullWidthVector3Input(ColourVector, name);
+                    LinearColorProperty.Value = new LinearColor(pointer.X, pointer.Y, pointer.Z, 1);
+                    break;
+
+                case ColorPropertyData ColorProperty:
+                    var Vector = new Vector3(ColorProperty.Value.R, ColorProperty.Value.G, ColorProperty.Value.B);
+                    var input = control.FullWidthVector3Input(Vector, name);
+                    ColorProperty.Value = System.Drawing.Color.FromArgb(255, (int)input.X, (int)input.Y, (int)input.Z);
+                    break;
+
+                #region text inputs
+                case EnumPropertyData EnumProperty:
                     EnumProperty.Value = FName.FromString(control.TextInput(EnumProperty.Value.ToString(), name));
-                    continue;
-                }
-                if(data is NamePropertyData NameProperty)
-                {
+                    break;
+
+                case NamePropertyData NameProperty:
                     NameProperty.Value = FName.FromString(control.TextInput(NameProperty.Value.ToString(), name));
-                    continue;
-                }
-                if (data is TextPropertyData TextProperty)
-                {
+                    break;
+                case TextPropertyData TextProperty:
                     TextProperty.Value = FString.FromString(control.TextInput(TextProperty.Value.ToString(), name));
-                    continue;
-                }
-                if(data is StrPropertyData StrProperty)
-                {
+                    break;
+
+                case StrPropertyData StrProperty:
                     StrProperty.Value = FString.FromString(control.TextInput(StrProperty.Value.ToString(), name));
-                    continue;
-                }
-                if(data is BytePropertyData ByteProperty)
-                {
-                    ByteProperty.Value = export.Asset.AddNameReference(FString.FromString(control.TextInput(export.Asset.GetNameReference(ByteProperty.Value).ToString(), name)));
-                    continue;
-                }
-                if(data is SoftObjectPropertyData SoftObjectProperty)
-                {
+                    break;
+
+                case BytePropertyData ByteProperty:
+                    ByteProperty.Value = (byte)export.Asset.AddNameReference(FString.FromString(control.TextInput(export.Asset.GetNameReference(ByteProperty.Value).Value, name)));
+                    break;
+
+                case SoftObjectPropertyData SoftObjectProperty:
                     SoftObjectProperty.Value = FName.FromString(control.TextInput(SoftObjectProperty.Value.ToString(), name));
-                    continue;
-                }
-                if(data is AssetObjectPropertyData AssetObjectProperty)
-                {
-                    AssetObjectProperty.Value = FString.FromString(control.TextInput(AssetObjectProperty.Value.ToString(),name));
-                    continue;
-                }
+                    break;
+
+                case AssetObjectPropertyData AssetObjectProperty:
+                    AssetObjectProperty.Value = FString.FromString(control.TextInput(AssetObjectProperty.Value.ToString(), name));
+                    break;
                 #endregion
 
                 #region number inputs
-                if (data is ObjectPropertyData ObjectProperty)
-                {
+                case ObjectPropertyData ObjectProperty:
                     ObjectProperty.Value.Index = (int)control.NumberInput(ObjectProperty.Value.Index, name);
-                    continue;
-                }
-                if (data is Int8PropertyData Int8Property)
-                {
-                    Int8Property.Value = (sbyte)control.NumberInput(Int8Property.Value,name);
-                    continue;
-                }
-                if (data is Int16PropertyData Int16Property)
-                {
+                    break;
+
+                case Int8PropertyData Int8Property:
+                    Int8Property.Value = (sbyte)control.NumberInput(Int8Property.Value, name);
+                    break;
+
+                case Int16PropertyData Int16Property:
                     Int16Property.Value = (short)control.NumberInput(Int16Property.Value, name);
-                    continue;
-                }
-                if (data is IntPropertyData IntProperty)
-                {
+                    break;
+
+                case IntPropertyData IntProperty:
                     IntProperty.Value = (int)control.NumberInput(IntProperty.Value, name);
-                    continue;
-                }
-                if (data is Int64PropertyData Int64Property)
-                {
+                    break;
+
+                case Int64PropertyData Int64Property:
                     Int64Property.Value = (long)control.NumberInput(Int64Property.Value, name);
-                    continue;
-                }
-                if (data is UInt16PropertyData UInt16Property)
-                {
+                    break;
+
+                case UInt16PropertyData UInt16Property:
                     UInt16Property.Value = (ushort)control.NumberInput(UInt16Property.Value, name);
-                    continue;
-                }
-                if (data is UInt32PropertyData UInt32Property)
-                {
+                    break;
+
+                case UInt32PropertyData UInt32Property:
                     UInt32Property.Value = (uint)control.NumberInput(UInt32Property.Value, name);
-                    continue;
-                }
-                if (data is UInt64PropertyData UInt64Property)
-                {
+                    break;
+
+                case UInt64PropertyData UInt64Property:
                     UInt64Property.Value = (ulong)control.NumberInput(UInt64Property.Value, name);
-                    continue;
-                }
-                if(data is FloatPropertyData FloatProperty)
-                {
-                    FloatProperty.Value=control.NumberInput(FloatProperty.Value, name);
-                    continue;
-                }
-                if(data is DoublePropertyData DoubleProperty)
-                {
-                    DoubleProperty.Value=control.NumberInput((float)DoubleProperty.Value,name);
-                    continue;
-                }
-                #endregion
+                    break;
+
+                case FloatPropertyData FloatProperty:
+                    FloatProperty.Value = control.NumberInput(FloatProperty.Value, name);
+                    break;
+
+                case DoublePropertyData DoubleProperty:
+                    DoubleProperty.Value = control.NumberInput((float)DoubleProperty.Value, name);
+                    break;
+                    #endregion
             }
         }
 
@@ -150,6 +200,52 @@ public class Actor : TransformableObject
         public void OnValueSet() { }
 
         public void UpdateProperties() { }
+    }
+
+    class UMapPropertyProvider : IObjectUIContainer
+    {
+        public UMapPropertyProvider(TransformableObject obj, EditorSceneBase scene, NormalExport export)
+        {
+            this.export = export;
+            this.obj = obj;
+            this.scene = scene;
+        }
+
+        EditorSceneBase.PropertyCapture? capture = null;
+
+        NormalExport export; TransformableObject obj; EditorSceneBase scene;
+
+        public void OnValueChanged() => scene.Refresh();
+
+        public void DoUI(IObjectUIControl control)
+        {
+            obj.Position = control.Vector3Input(obj.Position, "Position", 1f, 16);
+            obj.Rotation = control.Vector3Input(obj.Rotation, "Rotation", 5f, 2, -180f, 180f, wrapAround: true);
+            obj.Scale = control.Vector3Input(obj.Scale, "Scale", 0.125f, 2);
+            foreach (var item in export.Data) switch (item.Name.Value.Value)
+                {
+                    case "RelativeLocation":
+                        ((VectorPropertyData)((StructPropertyData)item).Value[0]).Value = ToFVector(obj.Position);
+                        break;
+                    case "RelativeRotation":
+                        ((RotatorPropertyData)((StructPropertyData)item).Value[0]).Value = ToFRotator(obj.Position);
+                        break;
+                    case "RelativeScale3D":
+                        ((VectorPropertyData)((StructPropertyData)item).Value[0]).Value = ToFVector(obj.Scale);
+                        break;
+                }
+        }
+
+        public void UpdateProperties() { }
+
+        public void OnValueChangeStart() => capture = new EditorSceneBase.PropertyCapture(obj);
+
+        public void OnValueSet()
+        {
+            capture?.HandleUndo(scene);
+            capture = null;
+            scene.Refresh();
+        }
     }
 }
 

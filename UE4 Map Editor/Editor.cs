@@ -42,7 +42,7 @@ public partial class Editor : Form
         AddHandlers();
 
         var arguments = Environment.GetCommandLineArgs();
-        if (arguments.Length > 1) TryParseMap(arguments[1]);
+        if (arguments.Length > 1) ParseMap(arguments[1]);
     }
 
     void OnClose(object sender, EventArgs e)
@@ -52,7 +52,7 @@ public partial class Editor : Form
         discord.Dispose();
     }
 
-    void TryParseMap(string filepath)
+    void ParseMap(string filepath)
     {
         scene.objects.Clear();
         if (UEVersion.Text == "Unknown version")
@@ -66,22 +66,18 @@ public partial class Editor : Form
             MessageBox.Show("Map will not maintain binary equality. Please create a github issue on the main UAssetAPI repository");
             return;
         }
-        foreach (var export in Map.Exports) scene.objects.Add(new Actor((NormalExport)export, Vector3.Zero, Vector3.Zero, Vector3.One));
-        /*List<int> Transforms = new();
-        //First scan for transforms
-        for (int i = 0; i < Map.Exports.Count; i++)
-            if (((NormalExport)Map.Exports[i]).Data.Count > 0)
-                if (((NormalExport)Map.Exports[i]).Data[0].Name == FName.FromString("RelativeLocation"))
-                    Transforms.Add(i);
-        List<(int, int)> ActorObjects = new();
-        //second scan for actors with refs to those transforms
-        for (int i = 0; i < Map.Exports.Count; i++)
-            foreach (PropertyData prop in ((NormalExport)Map.Exports[i]).Data)
-                if (prop is ObjectPropertyData obj && Transforms.Contains(obj.Value.Index))
-                    ActorObjects.Add((i, obj.Value.Index));
-        foreach (var actor in ActorObjects)
-            scene.objects.Add(new Actor((NormalExport)Map.Exports[actor.Item1], Map.Exports[actor.Item1].ObjectName.ToString() + ':' + Map.Exports[actor.Item2].ObjectName.ToString(), ToVector3((VectorPropertyData)((StructPropertyData)((NormalExport)Map.Exports[actor.Item2]).Data[0]).Value[0]), Vector3.Zero, Vector3.One));
-        */
+        foreach (var export in Map.Exports)
+        {
+            if (export is FunctionExport || export is RawExport) continue;
+            if (export is NormalExport norm)
+                foreach (var property in norm.Data) if (property.Name.Value.Value == "RelativeLocation" || property.Name.Value.Value == "RelativeRotation" || property.Name.Value.Value == "RelativeScale3D")
+                        scene.objects.Add(new Actor(norm));
+        }
+        //remove duplicates
+        for (int i = 0; i < scene.objects.Count; i++)
+            for (int j = 0; j < scene.objects.Count; j++)
+                if (scene.objects[i] == scene.objects[j])
+                    scene.objects.RemoveAt(i);
         LinkScene();
     }
 
@@ -96,15 +92,8 @@ public partial class Editor : Form
         Objects.SelectedItems = scene.SelectedObjects;
         //set current category
         Objects.SetRootList(file);
-        FocusMultiple(scene.objects.ToArray());
+        FocusCam(scene.objects.ToArray());
     }
-
-    Vector3 ToVector3(VectorPropertyData Vector) =>
-    new Vector3(Vector.Value.X, Vector.Value.Y, Vector.Value.Z) / 100;
-
-    //FVector has no operator overload so this'll do for now
-    FVector ToFVector(Vector3 Vector) =>
-        new FVector(Vector.X * 100, Vector.Y * 100, Vector.Z * 100);
 
     readonly string[] versionstrings = new string[]
     {
@@ -174,7 +163,7 @@ public partial class Editor : Form
 
     void OpenMap(object sender, EventArgs e)
     {
-        if (OpenMapDialog.ShowDialog() == DialogResult.OK) TryParseMap(OpenMapDialog.FileName);
+        if (OpenMapDialog.ShowDialog() == DialogResult.OK) ParseMap(OpenMapDialog.FileName);
     }
 
     void SaveMap(object sender, EventArgs e) => Map.Write(Map.FilePath);
@@ -184,12 +173,12 @@ public partial class Editor : Form
         if (SaveMapDialog.ShowDialog() == DialogResult.OK) Map.Write(SaveMapDialog.FileName);
     }
 
-    void FocusMultiple(object[] targets)
+    void FocusCam(object[] targets)
     {
         if (Objects.SelectedItems.Count == 1)
         {
             Display.CameraTarget = ((TransformableObject)Objects.SelectedItems.ToArray()[0]).GetFocusPoint();
-            Display.CameraDistance = 10F;
+            Display.CameraDistance = 20F;
             return;
         }
         if (Objects.SelectedItems.Count > 0)

@@ -88,11 +88,11 @@ partial class Editor
             OnSelectionChanged(this, null);
         }
 
-        if (KeyPress.KeyCode == Keys.F) FocusMultiple(Objects.SelectedItems.ToArray());
+        if (KeyPress.KeyCode == Keys.F) FocusCam(Objects.SelectedItems.ToArray());
     }
 
     void FocusObject(object sender, ItemClickedEventArgs Click)
     {
-        if (Click.Clicks == 2 && Click.Item is IEditableObject obj) Display.CameraTarget = obj.GetFocusPoint();
+        if (Click.Clicks == 2 && Click.Item is IEditableObject obj) FocusCam(new[] { obj });
     }
 }
