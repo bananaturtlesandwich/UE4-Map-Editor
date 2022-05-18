@@ -156,7 +156,6 @@ public class Actor : TransformableObject
 
                 case BytePropertyData ByteProperty:
                     //bytes are now fucking broken now and always have a value of 0
-                    ByteProperty.Value = (byte)export.Asset.AddNameReference(FString.FromString(control.TextInput(export.Asset.GetNameReference(ByteProperty.Value).Value, name)));
                     break;
                 #endregion
 
