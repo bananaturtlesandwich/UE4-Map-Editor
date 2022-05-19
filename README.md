@@ -4,7 +4,7 @@ __A very WIP Universal Editor for UE4 map files - *expect major jank*__
 # Building from source
 - clone the repository
 - run update submodules.bat to update the dependencies
-- open the solution and migrate GL_EditorFramework's packages if there are issues
+- open the solution and migrate GL_EditorFramework's nuget packages if there are issues
 - build and it should work👍
 
 # Libraries used
