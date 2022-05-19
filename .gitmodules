@@ -1,0 +1,6 @@
+[submodule "UAssetAPI"]
+	path = UAssetAPI
+	url = https://github.com/atenfyr/UAssetAPI
+[submodule "GL_EditorFramework"]
+	path = GL_EditorFramework
+	url = https://github.com/jupahe64/GL_EditorFramework

@@ -66,14 +66,14 @@ public class Actor : TransformableObject
     }
 
     static Vector3 ToVector3(VectorPropertyData Vector) =>
-        new Vector3(Vector.Value.X, Vector.Value.Y, Vector.Value.Z);
+        new Vector3(Vector.Value.X, Vector.Value.Y, Vector.Value.Z) / 100;
 
     static Vector3 ToVector3(RotatorPropertyData Rotator) =>
         new Vector3(Rotator.Value.Pitch, Rotator.Value.Yaw, Rotator.Value.Roll);
 
     //FVector has no operator overload so this'll do for now
     static FVector ToFVector(Vector3 Vector) =>
-        new FVector(Vector.X, Vector.Y, Vector.Z);
+        new FVector(Vector.X * 100, Vector.Y * 100, Vector.Z * 100);
 
     static FRotator ToFRotator(Vector3 Rotator) =>
         new FRotator(Rotator.X, Rotator.Y, Rotator.Z);
@@ -155,7 +155,14 @@ public class Actor : TransformableObject
                     break;
 
                 case BytePropertyData ByteProperty:
-                    //bytes are now fucking broken now and always have a value of 0
+                    if (ByteProperty.ByteType == BytePropertyType.FName)
+                    {
+                        //not sure how to handle enum type...maybe just another addnameref replacing "::NewEnumerator1" with ""
+                        //Because if they edit the enum that's being used a name map ref also needs to be changed
+                        ByteProperty.EnumValue = FName.FromString(export.Asset.GetNameReference(export.Asset.AddNameReference(FString.FromString(control.TextInput(ByteProperty.EnumValue.Value.Value, name)))).Value);
+                        break;
+                    }
+                    ByteProperty.Value = (byte)control.NumberInput(ByteProperty.Value, name);
                     break;
                 #endregion
 

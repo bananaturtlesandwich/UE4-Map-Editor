@@ -11,9 +11,6 @@
 		<RootNamespace>UE4MapEditor</RootNamespace>
 		<Authors>spuds</Authors>
 		<Description>An editor for cooked UE4 map files</Description>
-		<PackageProjectUrl>https://github.com/bananaturtlesandwich/UE4-Map-Editor/wiki</PackageProjectUrl>
-		<PackageIcon>Editor.png</PackageIcon>
-		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<RepositoryUrl>https://github.com/bananaturtlesandwich/UE4-Map-Editor</RepositoryUrl>
 	</PropertyGroup>
 
@@ -24,22 +21,18 @@
 	<ItemGroup>
 		<PackageReference Include="DiscordRichPresence" Version="1.0.175" />
 		<PackageReference Include="fasterflect" Version="3.0.0" />
-		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<Reference Include="GL_EditorFramework">
-			<HintPath>..\Libraries\GL_EditorFramework.dll</HintPath>
-		</Reference>
-		<Reference Include="OpenTK">
-			<HintPath>..\Libraries\OpenTK.dll</HintPath>
-		</Reference>
-		<Reference Include="OpenTK.GLControl">
-			<HintPath>..\Libraries\OpenTK.GLControl.dll</HintPath>
-		</Reference>
-		<Reference Include="UAssetAPI">
-			<HintPath>..\Libraries\UAssetAPI.dll</HintPath>
-		</Reference>
+	  <Reference Include="GL_EditorFramework">
+	    <HintPath>..\GL_EditorFramework\Gl_EditorFramework\bin\Debug\GL_EditorFramework.dll</HintPath>
+	  </Reference>
+	  <Reference Include="OpenTK">
+	    <HintPath>..\GL_EditorFramework\Gl_EditorFramework\bin\Debug\OpenTK.dll</HintPath>
+	  </Reference>
+	  <Reference Include="OpenTK.GLControl">
+	    <HintPath>..\GL_EditorFramework\Gl_EditorFramework\bin\Debug\OpenTK.GLControl.dll</HintPath>
+	  </Reference>
 	</ItemGroup>
 
 </Project>

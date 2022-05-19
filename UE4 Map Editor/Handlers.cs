@@ -13,10 +13,11 @@ partial class Editor
         scene.ObjectsMoved += OnObjectsMoved;
         scene.ListChanged += OnListChanged;
         scene.ListInvalidated += OnListInvalidated;
-        Display.KeyDown += OnDisplayKeyDown;
+        Display.KeyDown += OnKeyDown;
 
         Objects.SelectionChanged += OnObjectSelectionChanged;
         Objects.ListExited += OnObjectListExited;
+        Objects.KeyDown += OnKeyDown;
     }
 
     void OnSelectionChanged(object? sender, EventArgs? e)
@@ -41,7 +42,7 @@ partial class Editor
         if (Objects.CurrentList == e.List) Objects.InvalidateCurrentList();
     }
 
-    void OnDisplayKeyDown(object? sender, KeyEventArgs KeyPress)
+    void OnKeyDown(object? sender, KeyEventArgs KeyPress)
     {
         if (KeyPress.KeyCode == Keys.Delete)
         {
