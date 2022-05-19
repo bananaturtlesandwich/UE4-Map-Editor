@@ -21,6 +21,11 @@
 	<ItemGroup>
 		<PackageReference Include="DiscordRichPresence" Version="1.0.175" />
 		<PackageReference Include="fasterflect" Version="3.0.0" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\UAssetAPI\UAssetAPI\UAssetAPI.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
