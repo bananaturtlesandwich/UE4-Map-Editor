@@ -1,5 +1,7 @@
 ﻿using GL_EditorFramework;
 using GL_EditorFramework.EditorDrawables;
+using GL_EditorFramework.GL_Core;
+using GL_EditorFramework.Interfaces;
 using OpenTK;
 using UAssetAPI;
 using UAssetAPI.PropertyTypes;
@@ -51,6 +53,8 @@ public class Actor : TransformableObject
         name = export.Asset.Exports[export.OuterIndex.Index].ObjectName.Value.Value;
     }
 
+    new Vector4 Color = new Vector4(140, 255, 0, 255);
+
     public NormalExport export;
 
     string name = "";
@@ -63,6 +67,16 @@ public class Actor : TransformableObject
         objectUIControl.AddObjectUIContainer(new UMapPropertyProvider(this, scene, export), "Transform");
         objectUIControl.AddObjectUIContainer(new ActorUIControl(scene, export), "Properties");
         return true;
+    }
+
+    public override void Draw(GL_ControlModern control, Pass pass, EditorSceneBase editorScene)
+    {
+        base.Draw(control, pass, editorScene);
+    }
+
+    public override void Draw(GL_ControlModern control, Pass pass)
+    {
+        base.Draw(control, pass);
     }
 
     static Vector3 ToVector3(VectorPropertyData Vector) =>
@@ -102,8 +116,8 @@ public class Actor : TransformableObject
             foreach (ObjectPropertyData ObjectProperty in references)
             {
                 if (ObjectProperty.Value.Index < 0) continue;
-                control.Heading(export.Asset.Exports[ObjectProperty.Value.Index].ObjectName.Value.Value);
-                foreach (var item in ((NormalExport)export.Asset.Exports[ObjectProperty.Value.Index]).Data)
+                control.Heading(export.Asset.Exports[ObjectProperty.Value.Index - 1].ObjectName.Value.Value);
+                foreach (var item in ((NormalExport)export.Asset.Exports[ObjectProperty.Value.Index - 1]).Data)
                     AssignValue(item, control);
             }
         }
@@ -134,6 +148,11 @@ public class Actor : TransformableObject
 
                 case BoxPropertyData BoxProperty:
                     foreach (var vector in BoxProperty.Value) AssignValue(vector, control);
+                    break;
+
+
+                case Box2DPropertyData Box2DProperty:
+                    foreach (var vector2D in Box2DProperty.Value) AssignValue(vector2D, control);
                     break;
                 #endregion
 
@@ -208,6 +227,7 @@ public class Actor : TransformableObject
                     BoolProperty.Value = control.CheckBox(name, BoolProperty.Value);
                     break;
 
+                #region vector properties
                 case LinearColorPropertyData LinearColorProperty:
                     var ColourVector = new Vector3(LinearColorProperty.Value.R, LinearColorProperty.Value.G, LinearColorProperty.Value.B);
                     var pointer = control.FullWidthVector3Input(ColourVector, name);
@@ -219,6 +239,17 @@ public class Actor : TransformableObject
                     var input = control.FullWidthVector3Input(Vector, name);
                     ColorProperty.Value = System.Drawing.Color.FromArgb(255, (int)input.X, (int)input.Y, (int)input.Z);
                     break;
+                case VectorPropertyData VectorProperty:
+                    VectorProperty.Value = ToFVector(control.FullWidthVector3Input(ToVector3(VectorProperty), name));
+                    break;
+                case RotatorPropertyData RotatorProperty:
+                    RotatorProperty.Value = ToFRotator(control.FullWidthVector3Input(ToVector3(RotatorProperty), name));
+                    break;
+                case Vector2DPropertyData Vector2DProperty:
+                    Vector2DProperty.X = control.NumberInput(Vector2DProperty.X, name);
+                    Vector2DProperty.Y = control.NumberInput(Vector2DProperty.Y, name);
+                    break;
+                    #endregion
             }
         }
 

@@ -40,4 +40,19 @@
 	  </Reference>
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Compile Update="Gizmos.Designer.cs">
+	    <DesignTime>True</DesignTime>
+	    <AutoGen>True</AutoGen>
+	    <DependentUpon>Gizmos.resx</DependentUpon>
+	  </Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <EmbeddedResource Update="Gizmos.resx">
+	    <Generator>ResXFileCodeGenerator</Generator>
+	    <LastGenOutput>Gizmos.Designer.cs</LastGenOutput>
+	  </EmbeddedResource>
+	</ItemGroup>
+
 </Project>

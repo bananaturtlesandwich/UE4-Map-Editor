@@ -10,10 +10,7 @@ namespace UE4MapEditor
     //This class is supposed to show of some very basic animation stuff you could do with this framework
     class ExampleObject : SingleObject
     {
-        public ExampleObject(Vector3 pos) : base(pos)
-        {
-
-        }
+        public ExampleObject(Vector3 pos) : base(pos) { }
 
         public override string ToString() => "moving platforms";
 
@@ -212,25 +209,13 @@ namespace UE4MapEditor
                 control.PlainText("Some Text");
             }
 
-            public void OnValueChangeStart()
-            {
+            public void OnValueChangeStart() { }
 
-            }
+            public void OnValueChanged() => scene.Refresh();
 
-            public void OnValueChanged()
-            {
-                scene.Refresh();
-            }
+            public void OnValueSet() { }
 
-            public void OnValueSet()
-            {
-
-            }
-
-            public void UpdateProperties()
-            {
-
-            }
+            public void UpdateProperties() { }
         }
     }
 }
