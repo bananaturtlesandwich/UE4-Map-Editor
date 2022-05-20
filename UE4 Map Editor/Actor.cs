@@ -51,6 +51,7 @@ public class Actor : TransformableObject
     {
         this.export = export;
         name = export.Asset.Exports[export.OuterIndex.Index].ObjectName.Value.Value;
+        classtype = export.Asset.Exports[export.OuterIndex.Index].GetExportClassType().Value.Value;
     }
 
     new Vector4 Color = new Vector4(140, 255, 0, 255);
@@ -58,6 +59,8 @@ public class Actor : TransformableObject
     public NormalExport export;
 
     string name = "";
+
+    string classtype;
 
     public override string ToString() => name;
 
@@ -69,15 +72,58 @@ public class Actor : TransformableObject
         return true;
     }
 
-    public override void Draw(GL_ControlModern control, Pass pass, EditorSceneBase editorScene)
+    /*public override void Draw(GL_ControlModern control, Pass pass, EditorSceneBase editorScene)
     {
-        base.Draw(control, pass, editorScene);
+        //Pretty much the same as the base class except for the draw call
+        bool hovered = editorScene.Hovered == this;
+
+        Matrix3 rotMtx = GlobalRotation;
+
+        control.UpdateModelMatrix(
+            Matrix4.CreateScale((Selected ? editorScene.SelectionTransformAction.NewScale(Scale, rotMtx) : Scale) * BoxScale * 2) *
+            new Matrix4(Selected ? editorScene.SelectionTransformAction.NewRot(rotMtx) : rotMtx) *
+            Matrix4.CreateTranslation(Selected ? editorScene.SelectionTransformAction.NewPos(Position) : Position));
+
+        Vector4 blockColor;
+        Vector4 lineColor;
+
+        if (hovered && Selected)
+            lineColor = hoverSelectColor;
+        else if (Selected)
+            lineColor = selectColor;
+        else if (hovered)
+            lineColor = hoverColor;
+        else
+            lineColor = Color;
+
+        if (hovered && Selected)
+            blockColor = Color * 0.5f + hoverSelectColor * 0.5f;
+        else if (Selected)
+            blockColor = Color * 0.5f + selectColor * 0.5f;
+        else if (hovered)
+            blockColor = Color * 0.5f + hoverColor * 0.5f;
+        else
+            blockColor = Color;
+        if (classtype == "BoxComponent" || classtype == "BlockingVolume")
+        {
+            base.Draw(control, pass, editorScene);
+            return;
+        }
+        Renderers.ColorCubeRenderer.Draw(control, pass, blockColor, lineColor, control.NextPickingColor());
     }
 
     public override void Draw(GL_ControlModern control, Pass pass)
     {
-        base.Draw(control, pass);
-    }
+        if (pass == Pass.TRANSPARENT) return;
+
+        control.UpdateModelMatrix(Matrix4.CreateScale(BoxScale * 2) * Matrix4.CreateTranslation(Position));
+        if (classtype == "BoxComponent" || classtype == "BlockingVolume")
+        {
+            Renderers.ColorCubeRenderer.DrawLineBox(control, pass, Color, control.NextPickingColor());
+            return;
+        }
+        Renderers.ColorCubeRenderer.Draw(control, pass, Color, Color, control.NextPickingColor());
+    }*/
 
     static Vector3 ToVector3(VectorPropertyData Vector) =>
         new Vector3(Vector.Value.X, Vector.Value.Y, Vector.Value.Z) / 100;

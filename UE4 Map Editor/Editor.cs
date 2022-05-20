@@ -21,6 +21,7 @@ public partial class Editor : Form
 
     void OnLoad(object sender, EventArgs e)
     {
+        //GizmoRenderer.Initialize();
         discord.Initialize();
         discord.SetPresence(new()
         {
@@ -55,7 +56,7 @@ public partial class Editor : Form
             MessageBox.Show("Please set a UE version for the map");
             return;
         }
-        Map = new UAsset(@filepath, versions[Array.IndexOf(versionstrings, UEVersion.Text)]);
+        Map = new UAsset(@filepath, Version[UEVersion.Text]);
         if (!Map.VerifyBinaryEquality())
         {
             MessageBox.Show("Map will not maintain binary equality. Please create a github issue on the main UAssetAPI repository");
@@ -96,7 +97,7 @@ public partial class Editor : Form
         if (Objects.SelectedItems.Count == 1)
         {
             Display.CameraTarget = ((TransformableObject)Objects.SelectedItems.ToArray()[0]).GetFocusPoint();
-            Display.CameraDistance = 20F;
+            Display.CameraDistance = 10F * ((TransformableObject)Objects.SelectedItems.ToArray()[0]).Scale.X;
             return;
         }
         Vector3[] positions = new Vector3[targets.Length];
@@ -134,69 +135,36 @@ public partial class Editor : Form
         if (SaveMapDialog.ShowDialog() == DialogResult.OK) Map.Write(SaveMapDialog.FileName);
     }
 
-    readonly string[] versionstrings = new string[]
+    readonly Dictionary<string, UE4Version> Version = new()
     {
-        "Unknown version",
-        "4.0",
-        "4.1",
-        "4.2",
-        "4.3",
-        "4.4",
-        "4.5",
-        "4.6",
-        "4.7",
-        "4.8",
-        "4.9",
-        "4.10",
-        "4.11",
-        "4.12",
-        "4.13",
-        "4.14",
-        "4.15",
-        "4.16",
-        "4.17",
-        "4.18",
-        "4.19",
-        "4.20",
-        "4.21",
-        "4.22",
-        "4.23",
-        "4.24",
-        "4.25",
-        "4.26",
-        "4.27"
-    };
-
-    readonly UE4Version[] versions =
-    {
-        UE4Version.UNKNOWN,
-        UE4Version.VER_UE4_0,
-        UE4Version.VER_UE4_1,
-        UE4Version.VER_UE4_2,
-        UE4Version.VER_UE4_3,
-        UE4Version.VER_UE4_4,
-        UE4Version.VER_UE4_5,
-        UE4Version.VER_UE4_6,
-        UE4Version.VER_UE4_7,
-        UE4Version.VER_UE4_8,
-        UE4Version.VER_UE4_9,
-        UE4Version.VER_UE4_10,
-        UE4Version.VER_UE4_11,
-        UE4Version.VER_UE4_12,
-        UE4Version.VER_UE4_13,
-        UE4Version.VER_UE4_14,
-        UE4Version.VER_UE4_15,
-        UE4Version.VER_UE4_16,
-        UE4Version.VER_UE4_17,
-        UE4Version.VER_UE4_18,
-        UE4Version.VER_UE4_19,
-        UE4Version.VER_UE4_20,
-        UE4Version.VER_UE4_21,
-        UE4Version.VER_UE4_22,
-        UE4Version.VER_UE4_23,
-        UE4Version.VER_UE4_24,
-        UE4Version.VER_UE4_25,
-        UE4Version.VER_UE4_26,
-        UE4Version.VER_UE4_27,
+        { "Unknown version", UE4Version.UNKNOWN },
+        { "4.0", UE4Version.VER_UE4_0 },
+        { "4.1", UE4Version.VER_UE4_1 },
+        { "4.2", UE4Version.VER_UE4_2 },
+        { "4.3", UE4Version.VER_UE4_3 },
+        { "4.4", UE4Version.VER_UE4_4 },
+        { "4.5", UE4Version.VER_UE4_5 },
+        { "4.6", UE4Version.VER_UE4_6 },
+        { "4.7", UE4Version.VER_UE4_7 },
+        { "4.8", UE4Version.VER_UE4_8 },
+        { "4.9", UE4Version.VER_UE4_9 },
+        { "4.10", UE4Version.VER_UE4_10 },
+        { "4.11", UE4Version.VER_UE4_11 },
+        { "4.12", UE4Version.VER_UE4_12 },
+        { "4.13", UE4Version.VER_UE4_13 },
+        { "4.14", UE4Version.VER_UE4_14 },
+        { "4.15", UE4Version.VER_UE4_15 },
+        { "4.16", UE4Version.VER_UE4_16 },
+        { "4.17", UE4Version.VER_UE4_17 },
+        { "4.18", UE4Version.VER_UE4_18 },
+        { "4.19", UE4Version.VER_UE4_19 },
+        { "4.20", UE4Version.VER_UE4_20 },
+        { "4.21", UE4Version.VER_UE4_21 },
+        { "4.22", UE4Version.VER_UE4_22 },
+        { "4.23", UE4Version.VER_UE4_23 },
+        { "4.24", UE4Version.VER_UE4_24 },
+        { "4.25", UE4Version.VER_UE4_25 },
+        { "4.26", UE4Version.VER_UE4_26 },
+        { "4.27", UE4Version.VER_UE4_27 }
     };
 }

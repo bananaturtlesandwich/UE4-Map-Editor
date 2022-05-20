@@ -61,22 +61,12 @@ namespace UE4MapEditor {
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Icon camera {
+        internal static System.Drawing.Bitmap Icons {
             get {
-                object obj = ResourceManager.GetObject("camera", resourceCulture);
-                return ((System.Drawing.Icon)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
-        /// </summary>
-        internal static System.Drawing.Icon speaker {
-            get {
-                object obj = ResourceManager.GetObject("speaker", resourceCulture);
-                return ((System.Drawing.Icon)(obj));
+                object obj = ResourceManager.GetObject("Icons", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
     }
