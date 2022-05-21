@@ -29,7 +29,7 @@ public static class GizmoRenderer
         var defaultVert = new VertexShader(
             @"#version 330
             layout(location = 0) in vec4 position;
-            uniform vec2 uvTopLeft;
+            uniform vec2 TopLeft;
             uniform mat4 mtxMdl;
             uniform mat4 mtxCam;
             out vec2 uv;
@@ -39,7 +39,7 @@ public static class GizmoRenderer
             }
 
             void main(){
-                uv = map(position.xy,vec2(-0.5,0.5),vec2(0.5,-0.5), uvTopLeft, uvTopLeft+vec2(0.25,0.25));
+                uv = map(position.xy,vec2(-0.5,0.5),vec2(0.5,-0.5), TopLeft, TopLeft+vec2(0.25,0.25));
                 gl_Position = mtxCam*mtxMdl*position;
             }");
         DefaultShaderProgram = new ShaderProgram(defaultFrag, defaultVert);
@@ -80,13 +80,13 @@ public static class GizmoRenderer
         {
             case "PointLight":
             case "SpotLight":
-                TopLeft = new(128, 0);
+                TopLeft = new(0.5f, 0);
                 break;
             case "CameraActor":
                 TopLeft = new(0, 0);
                 break;
             case "AkComponent":
-                TopLeft = new(0, 128);
+                TopLeft = new(0, 0.5f);
                 break;
             default: return false;
         }
@@ -109,7 +109,7 @@ public static class GizmoRenderer
                 GL.AlphaFunc(AlphaFunction.Gequal, 0.25f);
 
                 DefaultShaderProgram.SetVector4("color", color);
-                DefaultShaderProgram.SetVector2("uvTopLeft", TopLeft);
+                DefaultShaderProgram.SetVector2("TopLeft", TopLeft);
 
                 Plane.Use(control);
                 GL.DrawArrays(PrimitiveType.Quads, 0, 4);

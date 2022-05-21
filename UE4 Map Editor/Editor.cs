@@ -21,7 +21,7 @@ public partial class Editor : Form
 
     void OnLoad(object sender, EventArgs e)
     {
-        //GizmoRenderer.Initialize();
+        GizmoRenderer.Initialize();
         discord.Initialize();
         discord.SetPresence(new()
         {
@@ -31,7 +31,7 @@ public partial class Editor : Form
         });
 
         //I have to account for UE's scaling so make camera fast
-        Display.ActiveCamera = new WalkaroundCamera(100F);
+        Display.ActiveCamera = new WalkaroundCamera(100f);
         UEVersion.Text = "Unknown version";
         if (File.Exists(configfile)) UEVersion.Text = File.ReadAllText(configfile);
 
@@ -97,7 +97,7 @@ public partial class Editor : Form
         if (Objects.SelectedItems.Count == 1)
         {
             Display.CameraTarget = ((TransformableObject)Objects.SelectedItems.ToArray()[0]).GetFocusPoint();
-            Display.CameraDistance = 10F * ((TransformableObject)Objects.SelectedItems.ToArray()[0]).Scale.X;
+            Display.CameraDistance = 10f;
             return;
         }
         Vector3[] positions = new Vector3[targets.Length];

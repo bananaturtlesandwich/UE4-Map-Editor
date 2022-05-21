@@ -271,13 +271,13 @@
         private ToolStripMenuItem SaveAs;
         private SplitContainer Split;
         private SplitContainer Sidebar;
+        private OpenFileDialog OpenMapDialog;
+        private ToolStripComboBox UEVersion;
+        private SaveFileDialog SaveMapDialog;
 
         //GL Editor Controls
         private GL_EditorFramework.GL_Core.GL_ControlModern Display;
         private GL_EditorFramework.SceneListView Objects;
         private GL_EditorFramework.ObjectUIControl Properties;
-        private OpenFileDialog OpenMapDialog;
-        private ToolStripComboBox UEVersion;
-        private SaveFileDialog SaveMapDialog;
     }
 }

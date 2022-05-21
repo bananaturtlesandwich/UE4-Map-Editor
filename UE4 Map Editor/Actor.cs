@@ -11,6 +11,7 @@ namespace UE4MapEditor;
 
 public class Actor : TransformableObject
 {
+    #region constructor override
     static Vector3 GetRelativeLocation(NormalExport export)
     {
         foreach (var item in export.Data)
@@ -53,8 +54,7 @@ public class Actor : TransformableObject
         name = export.Asset.Exports[export.OuterIndex.Index].ObjectName.Value.Value;
         classtype = export.Asset.Exports[export.OuterIndex.Index].GetExportClassType().Value.Value;
     }
-
-    new Vector4 Color = new Vector4(140, 255, 0, 255);
+    #endregion
 
     public NormalExport export;
 
@@ -63,67 +63,6 @@ public class Actor : TransformableObject
     string classtype;
 
     public override string ToString() => name;
-
-    public override bool TrySetupObjectUIControl(EditorSceneBase scene, ObjectUIControl objectUIControl)
-    {
-        if (!Selected) return false;
-        objectUIControl.AddObjectUIContainer(new UMapPropertyProvider(this, scene, export), "Transform");
-        objectUIControl.AddObjectUIContainer(new ActorUIControl(scene, export), "Properties");
-        return true;
-    }
-
-    /*public override void Draw(GL_ControlModern control, Pass pass, EditorSceneBase editorScene)
-    {
-        //Pretty much the same as the base class except for the draw call
-        bool hovered = editorScene.Hovered == this;
-
-        Matrix3 rotMtx = GlobalRotation;
-
-        control.UpdateModelMatrix(
-            Matrix4.CreateScale((Selected ? editorScene.SelectionTransformAction.NewScale(Scale, rotMtx) : Scale) * BoxScale * 2) *
-            new Matrix4(Selected ? editorScene.SelectionTransformAction.NewRot(rotMtx) : rotMtx) *
-            Matrix4.CreateTranslation(Selected ? editorScene.SelectionTransformAction.NewPos(Position) : Position));
-
-        Vector4 blockColor;
-        Vector4 lineColor;
-
-        if (hovered && Selected)
-            lineColor = hoverSelectColor;
-        else if (Selected)
-            lineColor = selectColor;
-        else if (hovered)
-            lineColor = hoverColor;
-        else
-            lineColor = Color;
-
-        if (hovered && Selected)
-            blockColor = Color * 0.5f + hoverSelectColor * 0.5f;
-        else if (Selected)
-            blockColor = Color * 0.5f + selectColor * 0.5f;
-        else if (hovered)
-            blockColor = Color * 0.5f + hoverColor * 0.5f;
-        else
-            blockColor = Color;
-        if (classtype == "BoxComponent" || classtype == "BlockingVolume")
-        {
-            base.Draw(control, pass, editorScene);
-            return;
-        }
-        Renderers.ColorCubeRenderer.Draw(control, pass, blockColor, lineColor, control.NextPickingColor());
-    }
-
-    public override void Draw(GL_ControlModern control, Pass pass)
-    {
-        if (pass == Pass.TRANSPARENT) return;
-
-        control.UpdateModelMatrix(Matrix4.CreateScale(BoxScale * 2) * Matrix4.CreateTranslation(Position));
-        if (classtype == "BoxComponent" || classtype == "BlockingVolume")
-        {
-            Renderers.ColorCubeRenderer.DrawLineBox(control, pass, Color, control.NextPickingColor());
-            return;
-        }
-        Renderers.ColorCubeRenderer.Draw(control, pass, Color, Color, control.NextPickingColor());
-    }*/
 
     static Vector3 ToVector3(VectorPropertyData Vector) =>
         new Vector3(Vector.Value.X, Vector.Value.Y, Vector.Value.Z) / 100;
@@ -137,6 +76,15 @@ public class Actor : TransformableObject
 
     static FRotator ToFRotator(Vector3 Rotator) =>
         new FRotator(Rotator.X, Rotator.Y, Rotator.Z);
+
+    #region user interface
+    public override bool TrySetupObjectUIControl(EditorSceneBase scene, ObjectUIControl objectUIControl)
+    {
+        if (!Selected) return false;
+        objectUIControl.AddObjectUIContainer(new UMapPropertyProvider(this, scene, export), "Transform");
+        objectUIControl.AddObjectUIContainer(new ActorUIControl(scene, export), "Properties");
+        return true;
+    }
 
     class ActorUIControl : IObjectUIContainer
     {
@@ -354,5 +302,32 @@ public class Actor : TransformableObject
             scene.Refresh();
         }
     }
-}
+    #endregion
 
+    #region rendering
+    public override void Draw(GL_ControlModern control, Pass pass, EditorSceneBase editorScene)
+    {
+        if (pass == Pass.TRANSPARENT) return;
+        if (GizmoRenderer.TryDraw(classtype, control, pass, GlobalPosition, Color)) return;
+        base.Draw(control, pass, editorScene);
+    }
+
+    public override void Draw(GL_ControlModern control, Pass pass)
+    {
+        if (pass == Pass.TRANSPARENT) return;
+        if (export.GetExportClassType().Value.Value == "StaticMeshComponent")
+            if (export.Data[0].Name == FName.FromString("StaticMesh") && export.Data[0] is ObjectPropertyData MeshRef)
+                if (TryGetMeshAsset(export.Asset.Imports[export.Asset.Imports[MeshRef.Value.Index].OuterIndex.Index].ObjectName.Value.Value, out var StaticMesh)) ;
+        //ok I'm not sure why it isn't working
+        //if (GizmoRenderer.TryDraw(classtype, control, pass, Position, Color)) return;
+        Renderers.ColorCubeRenderer.Draw(control, pass, Color, Color, control.NextPickingColor());
+    }
+    bool TryGetMeshAsset(string MeshPath, out UAsset Mesh)
+    {
+        string BaseFolder = export.Asset.FilePath.Remove(export.Asset.FilePath.IndexOf("Content"));
+        MessageBox.Show(BaseFolder + MeshPath.Substring(4));
+        Mesh = new UAsset(BaseFolder + MeshPath.Substring(4), export.Asset.EngineVersion);
+        return false;
+    }
+    #endregion
+}
