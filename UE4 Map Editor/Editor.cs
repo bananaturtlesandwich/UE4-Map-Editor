@@ -97,7 +97,7 @@ public partial class Editor : Form
         if (Objects.SelectedItems.Count == 1)
         {
             Display.CameraTarget = ((TransformableObject)Objects.SelectedItems.ToArray()[0]).GetFocusPoint();
-            Display.CameraDistance = 10f;
+            //Display.CameraDistance = 10f;
             return;
         }
         Vector3[] positions = new Vector3[targets.Length];

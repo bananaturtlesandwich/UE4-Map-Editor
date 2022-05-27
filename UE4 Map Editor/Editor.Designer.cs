@@ -259,7 +259,6 @@
             this.Sidebar.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
-
         }
 
         #endregion

@@ -9,15 +9,16 @@ partial class Editor
 {
     void AddHandlers()
     {
+        KeyDown += OnKeyDown;
         scene.SelectionChanged += OnSelectionChanged;
         scene.ObjectsMoved += OnObjectsMoved;
         scene.ListChanged += OnListChanged;
         scene.ListInvalidated += OnListInvalidated;
+
         Display.KeyDown += OnKeyDown;
 
         Objects.SelectionChanged += OnObjectSelectionChanged;
         Objects.ListExited += OnObjectListExited;
-        Objects.KeyDown += OnKeyDown;
     }
 
     void OnSelectionChanged(object? sender, EventArgs? e)

@@ -65,7 +65,7 @@ public class Actor : TransformableObject
     public override string ToString() => name;
 
     static Vector3 ToVector3(VectorPropertyData Vector) =>
-        new Vector3(Vector.Value.X, Vector.Value.Y, Vector.Value.Z) / 100;
+        new Vector3(Vector.Value.X / 100, Vector.Value.Y / 100, Vector.Value.Z / 100);
 
     static Vector3 ToVector3(RotatorPropertyData Rotator) =>
         new Vector3(Rotator.Value.Pitch, Rotator.Value.Yaw, Rotator.Value.Roll);
@@ -308,19 +308,45 @@ public class Actor : TransformableObject
     public override void Draw(GL_ControlModern control, Pass pass, EditorSceneBase editorScene)
     {
         if (pass == Pass.TRANSPARENT) return;
-        if (GizmoRenderer.TryDraw(classtype, control, pass, GlobalPosition, Color)) return;
-        base.Draw(control, pass, editorScene);
-    }
 
-    public override void Draw(GL_ControlModern control, Pass pass)
-    {
-        if (pass == Pass.TRANSPARENT) return;
-        if (export.GetExportClassType().Value.Value == "StaticMeshComponent")
+        Vector3 TransformedPos = Selected ? editorScene.SelectionTransformAction.NewPos(GlobalPosition) : GlobalPosition;
+
+        Vector4 highlight;
+
+        if (Selected && editorScene.Hovered == this)
+            highlight = hoverSelectColor;
+        else if (Selected)
+            highlight = selectColor;
+        else if (editorScene.Hovered == this)
+            highlight = hoverColor;
+        else
+            highlight = Vector4.Zero;
+
+        if (GizmoRenderer.TryDraw(classtype, control, pass, TransformedPos, highlight)) return;
+
+        //StaticMesh stuff
+        /*
+           if (export.GetExportClassType().Value.Value == "StaticMeshComponent")
             if (export.Data[0].Name == FName.FromString("StaticMesh") && export.Data[0] is ObjectPropertyData MeshRef)
                 if (TryGetMeshAsset(export.Asset.Imports[export.Asset.Imports[MeshRef.Value.Index].OuterIndex.Index].ObjectName.Value.Value, out var StaticMesh)) ;
-        //ok I'm not sure why it isn't working
-        //if (GizmoRenderer.TryDraw(classtype, control, pass, Position, Color)) return;
-        Renderers.ColorCubeRenderer.Draw(control, pass, Color, Color, control.NextPickingColor());
+        */
+
+        control.UpdateModelMatrix(
+            Matrix4.CreateScale((Selected ? editorScene.SelectionTransformAction.NewScale(Scale, GlobalRotation) : Scale) * BoxScale * 2) *
+            new Matrix4(Selected ? editorScene.SelectionTransformAction.NewRot(GlobalRotation) : GlobalRotation) *
+            Matrix4.CreateTranslation(Selected ? editorScene.SelectionTransformAction.NewPos(Position) : Position));
+
+        Vector4 blockColor = Color * (1 - highlight.W) + highlight * highlight.W;
+        Vector4 lineColor;
+
+        if (highlight.W != 0)
+            lineColor = highlight;
+        else
+            lineColor = Color;
+
+        lineColor.W = 1;
+
+        Renderers.ColorCubeRenderer.Draw(control, pass, blockColor, lineColor, control.NextPickingColor());
     }
     bool TryGetMeshAsset(string MeshPath, out UAsset Mesh)
     {
