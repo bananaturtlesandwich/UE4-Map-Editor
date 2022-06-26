@@ -3,6 +3,7 @@ using GL_EditorFramework.EditorDrawables;
 using GL_EditorFramework.StandardCameras;
 using OpenTK;
 using UAssetAPI;
+using UAssetAPI.UnrealTypes;
 
 namespace UE4MapEditor;
 
@@ -13,7 +14,7 @@ public partial class Editor : Form
     public Editor() => InitializeComponent();
 
     //no need to use Path.DirectorySeparatorChar because this is winforms and there's a name clash anyway
-    readonly string configfile = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\UE4MapEditor\config.txt";
+    readonly string configfile = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"\UE4MapEditor\config.txt";
 
     EditorScene scene = new EditorScene();
 
@@ -21,7 +22,6 @@ public partial class Editor : Form
 
     void OnLoad(object sender, EventArgs e)
     {
-        GizmoRenderer.Initialize();
         discord.Initialize();
         discord.SetPresence(new()
         {
@@ -32,18 +32,18 @@ public partial class Editor : Form
 
         //I have to account for UE's scaling so make camera fast
         Display.ActiveCamera = new WalkaroundCamera(100f);
-        UEVersion.Text = "Unknown version";
-        if (File.Exists(configfile)) UEVersion.Text = File.ReadAllText(configfile);
+        UEVersion.Text = File.Exists(configfile) ? File.ReadAllText(configfile) : "Unknown version";
 
         AddHandlers();
 
+        //allow file association with the application
         var arguments = Environment.GetCommandLineArgs();
         if (arguments.Length > 1) ParseMap(arguments[1]);
     }
 
     void OnClose(object sender, EventArgs e)
     {
-        Directory.CreateDirectory(configfile.Replace(System.IO.Path.DirectorySeparatorChar + "config.txt", ""));
+        Directory.CreateDirectory(Environment.SpecialFolder.LocalApplicationData + @"\UE4MapEditor");
         File.WriteAllText(configfile, UEVersion.Text);
         discord.Dispose();
     }
@@ -62,28 +62,26 @@ public partial class Editor : Form
             MessageBox.Show("Map will not maintain binary equality. Please create a github issue on the main UAssetAPI repository");
             return;
         }
-        foreach (var export in Map.Exports)
-        {
-            if (export is NormalExport norm)
-                foreach (var property in norm.Data) if (property.Name.Value.Value == "RelativeLocation" || property.Name.Value.Value == "RelativeRotation" || property.Name.Value.Value == "RelativeScale3D")
+        for (int i = 0; i < Map.Exports.Count; i++)
+            if (Map.Exports[i] is NormalExport export)
+                foreach (var property in export.Data) if (property.Name.Value.Value == "RelativeLocation" || property.Name.Value.Value == "RelativeRotation" || property.Name.Value.Value == "RelativeScale3D")
                     {
-                        scene.objects.Add(new Actor(norm));
+                        scene.objects.Add(new Actor(export));
                         break;
                     }
-        }
         LinkScene();
     }
 
     void LinkScene()
     {
-        //not sure if I want to support multi-tab editing-not sure if there's a point
+        //not sure if I want to support tabs for editing multiple maps at a time-not sure if there's a point
         Objects.RootLists.Clear();
         string file = OpenMapDialog.FileName.Split('\\')[^1];
         discord.UpdateState("Editing " + file);
         Display.MainDrawable = scene;
         Objects.RootLists.Add(file, scene.objects);
         Objects.UpdateComboBoxItems();
-        //link the scene's selected objs to sceneListView
+        //link the scene's selected objects to sceneListView
         Objects.SelectedItems = scene.SelectedObjects;
         //set current category
         Objects.SetRootList(file);
@@ -96,17 +94,17 @@ public partial class Editor : Form
 
         if (Objects.SelectedItems.Count == 1)
         {
-            Display.CameraTarget = ((TransformableObject)Objects.SelectedItems.ToArray()[0]).GetFocusPoint();
+            Display.CameraTarget = ((IEditableObject)Objects.SelectedItems.ToArray()[0]).GetFocusPoint();
             //Display.CameraDistance = 10f;
             return;
         }
         Vector3[] positions = new Vector3[targets.Length];
         Vector3 target = ((IEditableObject)targets[0]).GetFocusPoint();
-        positions[0] = ((TransformableObject)targets[0]).Position;
+        positions[0] = ((SingleObject)targets[0]).Position;
         for (int i = 1; i < Objects.SelectedItems.Count; i++)
         {
             target = Vector3.Lerp(target, ((IEditableObject)targets[i]).GetFocusPoint(), 0.5f);
-            positions[i] = ((TransformableObject)targets[i]).Position;
+            positions[i] = ((SingleObject)targets[i]).Position;
         }
         Vector3 max = positions[0];
         Vector3 min = max;

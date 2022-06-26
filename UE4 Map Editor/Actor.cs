@@ -1,25 +1,24 @@
 ﻿using GL_EditorFramework;
 using GL_EditorFramework.EditorDrawables;
-using GL_EditorFramework.GL_Core;
-using GL_EditorFramework.Interfaces;
 using OpenTK;
 using UAssetAPI;
-using UAssetAPI.PropertyTypes;
-using UAssetAPI.StructTypes;
+using UAssetAPI.PropertyTypes.Objects;
+using UAssetAPI.PropertyTypes.Structs;
+using UAssetAPI.UnrealTypes;
 
 namespace UE4MapEditor;
 
 public class Actor : TransformableObject
 {
-    #region constructor override
+    #region transform handling
     static Vector3 GetRelativeLocation(NormalExport export)
     {
         foreach (var item in export.Data)
             if (item.Name.Value.Value == "RelativeLocation")
                 return ToVector3((VectorPropertyData)((StructPropertyData)item).Value[0]);
         //if doesn't exist make one so it can be edited
-        StructPropertyData RelativeLocation = new StructPropertyData(FName.FromString("RelativeLocation"), FName.FromString("Vector"));
-        RelativeLocation.Value.Add(new VectorPropertyData(FName.FromString("RelativeLocation")) { Value = new(0, 0, 0) });
+        StructPropertyData RelativeLocation = new StructPropertyData(FName.FromString(export.Asset, "RelativeLocation"), FName.FromString(export.Asset, "Vector"));
+        RelativeLocation.Value.Add(new VectorPropertyData(FName.FromString(export.Asset, "RelativeLocation")) { Value = new(0, 0, 0) });
         export.Data.Add(RelativeLocation);
         return Vector3.Zero;
     }
@@ -30,8 +29,8 @@ public class Actor : TransformableObject
             if (item.Name.Value.Value == "RelativeRotation")
                 return ToVector3((RotatorPropertyData)((StructPropertyData)item).Value[0]);
         //if doesn't exist make one so it can be edited
-        StructPropertyData RelativeRotation = new StructPropertyData(FName.FromString("RelativeRotation"), FName.FromString("Rotator"));
-        RelativeRotation.Value.Add(new RotatorPropertyData(FName.FromString("RelativeRotation")) { Value = new(0, 0, 0) });
+        StructPropertyData RelativeRotation = new StructPropertyData(FName.FromString(export.Asset, "RelativeRotation"), FName.FromString(export.Asset, "Rotator"));
+        RelativeRotation.Value.Add(new RotatorPropertyData(FName.FromString(export.Asset, "RelativeRotation")) { Value = new(0, 0, 0) });
         export.Data.Add(RelativeRotation);
         return Vector3.Zero;
     }
@@ -42,11 +41,12 @@ public class Actor : TransformableObject
             if (item.Name.Value.Value == "RelativeScale3D")
                 return ToVector3((VectorPropertyData)((StructPropertyData)item).Value[0]);
         //if doesn't exist make one so it can be edited
-        StructPropertyData RelativeScale3D = new StructPropertyData(FName.FromString("RelativeScale3D"), FName.FromString("Vector"));
-        RelativeScale3D.Value.Add(new VectorPropertyData(FName.FromString("RelativeScale3D")) { Value = new(1, 1, 1) });
+        StructPropertyData RelativeScale3D = new StructPropertyData(FName.FromString(export.Asset, "RelativeScale3D"), FName.FromString(export.Asset, "Vector"));
+        RelativeScale3D.Value.Add(new VectorPropertyData(FName.FromString(export.Asset, "RelativeScale3D")) { Value = new(1, 1, 1) });
         export.Data.Add(RelativeScale3D);
         return Vector3.One;
     }
+    #endregion
 
     public Actor(NormalExport export) : base(GetRelativeLocation(export), GetRelativeRotation(export), GetRelativeScale3D(export))
     {
@@ -54,11 +54,10 @@ public class Actor : TransformableObject
         name = export.Asset.Exports[export.OuterIndex.Index].ObjectName.Value.Value;
         classtype = export.Asset.Exports[export.OuterIndex.Index].GetExportClassType().Value.Value;
     }
-    #endregion
 
     public NormalExport export;
 
-    string name = "";
+    string name;
 
     string classtype;
 
@@ -70,7 +69,6 @@ public class Actor : TransformableObject
     static Vector3 ToVector3(RotatorPropertyData Rotator) =>
         new Vector3(Rotator.Value.Pitch, Rotator.Value.Yaw, Rotator.Value.Roll);
 
-    //FVector has no operator overload so this'll do for now
     static FVector ToFVector(Vector3 Vector) =>
         new FVector(Vector.X * 100, Vector.Y * 100, Vector.Z * 100);
 
@@ -81,7 +79,7 @@ public class Actor : TransformableObject
     public override bool TrySetupObjectUIControl(EditorSceneBase scene, ObjectUIControl objectUIControl)
     {
         if (!Selected) return false;
-        objectUIControl.AddObjectUIContainer(new UMapPropertyProvider(this, scene, export), "Transform");
+        objectUIControl.AddObjectUIContainer(new TranformPropertyProvider(this, scene, export), "Transform");
         objectUIControl.AddObjectUIContainer(new ActorUIControl(scene, export), "Properties");
         return true;
     }
@@ -98,20 +96,21 @@ public class Actor : TransformableObject
         }
         public void DoUI(IObjectUIControl control)
         {
-            foreach (var data in ((NormalExport)export.Asset.Exports[export.OuterIndex.Index]).Data) AssignValue(data, control);
-            //not in AssignValue because it would cause a stack overflow with objects referencing back to the original
             List<ObjectPropertyData> references = new();
             foreach (var data in ((NormalExport)export.Asset.Exports[export.OuterIndex.Index]).Data)
+            {
+                AssignValue(data, control);
                 if (data is ObjectPropertyData) references.Add((ObjectPropertyData)data);
+            }
             //Remove duplicate references
             for (int i = 0; i < references.Count; i++)
                 for (int j = 0; j < references.Count; j++)
                     if (references[i].Value.Index == references[j].Value.Index) references.RemoveAt(j);
-            foreach (ObjectPropertyData ObjectProperty in references)
+            for (int i = 0; i < references.Count; i++)
             {
-                if (ObjectProperty.Value.Index < 0) continue;
-                control.Heading(export.Asset.Exports[ObjectProperty.Value.Index - 1].ObjectName.Value.Value);
-                foreach (var item in ((NormalExport)export.Asset.Exports[ObjectProperty.Value.Index - 1]).Data)
+                if (references[i].Value.Index < 0) continue;
+                control.Heading(export.Asset.Exports[references[i].Value.Index - 1].ObjectName.Value.Value);
+                foreach (var item in ((NormalExport)export.Asset.Exports[references[i].Value.Index - 1]).Data)
                     AssignValue(item, control);
             }
         }
@@ -152,11 +151,11 @@ public class Actor : TransformableObject
 
                 #region text properties
                 case EnumPropertyData EnumProperty:
-                    EnumProperty.Value = FName.FromString(control.TextInput(EnumProperty.Value.ToString(), name));
+                    EnumProperty.Value = FName.FromString(export.Asset, control.TextInput(EnumProperty.Value.ToString(), name));
                     break;
 
                 case NamePropertyData NameProperty:
-                    NameProperty.Value = FName.FromString(control.TextInput(NameProperty.Value.ToString(), name));
+                    NameProperty.Value = FName.FromString(export.Asset, control.TextInput(NameProperty.Value.ToString(), name));
                     break;
 
                 case TextPropertyData TextProperty:
@@ -172,7 +171,7 @@ public class Actor : TransformableObject
                     {
                         //not sure how to handle enum type...maybe just another addnameref replacing "::NewEnumerator1" with ""
                         //Because if they edit the enum that's being used a name map ref also needs to be changed
-                        ByteProperty.EnumValue = FName.FromString(export.Asset.GetNameReference(export.Asset.AddNameReference(FString.FromString(control.TextInput(ByteProperty.EnumValue.Value.Value, name)))).Value);
+                        ByteProperty.EnumValue = FName.FromString(export.Asset, export.Asset.GetNameReference(export.Asset.AddNameReference(FString.FromString(control.TextInput(ByteProperty.EnumValue.Value.Value, name)))).Value);
                         break;
                     }
                     ByteProperty.Value = (byte)control.NumberInput(ByteProperty.Value, name);
@@ -257,9 +256,9 @@ public class Actor : TransformableObject
     }
 
     //PropertyProvider's function DoUI isn't virtual so I had to rewrite it to rewrite DoUI and link transforms
-    class UMapPropertyProvider : IObjectUIContainer
+    class TranformPropertyProvider : IObjectUIContainer
     {
-        public UMapPropertyProvider(TransformableObject obj, EditorSceneBase scene, NormalExport export)
+        public TranformPropertyProvider(TransformableObject obj, EditorSceneBase scene, NormalExport export)
         {
             this.export = export;
             this.obj = obj;
@@ -305,31 +304,20 @@ public class Actor : TransformableObject
     #endregion
 
     #region rendering
-    public override void Draw(GL_ControlModern control, Pass pass, EditorSceneBase editorScene)
+    /*public override void Draw(GL_ControlModern control, Pass pass, EditorSceneBase editorScene)
     {
         if (pass == Pass.TRANSPARENT) return;
 
-        Vector3 TransformedPos = Selected ? editorScene.SelectionTransformAction.NewPos(GlobalPosition) : GlobalPosition;
-
-        Vector4 highlight;
-
-        if (Selected && editorScene.Hovered == this)
-            highlight = hoverSelectColor;
-        else if (Selected)
-            highlight = selectColor;
-        else if (editorScene.Hovered == this)
-            highlight = hoverColor;
-        else
-            highlight = Vector4.Zero;
-
-        if (GizmoRenderer.TryDraw(classtype, control, pass, TransformedPos, highlight)) return;
+        Vector4 highlight = Selected && editorScene.Hovered == this ? hoverSelectColor :
+                            Selected ? selectColor :
+                            editorScene.Hovered == this ? hoverColor :
+                            Vector4.Zero;
 
         //StaticMesh stuff
-        /*
            if (export.GetExportClassType().Value.Value == "StaticMeshComponent")
             if (export.Data[0].Name == FName.FromString("StaticMesh") && export.Data[0] is ObjectPropertyData MeshRef)
                 if (TryGetMeshAsset(export.Asset.Imports[export.Asset.Imports[MeshRef.Value.Index].OuterIndex.Index].ObjectName.Value.Value, out var StaticMesh)) ;
-        */
+        
 
         control.UpdateModelMatrix(
             Matrix4.CreateScale((Selected ? editorScene.SelectionTransformAction.NewScale(Scale, GlobalRotation) : Scale) * BoxScale * 2) *
@@ -339,20 +327,18 @@ public class Actor : TransformableObject
         Vector4 blockColor = Color * (1 - highlight.W) + highlight * highlight.W;
         Vector4 lineColor;
 
-        if (highlight.W != 0)
-            lineColor = highlight;
-        else
-            lineColor = Color;
+        lineColor = highlight.W != 0 ? highlight : Color;
 
         lineColor.W = 1;
 
         Renderers.ColorCubeRenderer.Draw(control, pass, blockColor, lineColor, control.NextPickingColor());
-    }
+    }*/
+
     bool TryGetMeshAsset(string MeshPath, out UAsset Mesh)
     {
         string BaseFolder = export.Asset.FilePath.Remove(export.Asset.FilePath.IndexOf("Content"));
-        MessageBox.Show(BaseFolder + MeshPath.Substring(4));
-        Mesh = new UAsset(BaseFolder + MeshPath.Substring(4), export.Asset.EngineVersion);
+        MessageBox.Show(BaseFolder + MeshPath[4..]);
+        Mesh = new UAsset(BaseFolder + MeshPath[4..], export.Asset.EngineVersion);
         return false;
     }
     #endregion
