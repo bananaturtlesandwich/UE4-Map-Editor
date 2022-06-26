@@ -22,6 +22,8 @@ public partial class Editor : Form
 
     void OnLoad(object sender, EventArgs e)
     {
+        GizmoRenderer.Initialise();
+
         discord.Initialize();
         discord.SetPresence(new()
         {
@@ -43,7 +45,7 @@ public partial class Editor : Form
 
     void OnClose(object sender, EventArgs e)
     {
-        Directory.CreateDirectory(Environment.SpecialFolder.LocalApplicationData + @"\UE4MapEditor");
+        Directory.CreateDirectory(configfile[..^10]);
         File.WriteAllText(configfile, UEVersion.Text);
         discord.Dispose();
     }

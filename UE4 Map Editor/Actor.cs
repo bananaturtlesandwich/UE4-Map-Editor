@@ -304,35 +304,6 @@ public class Actor : TransformableObject
     #endregion
 
     #region rendering
-    /*public override void Draw(GL_ControlModern control, Pass pass, EditorSceneBase editorScene)
-    {
-        if (pass == Pass.TRANSPARENT) return;
-
-        Vector4 highlight = Selected && editorScene.Hovered == this ? hoverSelectColor :
-                            Selected ? selectColor :
-                            editorScene.Hovered == this ? hoverColor :
-                            Vector4.Zero;
-
-        //StaticMesh stuff
-           if (export.GetExportClassType().Value.Value == "StaticMeshComponent")
-            if (export.Data[0].Name == FName.FromString("StaticMesh") && export.Data[0] is ObjectPropertyData MeshRef)
-                if (TryGetMeshAsset(export.Asset.Imports[export.Asset.Imports[MeshRef.Value.Index].OuterIndex.Index].ObjectName.Value.Value, out var StaticMesh)) ;
-        
-
-        control.UpdateModelMatrix(
-            Matrix4.CreateScale((Selected ? editorScene.SelectionTransformAction.NewScale(Scale, GlobalRotation) : Scale) * BoxScale * 2) *
-            new Matrix4(Selected ? editorScene.SelectionTransformAction.NewRot(GlobalRotation) : GlobalRotation) *
-            Matrix4.CreateTranslation(Selected ? editorScene.SelectionTransformAction.NewPos(Position) : Position));
-
-        Vector4 blockColor = Color * (1 - highlight.W) + highlight * highlight.W;
-        Vector4 lineColor;
-
-        lineColor = highlight.W != 0 ? highlight : Color;
-
-        lineColor.W = 1;
-
-        Renderers.ColorCubeRenderer.Draw(control, pass, blockColor, lineColor, control.NextPickingColor());
-    }*/
 
     bool TryGetMeshAsset(string MeshPath, out UAsset Mesh)
     {

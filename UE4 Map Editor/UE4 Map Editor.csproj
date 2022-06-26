@@ -21,7 +21,6 @@
 	<ItemGroup>
 		<PackageReference Include="DiscordRichPresence" Version="1.0.175" />
 		<PackageReference Include="fasterflect" Version="3.0.0" />
-		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -29,9 +28,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Reference Include="Fasterflect">
-	    <HintPath>..\GL_EditorFramework\Gl_EditorFramework\bin\Debug\Fasterflect.dll</HintPath>
-	  </Reference>
 	  <Reference Include="GL_EditorFramework">
 	    <HintPath>..\GL_EditorFramework\Gl_EditorFramework\bin\Debug\GL_EditorFramework.dll</HintPath>
 	  </Reference>

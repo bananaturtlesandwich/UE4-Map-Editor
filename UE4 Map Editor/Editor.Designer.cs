@@ -31,6 +31,8 @@
             this.Open = new System.Windows.Forms.ToolStripMenuItem();
             this.Save = new System.Windows.Forms.ToolStripMenuItem();
             this.SaveAs = new System.Windows.Forms.ToolStripMenuItem();
+            this.EditToolStrip = new System.Windows.Forms.ToolStripMenuItem();
+            this.Add = new System.Windows.Forms.ToolStripMenuItem();
             this.UEVersion = new System.Windows.Forms.ToolStripComboBox();
             this.Split = new System.Windows.Forms.SplitContainer();
             this.Sidebar = new System.Windows.Forms.SplitContainer();
@@ -55,6 +57,7 @@
             this.MenuStrip.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.MenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.FileToolStrip,
+            this.EditToolStrip,
             this.UEVersion});
             this.MenuStrip.Location = new System.Drawing.Point(0, 0);
             this.MenuStrip.Name = "MenuStrip";
@@ -93,11 +96,27 @@
             // SaveAs
             // 
             this.SaveAs.Name = "SaveAs";
-            this.SaveAs.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift)
+            this.SaveAs.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
             | System.Windows.Forms.Keys.S)));
             this.SaveAs.Size = new System.Drawing.Size(233, 26);
             this.SaveAs.Text = "Save As";
             this.SaveAs.Click += new System.EventHandler(this.SaveMapAs);
+            // 
+            // EditToolStrip
+            // 
+            this.EditToolStrip.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.Add});
+            this.EditToolStrip.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.EditToolStrip.Name = "EditToolStrip";
+            this.EditToolStrip.Size = new System.Drawing.Size(49, 28);
+            this.EditToolStrip.Text = "Edit";
+            // 
+            // Add
+            // 
+            this.Add.Name = "Add";
+            this.Add.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.A)));
+            this.Add.Size = new System.Drawing.Size(224, 26);
+            this.Add.Text = "Add";
             // 
             // UEVersion
             // 
@@ -259,6 +278,7 @@
             this.Sidebar.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
+
         }
 
         #endregion
@@ -278,5 +298,7 @@
         private GL_EditorFramework.GL_Core.GL_ControlModern Display;
         private GL_EditorFramework.SceneListView Objects;
         private GL_EditorFramework.ObjectUIControl Properties;
+        private ToolStripMenuItem EditToolStrip;
+        private ToolStripMenuItem Add;
     }
 }
