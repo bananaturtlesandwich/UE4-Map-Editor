@@ -115,9 +115,9 @@
             // 
             this.Add.Name = "Add";
             this.Add.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.A)));
-            this.Add.Size = new System.Drawing.Size(270, 34);
+            this.Add.Size = new System.Drawing.Size(211, 34);
             this.Add.Text = "Add";
-            this.Add.Click += new System.EventHandler(this.OnClick);
+            this.Add.Click += new System.EventHandler(this.OnAddClicked);
             // 
             // UEVersion
             // 
@@ -220,7 +220,7 @@
             this.Display.Margin = new System.Windows.Forms.Padding(5);
             this.Display.Name = "Display";
             this.Display.NormPickingDepth = 0F;
-            this.Display.ShowOrientationCube = true;
+            this.Display.ShowOrientationCube = false;
             this.Display.Size = new System.Drawing.Size(1109, 1013);
             this.Display.Stereoscopy = GL_EditorFramework.GL_Core.GL_ControlBase.StereoscopyType.DISABLED;
             this.Display.TabIndex = 0;
@@ -254,7 +254,7 @@
             // 
             this.AddObjectDialog.Filter = "Unreal map files|*.umap";
             this.AddObjectDialog.InitialDirectory = ".\\";
-            this.AddObjectDialog.Title = "Select the map you want to edit";
+            this.AddObjectDialog.Title = "Select a map you want to lift an object from";
             // 
             // Editor
             // 

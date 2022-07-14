@@ -28,13 +28,24 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.ButtonList = new System.Windows.Forms.FlowLayoutPanel();
             this.SuspendLayout();
+            // 
+            // ButtonList
+            // 
+            this.ButtonList.AutoScroll = true;
+            this.ButtonList.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ButtonList.Location = new System.Drawing.Point(0, 0);
+            this.ButtonList.Name = "ButtonList";
+            this.ButtonList.Size = new System.Drawing.Size(778, 444);
+            this.ButtonList.TabIndex = 0;
             // 
             // ObjectSelector
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(778, 444);
+            this.Controls.Add(this.ButtonList);
             this.Name = "ObjectSelector";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
@@ -43,5 +54,7 @@
         }
 
         #endregion
+
+        private FlowLayoutPanel ButtonList;
     }
 }

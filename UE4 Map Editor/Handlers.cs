@@ -24,6 +24,7 @@ partial class Editor
     void OnSelectionChanged(object? sender, EventArgs? e)
     {
         Objects.Refresh();
+        //Objects.ScrollControlIntoView();
         scene.SetupObjectUIControl(Properties);
     }
 

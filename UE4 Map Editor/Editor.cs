@@ -168,9 +168,8 @@ public partial class Editor : Form
         { "4.27", UE4Version.VER_UE4_27 }
     };
 
-    void OnClick(object sender, EventArgs e)
+    void OnAddClicked(object sender, EventArgs e)
     {
-        MessageBox.Show("Please select a map you wish to lift an object from");
         if (AddObjectDialog.ShowDialog() == DialogResult.OK)
         {
             if (UEVersion.Text == "Unknown Version")
@@ -179,17 +178,17 @@ public partial class Editor : Form
                 return;
             }
             UAsset NewMap = new(AddObjectDialog.FileName, Version[UEVersion.Text]);
-            if (!Map.VerifyBinaryEquality())
+            if (!NewMap.VerifyBinaryEquality())
             {
                 MessageBox.Show("Map will not maintain binary equality. Please create a github issue on the main UAssetAPI repository");
                 return;
             }
             List<NormalExport> objects = new();
-            for (int i = 0; i < Map.Exports.Count; i++)
-                if (Map.Exports[i] is NormalExport export)
+            for (int i = 0; i < NewMap.Exports.Count; i++)
+                if (NewMap.Exports[i] is NormalExport export)
                     foreach (var property in export.Data) if (property.Name.Value.Value == "RelativeLocation" || property.Name.Value.Value == "RelativeRotation" || property.Name.Value.Value == "RelativeScale3D")
-                            objects.Add(export);
-            Application.Run(new ObjectSelector(objects));
+                            objects.Add((NormalExport)NewMap.Exports[export.OuterIndex.Index]);
+            new ObjectSelector(objects).ShowDialog();
         }
     }
 }
