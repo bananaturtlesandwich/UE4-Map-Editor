@@ -1,5 +1,7 @@
 ﻿using GL_EditorFramework;
 using GL_EditorFramework.EditorDrawables;
+using GL_EditorFramework.GL_Core;
+using GL_EditorFramework.Interfaces;
 using OpenTK;
 using UAssetAPI;
 using UAssetAPI.PropertyTypes.Objects;
@@ -304,6 +306,11 @@ public class Actor : TransformableObject
     #endregion
 
     #region rendering
+    public override void Draw(GL_ControlModern control, Pass pass, EditorSceneBase editorScene)
+    {
+        if (!GizmoRenderer.TryDraw(classtype, control, pass, Position, Selected && editorScene.Hovered == this ? hoverSelectColor : editorScene.Hovered == this ? hoverColor : Selected ? selectColor : Vector4.Zero))
+            base.Draw(control, pass, editorScene);
+    }
 
     bool TryGetMeshAsset(string MeshPath, out UAsset Mesh)
     {

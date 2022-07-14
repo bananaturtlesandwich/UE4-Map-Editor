@@ -41,6 +41,7 @@
             this.Properties = new GL_EditorFramework.ObjectUIControl();
             this.OpenMapDialog = new System.Windows.Forms.OpenFileDialog();
             this.SaveMapDialog = new System.Windows.Forms.SaveFileDialog();
+            this.AddObjectDialog = new System.Windows.Forms.OpenFileDialog();
             this.MenuStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Split)).BeginInit();
             this.Split.Panel1.SuspendLayout();
@@ -61,8 +62,7 @@
             this.UEVersion});
             this.MenuStrip.Location = new System.Drawing.Point(0, 0);
             this.MenuStrip.Name = "MenuStrip";
-            this.MenuStrip.Padding = new System.Windows.Forms.Padding(5, 2, 0, 2);
-            this.MenuStrip.Size = new System.Drawing.Size(1198, 32);
+            this.MenuStrip.Size = new System.Drawing.Size(1498, 37);
             this.MenuStrip.TabIndex = 0;
             this.MenuStrip.Text = "MenuStrip";
             // 
@@ -74,14 +74,14 @@
             this.SaveAs});
             this.FileToolStrip.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.FileToolStrip.Name = "FileToolStrip";
-            this.FileToolStrip.Size = new System.Drawing.Size(46, 28);
+            this.FileToolStrip.Size = new System.Drawing.Size(54, 33);
             this.FileToolStrip.Text = "File";
             // 
             // Open
             // 
             this.Open.Name = "Open";
             this.Open.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
-            this.Open.Size = new System.Drawing.Size(233, 26);
+            this.Open.Size = new System.Drawing.Size(285, 34);
             this.Open.Text = "Open";
             this.Open.Click += new System.EventHandler(this.OpenMap);
             // 
@@ -89,7 +89,7 @@
             // 
             this.Save.Name = "Save";
             this.Save.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-            this.Save.Size = new System.Drawing.Size(233, 26);
+            this.Save.Size = new System.Drawing.Size(285, 34);
             this.Save.Text = "Save";
             this.Save.Click += new System.EventHandler(this.SaveMap);
             // 
@@ -98,7 +98,7 @@
             this.SaveAs.Name = "SaveAs";
             this.SaveAs.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
             | System.Windows.Forms.Keys.S)));
-            this.SaveAs.Size = new System.Drawing.Size(233, 26);
+            this.SaveAs.Size = new System.Drawing.Size(285, 34);
             this.SaveAs.Text = "Save As";
             this.SaveAs.Click += new System.EventHandler(this.SaveMapAs);
             // 
@@ -108,15 +108,16 @@
             this.Add});
             this.EditToolStrip.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.EditToolStrip.Name = "EditToolStrip";
-            this.EditToolStrip.Size = new System.Drawing.Size(49, 28);
+            this.EditToolStrip.Size = new System.Drawing.Size(58, 33);
             this.EditToolStrip.Text = "Edit";
             // 
             // Add
             // 
             this.Add.Name = "Add";
             this.Add.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.A)));
-            this.Add.Size = new System.Drawing.Size(224, 26);
+            this.Add.Size = new System.Drawing.Size(270, 34);
             this.Add.Text = "Add";
+            this.Add.Click += new System.EventHandler(this.OnClick);
             // 
             // UEVersion
             // 
@@ -153,12 +154,12 @@
             "4.26",
             "4.27"});
             this.UEVersion.Name = "UEVersion";
-            this.UEVersion.Size = new System.Drawing.Size(150, 28);
+            this.UEVersion.Size = new System.Drawing.Size(186, 33);
             // 
             // Split
             // 
             this.Split.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.Split.Location = new System.Drawing.Point(0, 32);
+            this.Split.Location = new System.Drawing.Point(0, 37);
             this.Split.Margin = new System.Windows.Forms.Padding(2);
             this.Split.Name = "Split";
             // 
@@ -170,9 +171,8 @@
             // Split.Panel2
             // 
             this.Split.Panel2.Controls.Add(this.Display);
-            this.Split.Size = new System.Drawing.Size(1198, 808);
-            this.Split.SplitterDistance = 308;
-            this.Split.SplitterWidth = 3;
+            this.Split.Size = new System.Drawing.Size(1498, 1013);
+            this.Split.SplitterDistance = 385;
             this.Split.TabIndex = 1;
             // 
             // Sidebar
@@ -186,9 +186,8 @@
             // Sidebar.Panel1
             // 
             this.Sidebar.Panel1.Controls.Add(this.Objects);
-            this.Sidebar.Size = new System.Drawing.Size(308, 808);
-            this.Sidebar.SplitterDistance = 349;
-            this.Sidebar.SplitterWidth = 3;
+            this.Sidebar.Size = new System.Drawing.Size(385, 1013);
+            this.Sidebar.SplitterDistance = 436;
             this.Sidebar.TabIndex = 0;
             // 
             // Sidebar.Panel2
@@ -200,10 +199,10 @@
             this.Objects.AutoScroll = true;
             this.Objects.Dock = System.Windows.Forms.DockStyle.Fill;
             this.Objects.Location = new System.Drawing.Point(0, 0);
-            this.Objects.Margin = new System.Windows.Forms.Padding(10, 3, 10, 3);
+            this.Objects.Margin = new System.Windows.Forms.Padding(12, 4, 12, 4);
             this.Objects.Name = "Objects";
             this.Objects.RootLists = ((System.Collections.Generic.Dictionary<string, System.Collections.IList>)(resources.GetObject("Objects.RootLists")));
-            this.Objects.Size = new System.Drawing.Size(308, 349);
+            this.Objects.Size = new System.Drawing.Size(385, 436);
             this.Objects.TabIndex = 0;
             this.Objects.ItemClicked += new GL_EditorFramework.ItemClickedEventHandler(this.FocusObject);
             // 
@@ -218,11 +217,11 @@
             this.Display.Dock = System.Windows.Forms.DockStyle.Fill;
             this.Display.Fov = 0.7853982F;
             this.Display.Location = new System.Drawing.Point(0, 0);
-            this.Display.Margin = new System.Windows.Forms.Padding(4);
+            this.Display.Margin = new System.Windows.Forms.Padding(5);
             this.Display.Name = "Display";
             this.Display.NormPickingDepth = 0F;
             this.Display.ShowOrientationCube = true;
-            this.Display.Size = new System.Drawing.Size(887, 808);
+            this.Display.Size = new System.Drawing.Size(1109, 1013);
             this.Display.Stereoscopy = GL_EditorFramework.GL_Core.GL_ControlBase.StereoscopyType.DISABLED;
             this.Display.TabIndex = 0;
             this.Display.VSync = false;
@@ -251,11 +250,17 @@
             this.SaveMapDialog.InitialDirectory = ".\\";
             this.SaveMapDialog.Title = "Navigate to where you want to save the file";
             // 
+            // AddObjectDialog
+            // 
+            this.AddObjectDialog.Filter = "Unreal map files|*.umap";
+            this.AddObjectDialog.InitialDirectory = ".\\";
+            this.AddObjectDialog.Title = "Select the map you want to edit";
+            // 
             // Editor
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1198, 840);
+            this.ClientSize = new System.Drawing.Size(1498, 1050);
             this.Controls.Add(this.Split);
             this.Controls.Add(this.MenuStrip);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -300,5 +305,6 @@
         private GL_EditorFramework.ObjectUIControl Properties;
         private ToolStripMenuItem EditToolStrip;
         private ToolStripMenuItem Add;
+        private OpenFileDialog AddObjectDialog;
     }
 }

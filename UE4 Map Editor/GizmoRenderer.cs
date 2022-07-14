@@ -56,9 +56,9 @@ public static class GizmoRenderer
         GL.BufferData(BufferTarget.ArrayBuffer, vertices.Length * sizeof(float), vertices, BufferUsageHint.StaticDraw);
 
         tex = GL.GenTexture();
-        var texsheet = Gizmos.Icons;
+        var texsheet = Gizmos.icons;
         var texdata = texsheet.LockBits(new(0, 0, 512, 512), System.Drawing.Imaging.ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-        GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba32i, 512, 512, 0, PixelFormat.Bgra, PixelType.Int, texdata.Scan0);
+        GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba8, 512, 512, 0, PixelFormat.Rgba, PixelType.UnsignedByte, texdata.Scan0);
         GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
         GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
         GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
@@ -71,7 +71,14 @@ public static class GizmoRenderer
 
         switch (classtype)
         {
-            case "PointLight":
+            case "Emitter":
+                TopLeft = new(0.75f, 0);
+                break;
+            case "CameraComponent":
+                TopLeft = new(0, 0);
+                break;
+            case "PointLightComponent":
+            case "SpotLightComponent":
                 TopLeft = new(0.25f, 0);
                 break;
             default:

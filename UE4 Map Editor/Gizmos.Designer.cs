@@ -63,9 +63,19 @@ namespace UE4MapEditor {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap Icons {
+        internal static System.Drawing.Bitmap gizmos {
             get {
-                object obj = ResourceManager.GetObject("Icons", resourceCulture);
+                object obj = ResourceManager.GetObject("gizmos", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap icons {
+            get {
+                object obj = ResourceManager.GetObject("icons", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
