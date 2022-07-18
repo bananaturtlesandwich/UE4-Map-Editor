@@ -54,14 +54,11 @@ public class Actor : TransformableObject
     {
         this.export = export;
         name = export.Asset.Exports[export.OuterIndex.Index].ObjectName.Value.Value;
-        classtype = export.Asset.Exports[export.OuterIndex.Index].GetExportClassType().Value.Value;
     }
 
     public NormalExport export;
 
     string name;
-
-    string classtype;
 
     public override string ToString() => name;
 
@@ -81,7 +78,7 @@ public class Actor : TransformableObject
     public override bool TrySetupObjectUIControl(EditorSceneBase scene, ObjectUIControl objectUIControl)
     {
         if (!Selected) return false;
-        objectUIControl.AddObjectUIContainer(new TranformPropertyProvider(this, scene, export), "Transform");
+        objectUIControl.AddObjectUIContainer(new TransformPropertyProvider(this, scene, export), "Transform");
         objectUIControl.AddObjectUIContainer(new ActorUIControl(scene, export), "Properties");
         return true;
     }
@@ -98,23 +95,9 @@ public class Actor : TransformableObject
         }
         public void DoUI(IObjectUIControl control)
         {
-            List<ObjectPropertyData> references = new();
+            //I'm not quite sure how I want to handle ObjectPropertyData because some refs will be in the map anyway
             foreach (var data in ((NormalExport)export.Asset.Exports[export.OuterIndex.Index]).Data)
-            {
                 AssignValue(data, control);
-                if (data is ObjectPropertyData) references.Add((ObjectPropertyData)data);
-            }
-            //Remove duplicate references
-            for (int i = 0; i < references.Count; i++)
-                for (int j = 0; j < references.Count; j++)
-                    if (references[i].Value.Index == references[j].Value.Index) references.RemoveAt(j);
-            for (int i = 0; i < references.Count; i++)
-            {
-                if (references[i].Value.Index < 0) continue;
-                control.Heading(export.Asset.Exports[references[i].Value.Index - 1].ObjectName.Value.Value);
-                foreach (var item in ((NormalExport)export.Asset.Exports[references[i].Value.Index - 1]).Data)
-                    AssignValue(item, control);
-            }
         }
 
         void AssignValue(PropertyData data, IObjectUIControl control)
@@ -124,6 +107,7 @@ public class Actor : TransformableObject
             {
                 #region collection inputs
                 case ArrayPropertyData ArrayProperty:
+                    //We aren't particularly interested in these
                     if (name == "BlueprintCreatedComponents" || name == "UCSModifiedProperties") break;
                     foreach (var item in ArrayProperty.Value) AssignValue(item, control);
                     break;
@@ -131,7 +115,7 @@ public class Actor : TransformableObject
                 case MapPropertyData MapProperty:
                     foreach (var item in MapProperty.Value)
                     {
-                        AssignValue(item.Key, control);
+                        //AssignValue(item.Key, control);
                         AssignValue(item.Value, control);
                     }
                     break;
@@ -258,9 +242,9 @@ public class Actor : TransformableObject
     }
 
     //PropertyProvider's function DoUI isn't virtual so I had to rewrite it to rewrite DoUI and link transforms
-    class TranformPropertyProvider : IObjectUIContainer
+    class TransformPropertyProvider : IObjectUIContainer
     {
-        public TranformPropertyProvider(TransformableObject obj, EditorSceneBase scene, NormalExport export)
+        public TransformPropertyProvider(TransformableObject obj, EditorSceneBase scene, NormalExport export)
         {
             this.export = export;
             this.obj = obj;
@@ -308,16 +292,22 @@ public class Actor : TransformableObject
     #region rendering
     public override void Draw(GL_ControlModern control, Pass pass, EditorSceneBase editorScene)
     {
-        if (!GizmoRenderer.TryDraw(classtype, control, pass, Position, Selected && editorScene.Hovered == this ? hoverSelectColor : editorScene.Hovered == this ? hoverColor : Selected ? selectColor : Vector4.Zero))
-            base.Draw(control, pass, editorScene);
-    }
-
-    bool TryGetMeshAsset(string MeshPath, out UAsset Mesh)
-    {
-        string BaseFolder = export.Asset.FilePath.Remove(export.Asset.FilePath.IndexOf("Content"));
-        MessageBox.Show(BaseFolder + MeshPath[4..]);
-        Mesh = new UAsset(BaseFolder + MeshPath[4..], export.Asset.EngineVersion);
-        return false;
+        switch (export.Asset.Exports[export.OuterIndex.Index].GetExportClassType().Value.Value)
+        {
+            case "Emitter":
+                GizmoRenderer.Draw(new(0.75f, 0), control, pass, Position, Selected && editorScene.Hovered == this ? hoverSelectColor : editorScene.Hovered == this ? hoverColor : Selected ? selectColor : Vector4.Zero);
+                break;
+            case "CameraComponent":
+                GizmoRenderer.Draw(new(0, 0), control, pass, Position, Selected && editorScene.Hovered == this ? hoverSelectColor : editorScene.Hovered == this ? hoverColor : Selected ? selectColor : Vector4.Zero);
+                break;
+            case "PointLight":
+            case "SpotLight":
+                GizmoRenderer.Draw(new(0.25f, 0), control, pass, Position, Selected && editorScene.Hovered == this ? hoverSelectColor : editorScene.Hovered == this ? hoverColor : Selected ? selectColor : Vector4.Zero);
+                break;
+            default:
+                base.Draw(control, pass, editorScene);
+                break;
+        }
     }
     #endregion
 }

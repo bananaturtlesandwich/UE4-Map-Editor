@@ -64,14 +64,24 @@ public partial class Editor : Form
             MessageBox.Show("Map will not maintain binary equality. Please create a github issue on the main UAssetAPI repository");
             return;
         }
+        foreach (var export in FindActors()) scene.objects.Add(new Actor(export));
+        LinkScene();
+    }
+
+    //I definitely need to find a more reliable way of finding actors
+    //atm it definitely misses a lot of things by relying on outer index
+    //also if an actor has default values for all transforms it won't be detected
+    List<NormalExport> FindActors()
+    {
+        List<NormalExport> actors = new();
         for (int i = 0; i < Map.Exports.Count; i++)
             if (Map.Exports[i] is NormalExport export)
                 foreach (var property in export.Data) if (property.Name.Value.Value == "RelativeLocation" || property.Name.Value.Value == "RelativeRotation" || property.Name.Value.Value == "RelativeScale3D")
                     {
-                        scene.objects.Add(new Actor(export));
+                        actors.Add(export);
                         break;
                     }
-        LinkScene();
+        return actors;
     }
 
     void LinkScene()
@@ -96,28 +106,24 @@ public partial class Editor : Form
 
         if (Objects.SelectedItems.Count == 1)
         {
-            Display.CameraTarget = ((IEditableObject)Objects.SelectedItems.ToArray()[0]).GetFocusPoint();
+            Display.CameraTarget = ((IEditableObject)targets[0]).GetFocusPoint();
             //Display.CameraDistance = 10f;
             return;
         }
-        Vector3[] positions = new Vector3[targets.Length];
         Vector3 target = ((IEditableObject)targets[0]).GetFocusPoint();
-        positions[0] = ((SingleObject)targets[0]).Position;
-        for (int i = 1; i < Objects.SelectedItems.Count; i++)
+
+        Vector3 min, max;
+        min = max = ((SingleObject)targets[0]).Position;
+        for (int i = 1; i < target.Length; i++)
         {
             target = Vector3.Lerp(target, ((IEditableObject)targets[i]).GetFocusPoint(), 0.5f);
-            positions[i] = ((SingleObject)targets[i]).Position;
-        }
-        Vector3 max = positions[0];
-        Vector3 min = max;
-        for (int i = 1; i < positions.Length; i++)
-        {
-            if (max.X < positions[i].X) max.X = positions[i].X;
-            if (max.Y < positions[i].Y) max.Y = positions[i].Y;
-            if (max.Z < positions[i].Z) max.Z = positions[i].Z;
-            if (min.X > positions[i].X) min.X = positions[i].X;
-            if (min.Y > positions[i].Y) min.Y = positions[i].Y;
-            if (min.Z > positions[i].Z) min.Z = positions[i].Z;
+            var pos = ((SingleObject)targets[i]).Position;
+            if (max.X < pos.X) max.X = pos.X;
+            if (max.Y < pos.Y) max.Y = pos.Y;
+            if (max.Z < pos.Z) max.Z = pos.Z;
+            if (min.X > pos.X) min.X = pos.X;
+            if (min.Y > pos.Y) min.Y = pos.Y;
+            if (min.Z > pos.Z) min.Z = pos.Z;
         }
         Display.CameraTarget = target;
         Display.CameraDistance = Vector3.Distance(max, min);
@@ -133,6 +139,25 @@ public partial class Editor : Form
     void SaveMapAs(object sender, EventArgs e)
     {
         if (SaveMapDialog.ShowDialog() == DialogResult.OK) Map.Write(SaveMapDialog.FileName);
+    }
+
+    void OnAddClicked(object sender, EventArgs e)
+    {
+        if (AddObjectDialog.ShowDialog() == DialogResult.OK)
+        {
+            if (UEVersion.Text == "Unknown Version")
+            {
+                MessageBox.Show("Please set a UE version for the map");
+                return;
+            }
+            UAsset NewMap = new(AddObjectDialog.FileName, Version[UEVersion.Text]);
+            if (!NewMap.VerifyBinaryEquality())
+            {
+                MessageBox.Show("Map will not maintain binary equality. Please create a github issue on the main UAssetAPI repository");
+                return;
+            }
+            new ObjectSelector(FindActors()).ShowDialog();
+        }
     }
 
     readonly Dictionary<string, UE4Version> Version = new()
@@ -167,28 +192,4 @@ public partial class Editor : Form
         { "4.26", UE4Version.VER_UE4_26 },
         { "4.27", UE4Version.VER_UE4_27 }
     };
-
-    void OnAddClicked(object sender, EventArgs e)
-    {
-        if (AddObjectDialog.ShowDialog() == DialogResult.OK)
-        {
-            if (UEVersion.Text == "Unknown Version")
-            {
-                MessageBox.Show("Please set a UE version for the map");
-                return;
-            }
-            UAsset NewMap = new(AddObjectDialog.FileName, Version[UEVersion.Text]);
-            if (!NewMap.VerifyBinaryEquality())
-            {
-                MessageBox.Show("Map will not maintain binary equality. Please create a github issue on the main UAssetAPI repository");
-                return;
-            }
-            List<NormalExport> objects = new();
-            for (int i = 0; i < NewMap.Exports.Count; i++)
-                if (NewMap.Exports[i] is NormalExport export)
-                    foreach (var property in export.Data) if (property.Name.Value.Value == "RelativeLocation" || property.Name.Value.Value == "RelativeRotation" || property.Name.Value.Value == "RelativeScale3D")
-                            objects.Add((NormalExport)NewMap.Exports[export.OuterIndex.Index]);
-            new ObjectSelector(objects).ShowDialog();
-        }
-    }
 }

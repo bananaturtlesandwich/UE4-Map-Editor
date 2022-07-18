@@ -3,13 +3,16 @@ using GL_EditorFramework.GL_Core;
 using GL_EditorFramework.Interfaces;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
+using System.Drawing.Imaging;
 
 namespace UE4MapEditor;
 public static class GizmoRenderer
 {
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     public static ShaderProgram shader;
 
     static VertexArrayObject plane;
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
     static readonly float[] vertices =
     {
@@ -56,72 +59,49 @@ public static class GizmoRenderer
         GL.BufferData(BufferTarget.ArrayBuffer, vertices.Length * sizeof(float), vertices, BufferUsageHint.StaticDraw);
 
         tex = GL.GenTexture();
-        var texsheet = Gizmos.icons;
-        var texdata = texsheet.LockBits(new(0, 0, 512, 512), System.Drawing.Imaging.ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-        GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba8, 512, 512, 0, PixelFormat.Rgba, PixelType.UnsignedByte, texdata.Scan0);
+        GL.BindTexture(TextureTarget.Texture2D, tex);
+        Bitmap data = Gizmos.icons;
+        BitmapData rawdata = data.LockBits(new(0, 0, 512, 512), ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+        GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, 512, 512, 0, OpenTK.Graphics.OpenGL.PixelFormat.Rgba, PixelType.UnsignedByte, rawdata.Scan0);
         GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
         GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
         GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
-        texsheet.UnlockBits(texdata);
+        data.UnlockBits(rawdata);
     }
 
-    public static bool TryDraw(string classtype, GL_ControlModern control, Pass pass, Vector3 position, Vector4 highlightColor)
+    public static void Draw(Vector2 TopLeft, GL_ControlModern control, Pass pass, Vector3 position, Vector4 highlightColor)
     {
-        Vector2 TopLeft;
-
-        switch (classtype)
+        if (pass == Pass.OPAQUE) return;
+        control.UpdateModelMatrix(new Matrix4(control.InvertedRotationMatrix) * Matrix4.CreateTranslation(position));
+        if (pass == Pass.TRANSPARENT)
         {
-            case "Emitter":
-                TopLeft = new(0.75f, 0);
-                break;
-            case "CameraComponent":
-                TopLeft = new(0, 0);
-                break;
-            case "PointLightComponent":
-            case "SpotLightComponent":
-                TopLeft = new(0.25f, 0);
-                break;
-            default:
-                return false;
+            Vector4 color = Vector4.One * (1 - highlightColor.W) + highlightColor * highlightColor.W;
+
+            color.W = 0.8f;
+
+            control.CurrentShader = shader;
+
+            GL.ActiveTexture(TextureUnit.Texture0);
+            GL.BindTexture(TextureTarget.Texture2D, tex);
+
+            GL.Enable(EnableCap.Blend);
+            GL.Enable(EnableCap.AlphaTest);
+            GL.AlphaFunc(AlphaFunction.Gequal, 0.25f);
+
+            shader.SetVector4("color", color);
+            shader.SetVector2("uvTopLeft", TopLeft);
+
+            plane.Use(control);
+            GL.DrawArrays(PrimitiveType.Quads, 0, 4);
+            GL.Disable(EnableCap.Blend);
+            GL.Disable(EnableCap.AlphaTest);
+            return;
         }
-        if (pass != Pass.OPAQUE)
-        {
-            control.UpdateModelMatrix(new Matrix4(control.InvertedRotationMatrix) * Matrix4.CreateTranslation(position));
+        control.CurrentShader = Framework.SolidColorShaderProgram;
 
-            if (pass == Pass.TRANSPARENT)
-            {
-                Vector4 color = Vector4.One * (1 - highlightColor.W) + highlightColor * highlightColor.W;
+        Framework.SolidColorShaderProgram.SetVector4("color", control.NextPickingColor());
 
-                color.W = 0.8f;
-
-                control.CurrentShader = shader;
-
-                GL.ActiveTexture(TextureUnit.Texture0);
-                GL.BindTexture(TextureTarget.Texture2D, tex);
-
-                GL.Enable(EnableCap.Blend);
-                GL.Enable(EnableCap.AlphaTest);
-                GL.AlphaFunc(AlphaFunction.Gequal, 0.25f);
-
-                shader.SetVector4("color", color);
-                shader.SetVector2("uvTopLeft", TopLeft);
-
-                plane.Use(control);
-                GL.DrawArrays(PrimitiveType.Quads, 0, 4);
-                GL.Disable(EnableCap.Blend);
-                GL.Disable(EnableCap.AlphaTest);
-            }
-            else
-            {
-                control.CurrentShader = Framework.SolidColorShaderProgram;
-
-                Framework.SolidColorShaderProgram.SetVector4("color", control.NextPickingColor());
-
-                plane.Use(control);
-                GL.DrawArrays(PrimitiveType.Quads, 0, 4);
-            }
-        }
-
-        return true;
+        plane.Use(control);
+        GL.DrawArrays(PrimitiveType.Quads, 0, 4);
     }
 }
