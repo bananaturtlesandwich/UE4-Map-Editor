@@ -50,9 +50,8 @@ public static class GizmoRenderer
                     uv = map(position.xy,vec2(-0.5,0.5),vec2(0.5,-0.5), uvTopLeft, uvTopLeft+vec2(0.25,0.25));
                     gl_Position = mtxCam*mtxMdl*position;
                 }"));
-        int buffer = GL.GenBuffer();
 
-        plane = new(buffer);
+        plane = new(GL.GenBuffer());
         plane.AddAttribute(0, 3, VertexAttribPointerType.Float, false, 3 * sizeof(float), 0);
         plane.Submit();
 

@@ -32,7 +32,7 @@ public partial class Editor : Form
             Timestamps = new() { Start = DateTime.UtcNow },
         });
 
-        //I have to account for UE's scaling so make camera fast
+        //I have to account for UE's scaling so make camera go nyooom
         Display.ActiveCamera = new WalkaroundCamera(100f);
         UEVersion.Text = File.Exists(configfile) ? File.ReadAllText(configfile) : "Unknown version";
 
@@ -64,24 +64,15 @@ public partial class Editor : Form
             MessageBox.Show("Map will not maintain binary equality. Please create a github issue on the main UAssetAPI repository");
             return;
         }
-        foreach (var export in FindActors()) scene.objects.Add(new Actor(export));
+        foreach (var export in FindActors(Map)) scene.objects.Add(new Actor((NormalExport)export));
         LinkScene();
     }
 
-    //I definitely need to find a more reliable way of finding actors
-    //atm it definitely misses a lot of things by relying on outer index
-    //also if an actor has default values for all transforms it won't be detected
-    List<NormalExport> FindActors()
+    static List<Export> FindActors(UAsset map)
     {
-        List<NormalExport> actors = new();
-        for (int i = 0; i < Map.Exports.Count; i++)
-            if (Map.Exports[i] is NormalExport export)
-                foreach (var property in export.Data) if (property.Name.Value.Value == "RelativeLocation" || property.Name.Value.Value == "RelativeRotation" || property.Name.Value.Value == "RelativeScale3D")
-                    {
-                        actors.Add(export);
-                        break;
-                    }
-        return actors;
+        //WorldSettings is always the last export in a map and it's outerindex is always the Level
+        int LevelIndex = map.Exports[^0].OuterIndex.Index;
+        return map.Exports.Where(x => x.OuterIndex.Index == LevelIndex).ToList();
     }
 
     void LinkScene()
@@ -156,7 +147,7 @@ public partial class Editor : Form
                 MessageBox.Show("Map will not maintain binary equality. Please create a github issue on the main UAssetAPI repository");
                 return;
             }
-            new ObjectSelector(FindActors()).ShowDialog();
+            new ObjectSelector(FindActors(Map)).ShowDialog();
         }
     }
 
