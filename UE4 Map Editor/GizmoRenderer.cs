@@ -30,11 +30,11 @@ public static class GizmoRenderer
             new FragmentShader(
                 @"#version 330
                 uniform sampler2D tex;
-                uniform vec4 color;
+                uniform vec4 colour;
                 in vec2 uv;
                 
                 void main(){
-                    gl_FragColor = color * texture(tex,uv);
+                    gl_FragColor = colour * texture(tex,uv);
                 }"),
             new VertexShader(
                 @"#version 330
@@ -71,36 +71,38 @@ public static class GizmoRenderer
     public static void Draw(Vector2 TopLeft, GL_ControlModern control, Pass pass, Vector3 position, Vector4 highlightColor)
     {
         if (pass == Pass.OPAQUE) return;
+
         control.UpdateModelMatrix(new Matrix4(control.InvertedRotationMatrix) * Matrix4.CreateTranslation(position));
-        if (pass == Pass.TRANSPARENT)
+
+        if (pass == Pass.PICKING)
         {
-            Vector4 color = Vector4.One * (1 - highlightColor.W) + highlightColor * highlightColor.W;
+            control.CurrentShader = Framework.SolidColorShaderProgram;
 
-            color.W = 0.8f;
-
-            control.CurrentShader = shader;
-
-            GL.ActiveTexture(TextureUnit.Texture0);
-            GL.BindTexture(TextureTarget.Texture2D, tex);
-
-            GL.Enable(EnableCap.Blend);
-            GL.Enable(EnableCap.AlphaTest);
-            GL.AlphaFunc(AlphaFunction.Gequal, 0.25f);
-
-            shader.SetVector4("color", color);
-            shader.SetVector2("TopLeft", TopLeft);
+            Framework.SolidColorShaderProgram.SetVector4("colour", control.NextPickingColor());
 
             plane.Use(control);
             GL.DrawArrays(PrimitiveType.Quads, 0, 4);
-            GL.Disable(EnableCap.Blend);
-            GL.Disable(EnableCap.AlphaTest);
-            return;
         }
-        control.CurrentShader = Framework.SolidColorShaderProgram;
+        Vector4 colour = Vector4.One * (1 - highlightColor.W) + highlightColor * highlightColor.W;
 
-        Framework.SolidColorShaderProgram.SetVector4("color", control.NextPickingColor());
+        colour.W = 0.8f;
+
+        control.CurrentShader = shader;
+
+        GL.ActiveTexture(TextureUnit.Texture0);
+        GL.BindTexture(TextureTarget.Texture2D, tex);
+
+        GL.Enable(EnableCap.Blend);
+        GL.Enable(EnableCap.AlphaTest);
+        GL.AlphaFunc(AlphaFunction.Gequal, 0.25f);
+
+        shader.SetVector4("colour", colour);
+        shader.SetVector2("TopLeft", TopLeft);
 
         plane.Use(control);
         GL.DrawArrays(PrimitiveType.Quads, 0, 4);
+        GL.Disable(EnableCap.Blend);
+        GL.Disable(EnableCap.AlphaTest);
+        return;
     }
 }

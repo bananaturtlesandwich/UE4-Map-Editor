@@ -1,4 +1,6 @@
-﻿namespace UE4MapEditor
+﻿using System.Windows.Forms;
+
+namespace UE4MapEditor
 {
     partial class ObjectSelector
     {

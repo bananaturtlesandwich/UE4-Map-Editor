@@ -1,4 +1,7 @@
-﻿using UAssetAPI;
+﻿using System;
+using System.Collections.Generic;
+using System.Windows.Forms;
+using UAssetAPI;
 
 namespace UE4MapEditor
 {

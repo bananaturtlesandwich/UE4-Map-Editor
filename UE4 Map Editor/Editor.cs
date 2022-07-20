@@ -2,6 +2,11 @@ using DiscordRPC;
 using GL_EditorFramework.EditorDrawables;
 using GL_EditorFramework.StandardCameras;
 using OpenTK;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Windows.Forms;
 using UAssetAPI;
 using UAssetAPI.UnrealTypes;
 
@@ -93,12 +98,11 @@ public partial class Editor : Form
 
     void FocusCam(object[] targets)
     {
-        if (Objects.SelectedItems.Count == 0) return;
+        if (targets.Length == 0) return;
 
-        if (Objects.SelectedItems.Count == 1)
+        if (targets.Length == 1)
         {
             Display.CameraTarget = ((IEditableObject)targets[0]).GetFocusPoint();
-            //Display.CameraDistance = 10f;
             return;
         }
         Vector3 target = ((IEditableObject)targets[0]).GetFocusPoint();
