@@ -39,7 +39,7 @@ public static class GizmoRenderer
             new VertexShader(
                 @"#version 330
                 layout(location = 0) in vec4 position;
-                uniform vec2 uvTopLeft;
+                uniform vec2 TopLeft;
                 uniform mat4 mtxMdl;
                 uniform mat4 mtxCam;
                 out vec2 uv;
@@ -47,7 +47,7 @@ public static class GizmoRenderer
                     return min2 + (value - min1) * (max2 - min2) / (max1 - min1);
                 }
                 void main(){
-                    uv = map(position.xy,vec2(-0.5,0.5),vec2(0.5,-0.5), uvTopLeft, uvTopLeft+vec2(0.25,0.25));
+                    uv = map(position.xy,vec2(-0.5,0.5),vec2(0.5,-0.5), TopLeft, TopLeft+vec2(0.25,0.25));
                     gl_Position = mtxCam*mtxMdl*position;
                 }"));
 
@@ -88,7 +88,7 @@ public static class GizmoRenderer
             GL.AlphaFunc(AlphaFunction.Gequal, 0.25f);
 
             shader.SetVector4("color", color);
-            shader.SetVector2("uvTopLeft", TopLeft);
+            shader.SetVector2("TopLeft", TopLeft);
 
             plane.Use(control);
             GL.DrawArrays(PrimitiveType.Quads, 0, 4);

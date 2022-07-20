@@ -12,51 +12,72 @@ namespace UE4MapEditor;
 
 public class Actor : TransformableObject
 {
-    #region transform handling
-    static Vector3 GetRelativeLocation(NormalExport export)
-    {
-        foreach (var item in export.Data)
-            if (item.Name.Value.Value == "RelativeLocation")
-                return ToVector3((VectorPropertyData)((StructPropertyData)item).Value[0]);
-        //if doesn't exist make one so it can be edited
-        StructPropertyData RelativeLocation = new StructPropertyData(FName.FromString(export.Asset, "RelativeLocation"), FName.FromString(export.Asset, "Vector"));
-        RelativeLocation.Value.Add(new VectorPropertyData(FName.FromString(export.Asset, "RelativeLocation")) { Value = new(0, 0, 0) });
-        export.Data.Add(RelativeLocation);
-        return Vector3.Zero;
-    }
 
-    static Vector3 GetRelativeRotation(NormalExport export)
-    {
-        foreach (var item in export.Data)
-            if (item.Name.Value.Value == "RelativeRotation")
-                return ToVector3((RotatorPropertyData)((StructPropertyData)item).Value[0]);
-        //if doesn't exist make one so it can be edited
-        StructPropertyData RelativeRotation = new StructPropertyData(FName.FromString(export.Asset, "RelativeRotation"), FName.FromString(export.Asset, "Rotator"));
-        RelativeRotation.Value.Add(new RotatorPropertyData(FName.FromString(export.Asset, "RelativeRotation")) { Value = new(0, 0, 0) });
-        export.Data.Add(RelativeRotation);
-        return Vector3.Zero;
-    }
-
-    static Vector3 GetRelativeScale3D(NormalExport export)
-    {
-        foreach (var item in export.Data)
-            if (item.Name.Value.Value == "RelativeScale3D")
-                return ToVector3((VectorPropertyData)((StructPropertyData)item).Value[0]);
-        //if doesn't exist make one so it can be edited
-        StructPropertyData RelativeScale3D = new StructPropertyData(FName.FromString(export.Asset, "RelativeScale3D"), FName.FromString(export.Asset, "Vector"));
-        RelativeScale3D.Value.Add(new VectorPropertyData(FName.FromString(export.Asset, "RelativeScale3D")) { Value = new(1, 1, 1) });
-        export.Data.Add(RelativeScale3D);
-        return Vector3.One;
-    }
-    #endregion
-
-    public Actor(NormalExport export) : base(GetRelativeLocation(export), GetRelativeRotation(export), GetRelativeScale3D(export))
+    //I'll just put default values for the constructor because in the base they just set the transform
+    //Also I don't have immediate access to the rootcomponent unless I pass it as an argument
+    //Therefore the best is to do it in the constructor
+    public Actor(NormalExport export) : base(Vector3.Zero, Vector3.Zero, Vector3.One)
     {
         this.export = export;
-        name = export.Asset.Exports[export.OuterIndex.Index].ObjectName.Value.Value;
+        name = export.ObjectName.Value.Value;
+        //There's no common pattern for finding RootComponents except they are near the end of the data
+        RootComponent = null;
+        for (int i = export.Data.Count - 1; i >= 0; i--)
+            if (export.Data[i].Name.Value.Value == "RootComponent")
+                RootComponent = (NormalExport)export.Asset.Exports[((ObjectPropertyData)export.Data[i]).Value.Index];
+        HandleTransforms();
+    }
+
+    void HandleTransforms()
+    {
+        //¯\_(ツ)_/¯ It happens for the default export and don't really know how to deal with it
+        if (RootComponent is null) return;
+        bool HasLocation, HasRotation, HasScale;
+        HasLocation = HasRotation = HasScale = false;
+        //Changing this to all be in one function is also a lot more optimised
+        for (int i = 0; i < RootComponent.Data.Count; i++)
+            switch (RootComponent.Data[i].Name.Value.Value)
+            {
+                //casting because it will always be that
+                case "RelativeLocation":
+                    Position = ToVector3((VectorPropertyData)((StructPropertyData)RootComponent.Data[i]).Value[0]);
+                    HasLocation = true;
+                    break;
+                case "RelativeRotation":
+                    HasRotation = true;
+                    Rotation = ToVector3((RotatorPropertyData)((StructPropertyData)RootComponent.Data[i]).Value[0]);
+                    break;
+                case "RelativeScale3D":
+                    HasScale = true;
+                    Scale = ToVector3((VectorPropertyData)((StructPropertyData)RootComponent.Data[i]).Value[0]);
+                    break;
+            }
+
+        #region default struct creation
+        if (!HasLocation)
+        {
+            StructPropertyData RelativeLocation = new StructPropertyData(FName.FromString(RootComponent.Asset, "RelativeLocation"), FName.FromString(RootComponent.Asset, "Vector"));
+            RelativeLocation.Value.Add(new VectorPropertyData(FName.FromString(RootComponent.Asset, "RelativeLocation")) { Value = new(0, 0, 0) });
+            RootComponent.Data.Add(RelativeLocation);
+        }
+        if (!HasRotation)
+        {
+            StructPropertyData RelativeRotation = new StructPropertyData(FName.FromString(RootComponent.Asset, "RelativeRotation"), FName.FromString(RootComponent.Asset, "Rotator"));
+            RelativeRotation.Value.Add(new RotatorPropertyData(FName.FromString(RootComponent.Asset, "RelativeRotation")) { Value = new(0, 0, 0) });
+            RootComponent.Data.Add(RelativeRotation);
+        }
+        if (!HasScale)
+        {
+            StructPropertyData RelativeScale3D = new StructPropertyData(FName.FromString(RootComponent.Asset, "RelativeScale3D"), FName.FromString(RootComponent.Asset, "Vector"));
+            RelativeScale3D.Value.Add(new VectorPropertyData(FName.FromString(RootComponent.Asset, "RelativeScale3D")) { Value = new(1, 1, 1) });
+            RootComponent.Data.Add(RelativeScale3D);
+        }
+        #endregion
     }
 
     public NormalExport export;
+
+    NormalExport? RootComponent;
 
     string name;
 
@@ -66,7 +87,7 @@ public class Actor : TransformableObject
         new Vector3(Vector.Value.X / 100, Vector.Value.Y / 100, Vector.Value.Z / 100);
 
     static Vector3 ToVector3(RotatorPropertyData Rotator) =>
-        new Vector3(Rotator.Value.Pitch, Rotator.Value.Yaw, Rotator.Value.Roll);
+        new Vector3(Rotator.Value.Roll, Rotator.Value.Pitch, Rotator.Value.Yaw);
 
     static FVector ToFVector(Vector3 Vector) =>
         new FVector(Vector.X * 100, Vector.Y * 100, Vector.Z * 100);
@@ -78,12 +99,14 @@ public class Actor : TransformableObject
     public override bool TrySetupObjectUIControl(EditorSceneBase scene, ObjectUIControl objectUIControl)
     {
         if (!Selected) return false;
-        objectUIControl.AddObjectUIContainer(new TransformPropertyProvider(this, scene, export), "Transform");
+        if (RootComponent is not null)
+            //for that one specific case :/
+            objectUIControl.AddObjectUIContainer(new TransformPropertyProvider(this, scene, RootComponent), "Transform");
         objectUIControl.AddObjectUIContainer(new ActorUIControl(scene, export), "Properties");
         return true;
     }
 
-    class ActorUIControl : IObjectUIContainer
+    struct ActorUIControl : IObjectUIContainer
     {
         EditorSceneBase scene;
         NormalExport export;
@@ -93,10 +116,11 @@ public class Actor : TransformableObject
             this.scene = scene;
             this.export = export;
         }
+
+        //How should I handle references to other objects?
         public void DoUI(IObjectUIControl control)
         {
-            //I'm not quite sure how I want to handle ObjectPropertyData because some refs will be in the map anyway
-            foreach (var data in ((NormalExport)export.Asset.Exports[export.OuterIndex.Index]).Data)
+            foreach (var data in export.Data)
                 AssignValue(data, control);
         }
 
@@ -242,24 +266,25 @@ public class Actor : TransformableObject
     }
 
     //PropertyProvider's function DoUI isn't virtual so I had to rewrite it to rewrite DoUI and link transforms
-    class TransformPropertyProvider : IObjectUIContainer
+    struct TransformPropertyProvider : IObjectUIContainer
     {
-        public TransformPropertyProvider(TransformableObject obj, EditorSceneBase scene, NormalExport export)
+        public TransformPropertyProvider(TransformableObject obj, EditorSceneBase scene, NormalExport root)
         {
-            this.export = export;
+            this.root = root;
             this.obj = obj;
             this.scene = scene;
         }
 
         EditorSceneBase.PropertyCapture? capture = null;
 
-        NormalExport export; TransformableObject obj; EditorSceneBase scene;
+        NormalExport root; TransformableObject obj; EditorSceneBase scene;
 
         public void OnValueChanged() => scene.Refresh();
 
         public void DoUI(IObjectUIControl control)
         {
-            foreach (var item in export.Data) switch (item.Name.Value.Value)
+            foreach (var item in root.Data)
+                switch (item.Name.Value.Value)
                 {
                     case "RelativeLocation":
                         ((VectorPropertyData)((StructPropertyData)item).Value[0]).Value = ToFVector(
@@ -292,12 +317,14 @@ public class Actor : TransformableObject
     #region rendering
     public override void Draw(GL_ControlModern control, Pass pass, EditorSceneBase editorScene)
     {
-        switch (export.Asset.Exports[export.OuterIndex.Index].GetExportClassType().Value.Value)
+        switch (export.GetExportClassType().Value.Value)
         {
+            //Since there are only 4 gizmos needed I need to remind myself to optimise rendering
+            //Also just realised I don't have any UE4 games that use the native sound system :p
             case "Emitter":
                 GizmoRenderer.Draw(new(0.75f, 0), control, pass, Position, Selected && editorScene.Hovered == this ? hoverSelectColor : editorScene.Hovered == this ? hoverColor : Selected ? selectColor : Vector4.Zero);
                 break;
-            case "CameraComponent":
+            case "CameraActor":
                 GizmoRenderer.Draw(new(0, 0), control, pass, Position, Selected && editorScene.Hovered == this ? hoverSelectColor : editorScene.Hovered == this ? hoverColor : Selected ? selectColor : Vector4.Zero);
                 break;
             case "PointLight":

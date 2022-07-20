@@ -64,14 +64,14 @@ public partial class Editor : Form
             MessageBox.Show("Map will not maintain binary equality. Please create a github issue on the main UAssetAPI repository");
             return;
         }
-        foreach (var export in FindActors(Map)) scene.objects.Add(new Actor((NormalExport)export));
+        foreach (NormalExport export in FindActors(Map)) scene.objects.Add(new Actor(export));
         LinkScene();
     }
 
     static List<Export> FindActors(UAsset map)
     {
         //WorldSettings is always the last export in a map and it's outerindex is always the Level
-        int LevelIndex = map.Exports[^0].OuterIndex.Index;
+        int LevelIndex = map.Exports[^1].OuterIndex.Index;
         return map.Exports.Where(x => x.OuterIndex.Index == LevelIndex).ToList();
     }
 
