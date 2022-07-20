@@ -47,7 +47,7 @@ public static class GizmoRenderer
                     return min2 + (value - min1) * (max2 - min2) / (max1 - min1);
                 }
                 void main(){
-                    uv = map(position.xy,vec2(-0.5,0.5),vec2(0.5,-0.5), TopLeft, TopLeft+vec2(0.25,0.25));
+                    uv = map(position.xy,vec2(-0.5,0.5),vec2(0.5,-0.5), TopLeft, TopLeft+vec2(0.5,0.5));
                     gl_Position = mtxCam*mtxMdl*position;
                 }"));
 
@@ -60,8 +60,8 @@ public static class GizmoRenderer
         tex = GL.GenTexture();
         GL.BindTexture(TextureTarget.Texture2D, tex);
         Bitmap data = Gizmos.icons;
-        BitmapData rawdata = data.LockBits(new(0, 0, 512, 512), ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-        GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, 512, 512, 0, OpenTK.Graphics.OpenGL.PixelFormat.Rgba, PixelType.UnsignedByte, rawdata.Scan0);
+        BitmapData rawdata = data.LockBits(new(0, 0, 256, 256), ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+        GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, 256, 256, 0, OpenTK.Graphics.OpenGL.PixelFormat.Rgba, PixelType.UnsignedByte, rawdata.Scan0);
         GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
         GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
         GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);

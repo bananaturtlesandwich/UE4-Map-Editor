@@ -322,14 +322,14 @@ public class Actor : TransformableObject
             //Since there are only 4 gizmos needed I need to remind myself to optimise rendering
             //Also just realised I don't have any UE4 games that use the native sound system :p
             case "Emitter":
-                GizmoRenderer.Draw(new(0.75f, 0), control, pass, Position, Selected && editorScene.Hovered == this ? hoverSelectColor : editorScene.Hovered == this ? hoverColor : Selected ? selectColor : Vector4.Zero);
+                GizmoRenderer.Draw(new(0.5f, 0.5f), control, pass, Position, Selected && editorScene.Hovered == this ? hoverSelectColor : editorScene.Hovered == this ? hoverColor : Selected ? selectColor : Vector4.Zero);
                 break;
             case "CameraActor":
                 GizmoRenderer.Draw(new(0, 0), control, pass, Position, Selected && editorScene.Hovered == this ? hoverSelectColor : editorScene.Hovered == this ? hoverColor : Selected ? selectColor : Vector4.Zero);
                 break;
             case "PointLight":
             case "SpotLight":
-                GizmoRenderer.Draw(new(0.25f, 0), control, pass, Position, Selected && editorScene.Hovered == this ? hoverSelectColor : editorScene.Hovered == this ? hoverColor : Selected ? selectColor : Vector4.Zero);
+                GizmoRenderer.Draw(new(0.5f, 0), control, pass, Position, Selected && editorScene.Hovered == this ? hoverSelectColor : editorScene.Hovered == this ? hoverColor : Selected ? selectColor : Vector4.Zero);
                 break;
             default:
                 base.Draw(control, pass, editorScene);
