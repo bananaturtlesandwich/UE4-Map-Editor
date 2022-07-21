@@ -24,17 +24,17 @@ partial class Editor
         Objects.ListExited += OnObjectListExited;
     }
 
-    void OnSelectionChanged(object? sender, EventArgs? e)
+    void OnSelectionChanged(object sender, EventArgs e)
     {
         Objects.Refresh();
         //Objects.ScrollControlIntoView();
-        scene.SetupObjectUIControl(Properties);
+        scene.SetupObjectUIControl(PropertyList);
     }
 
-    void OnObjectsMoved(object? sender, EventArgs e)
+    void OnObjectsMoved(object sender, EventArgs e)
     {
-        foreach (IObjectUIContainer UIContainer in Properties.ObjectUIContainers) UIContainer.UpdateProperties();
-        Properties.Refresh();
+        foreach (IObjectUIContainer UIContainer in PropertyList.ObjectUIContainers) UIContainer.UpdateProperties();
+        PropertyList.Refresh();
     }
 
     void OnListChanged(object sender, ListChangedEventArgs e)
@@ -47,7 +47,7 @@ partial class Editor
         if (Objects.CurrentList == e.List) Objects.InvalidateCurrentList();
     }
 
-    void OnKeyDown(object? sender, KeyEventArgs KeyPress)
+    void OnKeyDown(object sender, KeyEventArgs KeyPress)
     {
         if (KeyPress.KeyCode == Keys.Delete)
         {
@@ -86,7 +86,7 @@ partial class Editor
         Objects.UpdateComboBoxItems();
         Objects.SelectedItems = scene.SelectedObjects;
         //fetch available properties for list
-        scene.SetupObjectUIControl(Properties);
+        scene.SetupObjectUIControl(PropertyList);
     }
 
     void FocusObject(object sender, ItemClickedEventArgs Click)

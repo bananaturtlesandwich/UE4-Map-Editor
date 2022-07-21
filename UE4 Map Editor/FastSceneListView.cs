@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Windows.Forms;
-using static GL_EditorFramework.Framework;
 
 namespace UE4MapEditor;
 //In my editor I don't plan to have multiple-tab editing so this eliminates that
@@ -8,7 +7,7 @@ namespace UE4MapEditor;
 public partial class FastSceneListView : UserControl
 {
     public event EventHandler SelectionChanged;
-    public event ListEventHandler ListExited;
+    //public event ListEventHandler ListExited;
     public event EventHandler ItemClicked;
 
     public FastSceneListView()

@@ -77,7 +77,7 @@ public class Actor : TransformableObject
 
     public NormalExport export;
 
-    NormalExport? RootComponent;
+    NormalExport RootComponent;
 
     string name;
 

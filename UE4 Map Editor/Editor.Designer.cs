@@ -40,6 +40,8 @@ partial class Editor
             this.UEVersion = new System.Windows.Forms.ToolStripComboBox();
             this.Split = new System.Windows.Forms.SplitContainer();
             this.Sidebar = new System.Windows.Forms.SplitContainer();
+            this.Objects = new GL_EditorFramework.SceneListView();
+            this.PropertyList = new GL_EditorFramework.ObjectUIControl();
             this.Display = new GL_EditorFramework.GL_Core.GL_ControlModern();
             this.OpenMapDialog = new System.Windows.Forms.OpenFileDialog();
             this.SaveMapDialog = new System.Windows.Forms.SaveFileDialog();
@@ -50,6 +52,8 @@ partial class Editor
             this.Split.Panel2.SuspendLayout();
             this.Split.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Sidebar)).BeginInit();
+            this.Sidebar.Panel1.SuspendLayout();
+            this.Sidebar.Panel2.SuspendLayout();
             this.Sidebar.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -63,8 +67,8 @@ partial class Editor
             this.UEVersion});
             this.MenuStrip.Location = new System.Drawing.Point(0, 0);
             this.MenuStrip.Name = "MenuStrip";
-            this.MenuStrip.Padding = new System.Windows.Forms.Padding(5, 2, 0, 2);
-            this.MenuStrip.Size = new System.Drawing.Size(1198, 32);
+            this.MenuStrip.Padding = new System.Windows.Forms.Padding(4, 2, 0, 2);
+            this.MenuStrip.Size = new System.Drawing.Size(1350, 37);
             this.MenuStrip.TabIndex = 0;
             this.MenuStrip.Text = "MenuStrip";
             // 
@@ -76,7 +80,7 @@ partial class Editor
             this.SaveAs});
             this.FileToolStrip.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.FileToolStrip.Name = "FileToolStrip";
-            this.FileToolStrip.Size = new System.Drawing.Size(54, 28);
+            this.FileToolStrip.Size = new System.Drawing.Size(54, 33);
             this.FileToolStrip.Text = "File";
             // 
             // Open
@@ -110,7 +114,7 @@ partial class Editor
             this.Add});
             this.EditToolStrip.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.EditToolStrip.Name = "EditToolStrip";
-            this.EditToolStrip.Size = new System.Drawing.Size(58, 28);
+            this.EditToolStrip.Size = new System.Drawing.Size(58, 33);
             this.EditToolStrip.Text = "Edit";
             // 
             // Add
@@ -156,12 +160,12 @@ partial class Editor
             "4.26",
             "4.27"});
             this.UEVersion.Name = "UEVersion";
-            this.UEVersion.Size = new System.Drawing.Size(150, 28);
+            this.UEVersion.Size = new System.Drawing.Size(135, 33);
             // 
             // Split
             // 
             this.Split.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.Split.Location = new System.Drawing.Point(0, 32);
+            this.Split.Location = new System.Drawing.Point(0, 37);
             this.Split.Margin = new System.Windows.Forms.Padding(2);
             this.Split.Name = "Split";
             // 
@@ -173,8 +177,8 @@ partial class Editor
             // Split.Panel2
             // 
             this.Split.Panel2.Controls.Add(this.Display);
-            this.Split.Size = new System.Drawing.Size(1198, 808);
-            this.Split.SplitterDistance = 307;
+            this.Split.Size = new System.Drawing.Size(1350, 803);
+            this.Split.SplitterDistance = 541;
             this.Split.TabIndex = 1;
             // 
             // Sidebar
@@ -184,9 +188,38 @@ partial class Editor
             this.Sidebar.Margin = new System.Windows.Forms.Padding(2);
             this.Sidebar.Name = "Sidebar";
             this.Sidebar.Orientation = System.Windows.Forms.Orientation.Horizontal;
-            this.Sidebar.Size = new System.Drawing.Size(307, 808);
-            this.Sidebar.SplitterDistance = 347;
+            // 
+            // Sidebar.Panel1
+            // 
+            this.Sidebar.Panel1.Controls.Add(this.Objects);
+            // 
+            // Sidebar.Panel2
+            // 
+            this.Sidebar.Panel2.Controls.Add(this.PropertyList);
+            this.Sidebar.Size = new System.Drawing.Size(541, 803);
+            this.Sidebar.SplitterDistance = 447;
+            this.Sidebar.SplitterWidth = 3;
             this.Sidebar.TabIndex = 0;
+            // 
+            // Objects
+            // 
+            this.Objects.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.Objects.Location = new System.Drawing.Point(0, 0);
+            this.Objects.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.Objects.Name = "Objects";
+            this.Objects.RootLists = ((System.Collections.Generic.Dictionary<string, System.Collections.IList>)(resources.GetObject("Objects.RootLists")));
+            this.Objects.Size = new System.Drawing.Size(541, 447);
+            this.Objects.TabIndex = 0;
+            // 
+            // PropertyList
+            // 
+            this.PropertyList.BackColor = System.Drawing.SystemColors.Control;
+            this.PropertyList.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.PropertyList.Location = new System.Drawing.Point(0, 0);
+            this.PropertyList.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.PropertyList.Name = "PropertyList";
+            this.PropertyList.Size = new System.Drawing.Size(541, 353);
+            this.PropertyList.TabIndex = 0;
             // 
             // Display
             // 
@@ -199,11 +232,11 @@ partial class Editor
             this.Display.Dock = System.Windows.Forms.DockStyle.Fill;
             this.Display.Fov = 0.7853982F;
             this.Display.Location = new System.Drawing.Point(0, 0);
-            this.Display.Margin = new System.Windows.Forms.Padding(4);
+            this.Display.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.Display.Name = "Display";
             this.Display.NormPickingDepth = 0F;
             this.Display.ShowOrientationCube = true;
-            this.Display.Size = new System.Drawing.Size(888, 808);
+            this.Display.Size = new System.Drawing.Size(805, 803);
             this.Display.Stereoscopy = GL_EditorFramework.GL_Core.GL_ControlBase.StereoscopyType.DISABLED;
             this.Display.TabIndex = 0;
             this.Display.VSync = false;
@@ -232,7 +265,7 @@ partial class Editor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1198, 840);
+            this.ClientSize = new System.Drawing.Size(1350, 840);
             this.Controls.Add(this.Split);
             this.Controls.Add(this.MenuStrip);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -250,6 +283,8 @@ partial class Editor
             this.Split.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.Split)).EndInit();
             this.Split.ResumeLayout(false);
+            this.Sidebar.Panel1.ResumeLayout(false);
+            this.Sidebar.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.Sidebar)).EndInit();
             this.Sidebar.ResumeLayout(false);
             this.ResumeLayout(false);
@@ -273,4 +308,6 @@ partial class Editor
     private ToolStripMenuItem Add;
     private OpenFileDialog AddObjectDialog;
     private GL_ControlModern Display;
+    private SceneListView Objects;
+    private ObjectUIControl PropertyList;
 }

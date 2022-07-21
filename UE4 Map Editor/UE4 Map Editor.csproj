@@ -70,9 +70,11 @@
       <DependentUpon>FastSceneListView.cs</DependentUpon>
     </Compile>
     <Compile Include="GizmoRenderer.cs" />
-    <Compile Include="Resources\OldEditor.Designer.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Editor.resx">
+      <DependentUpon>Editor.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FastSceneListView.resx">
       <DependentUpon>FastSceneListView.cs</DependentUpon>
     </EmbeddedResource>
