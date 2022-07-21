@@ -49,7 +49,7 @@ public partial class Editor : Form
 
     void OnClose(object sender, EventArgs e)
     {
-        Directory.CreateDirectory(configfile[..^10]);
+        Directory.CreateDirectory(configfile.Replace("config.txt", ""));
         File.WriteAllText(configfile, UEVersion.Text);
         discord.Dispose();
     }
@@ -75,7 +75,7 @@ public partial class Editor : Form
     static List<Export> FindActors(UAsset map)
     {
         //WorldSettings is always the last export in a map and it's outerindex is always the Level
-        int LevelIndex = map.Exports[^1].OuterIndex.Index;
+        int LevelIndex = map.Exports[map.Exports.Count - 1].OuterIndex.Index;
         return map.Exports.Where(x => x.OuterIndex.Index == LevelIndex).ToList();
     }
 
@@ -83,7 +83,8 @@ public partial class Editor : Form
     {
         //not sure if I want to support tabs for editing multiple maps at a time-not sure if there's a point
         Objects.RootLists.Clear();
-        string file = OpenMapDialog.FileName.Split('\\')[^1];
+        var temp = OpenMapDialog.FileName.Split('\\');
+        string file = temp[temp.Length - 1];
         discord.UpdateState("Editing " + file);
         Display.MainDrawable = scene;
         Objects.RootLists.Add(file, scene.objects);
