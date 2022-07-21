@@ -1,4 +1,4 @@
-using DiscordRPC;
+﻿using DiscordRPC;
 using GL_EditorFramework.EditorDrawables;
 using GL_EditorFramework.StandardCameras;
 using OpenTK;
@@ -11,7 +11,6 @@ using UAssetAPI;
 using UAssetAPI.UnrealTypes;
 
 namespace UE4MapEditor;
-
 public partial class Editor : Form
 {
     static DiscordRpcClient discord = new("975340497071669271");
@@ -151,7 +150,6 @@ public partial class Editor : Form
                 MessageBox.Show("Map will not maintain binary equality. Please create a github issue on the main UAssetAPI repository");
                 return;
             }
-            new ObjectSelector(FindActors(Map)).ShowDialog();
         }
     }
 

@@ -3,6 +3,7 @@ using GL_EditorFramework.GL_Core;
 using GL_EditorFramework.Interfaces;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
+using System.Drawing;
 using System.Drawing.Imaging;
 
 namespace UE4MapEditor;
@@ -59,7 +60,7 @@ public static class GizmoRenderer
 
         tex = GL.GenTexture();
         GL.BindTexture(TextureTarget.Texture2D, tex);
-        Bitmap data = Gizmos.icons;
+        Bitmap data = Properties.Resources.icons;
         BitmapData rawdata = data.LockBits(new(0, 0, 256, 256), ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
         GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, 256, 256, 0, OpenTK.Graphics.OpenGL.PixelFormat.Rgba, PixelType.UnsignedByte, rawdata.Scan0);
         GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);

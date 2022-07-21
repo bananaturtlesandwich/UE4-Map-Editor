@@ -1,32 +1,34 @@
-﻿using System.Windows.Forms;
+﻿using GL_EditorFramework;
+using GL_EditorFramework.GL_Core;
+using System.Windows.Forms;
 
-namespace UE4MapEditor
+namespace UE4MapEditor;
+
+partial class Editor
 {
-    partial class Editor
+    /// <summary>
+    /// Required designer variable.
+    /// </summary>
+    private System.ComponentModel.IContainer components = null;
+
+    /// <summary>
+    /// Clean up any resources being used.
+    /// </summary>
+    /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+    protected override void Dispose(bool disposing)
     {
-        /// <summary>
-        ///  Required designer variable.
-        /// </summary>
-        private System.ComponentModel.IContainer components = null;
+        if (disposing && (components != null))components.Dispose();
+        base.Dispose(disposing);
+    }
 
-        /// <summary>
-        ///  Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing && (components != null)) components.Dispose();
-            base.Dispose(disposing);
-        }
+    #region Windows Form Designer generated code
 
-        #region Windows Form Designer generated code
-
-        /// <summary>
-        ///  Required method for Designer support - do not modify
-        ///  the contents of this method with the code editor.
-        /// </summary>
-        private void InitializeComponent()
-        {
+    /// <summary>
+    /// Required method for Designer support - do not modify
+    /// the contents of this method with the code editor.
+    /// </summary>
+    private void InitializeComponent()
+    {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Editor));
             this.MenuStrip = new System.Windows.Forms.MenuStrip();
             this.FileToolStrip = new System.Windows.Forms.ToolStripMenuItem();
@@ -38,9 +40,7 @@ namespace UE4MapEditor
             this.UEVersion = new System.Windows.Forms.ToolStripComboBox();
             this.Split = new System.Windows.Forms.SplitContainer();
             this.Sidebar = new System.Windows.Forms.SplitContainer();
-            this.Objects = new GL_EditorFramework.SceneListView();
             this.Display = new GL_EditorFramework.GL_Core.GL_ControlModern();
-            this.Properties = new GL_EditorFramework.ObjectUIControl();
             this.OpenMapDialog = new System.Windows.Forms.OpenFileDialog();
             this.SaveMapDialog = new System.Windows.Forms.SaveFileDialog();
             this.AddObjectDialog = new System.Windows.Forms.OpenFileDialog();
@@ -50,13 +50,12 @@ namespace UE4MapEditor
             this.Split.Panel2.SuspendLayout();
             this.Split.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Sidebar)).BeginInit();
-            this.Sidebar.Panel1.SuspendLayout();
             this.Sidebar.SuspendLayout();
             this.SuspendLayout();
             // 
             // MenuStrip
             // 
-            this.MenuStrip.Font = new System.Drawing.Font("Segoe UI", 4F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.MenuStrip.Font = new System.Drawing.Font("Segoe UI", 4F);
             this.MenuStrip.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.MenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.FileToolStrip,
@@ -75,16 +74,16 @@ namespace UE4MapEditor
             this.Open,
             this.Save,
             this.SaveAs});
-            this.FileToolStrip.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.FileToolStrip.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.FileToolStrip.Name = "FileToolStrip";
-            this.FileToolStrip.Size = new System.Drawing.Size(46, 28);
+            this.FileToolStrip.Size = new System.Drawing.Size(54, 28);
             this.FileToolStrip.Text = "File";
             // 
             // Open
             // 
             this.Open.Name = "Open";
             this.Open.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
-            this.Open.Size = new System.Drawing.Size(233, 26);
+            this.Open.Size = new System.Drawing.Size(285, 34);
             this.Open.Text = "Open";
             this.Open.Click += new System.EventHandler(this.OpenMap);
             // 
@@ -92,7 +91,7 @@ namespace UE4MapEditor
             // 
             this.Save.Name = "Save";
             this.Save.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-            this.Save.Size = new System.Drawing.Size(233, 26);
+            this.Save.Size = new System.Drawing.Size(285, 34);
             this.Save.Text = "Save";
             this.Save.Click += new System.EventHandler(this.SaveMap);
             // 
@@ -101,7 +100,7 @@ namespace UE4MapEditor
             this.SaveAs.Name = "SaveAs";
             this.SaveAs.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
             | System.Windows.Forms.Keys.S)));
-            this.SaveAs.Size = new System.Drawing.Size(233, 26);
+            this.SaveAs.Size = new System.Drawing.Size(285, 34);
             this.SaveAs.Text = "Save As";
             this.SaveAs.Click += new System.EventHandler(this.SaveMapAs);
             // 
@@ -109,16 +108,16 @@ namespace UE4MapEditor
             // 
             this.EditToolStrip.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.Add});
-            this.EditToolStrip.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.EditToolStrip.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.EditToolStrip.Name = "EditToolStrip";
-            this.EditToolStrip.Size = new System.Drawing.Size(49, 28);
+            this.EditToolStrip.Size = new System.Drawing.Size(58, 28);
             this.EditToolStrip.Text = "Edit";
             // 
             // Add
             // 
             this.Add.Name = "Add";
             this.Add.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.A)));
-            this.Add.Size = new System.Drawing.Size(172, 26);
+            this.Add.Size = new System.Drawing.Size(211, 34);
             this.Add.Text = "Add";
             this.Add.Click += new System.EventHandler(this.OnAddClicked);
             // 
@@ -165,7 +164,6 @@ namespace UE4MapEditor
             this.Split.Location = new System.Drawing.Point(0, 32);
             this.Split.Margin = new System.Windows.Forms.Padding(2);
             this.Split.Name = "Split";
-            this.Split.SplitterDistance = 500;
             // 
             // Split.Panel1
             // 
@@ -177,7 +175,6 @@ namespace UE4MapEditor
             this.Split.Panel2.Controls.Add(this.Display);
             this.Split.Size = new System.Drawing.Size(1198, 808);
             this.Split.SplitterDistance = 307;
-            this.Split.SplitterWidth = 3;
             this.Split.TabIndex = 1;
             // 
             // Sidebar
@@ -187,35 +184,14 @@ namespace UE4MapEditor
             this.Sidebar.Margin = new System.Windows.Forms.Padding(2);
             this.Sidebar.Name = "Sidebar";
             this.Sidebar.Orientation = System.Windows.Forms.Orientation.Horizontal;
-            // 
-            // Sidebar.Panel1
-            // 
-            this.Sidebar.Panel1.Controls.Add(this.Objects);
             this.Sidebar.Size = new System.Drawing.Size(307, 808);
             this.Sidebar.SplitterDistance = 347;
-            this.Sidebar.SplitterWidth = 3;
             this.Sidebar.TabIndex = 0;
-            // 
-            // Sidebar.Panel2
-            //
-            this.Sidebar.Panel2.Controls.Add(this.Properties);
-            //
-            // Objects
-            // 
-            this.Objects.AutoScroll = true;
-            this.Objects.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.Objects.Location = new System.Drawing.Point(0, 0);
-            this.Objects.Margin = new System.Windows.Forms.Padding(10, 3, 10, 3);
-            this.Objects.Name = "Objects";
-            this.Objects.RootLists = ((System.Collections.Generic.Dictionary<string, System.Collections.IList>)(resources.GetObject("Objects.RootLists")));
-            this.Objects.Size = new System.Drawing.Size(307, 347);
-            this.Objects.TabIndex = 0;
-            this.Objects.ItemClicked += new GL_EditorFramework.ItemClickedEventHandler(this.FocusObject);
             // 
             // Display
             // 
             this.Display.BackColor = System.Drawing.Color.Black;
-            this.Display.CameraDistance = 20F;
+            this.Display.CameraDistance = 50F;
             this.Display.CameraTarget = ((OpenTK.Vector3)(resources.GetObject("Display.CameraTarget")));
             this.Display.CamRotX = 0F;
             this.Display.CamRotY = 0F;
@@ -234,16 +210,6 @@ namespace UE4MapEditor
             this.Display.ZFar = 100000F;
             this.Display.ZNear = 0.32F;
             // 
-            //Properties
-            //
-            this.Properties.AutoScroll = true;
-            this.Properties.BackColor = System.Drawing.SystemColors.Control;
-            this.Properties.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.Properties.Location = new System.Drawing.Point(0, 0);
-            this.Properties.Margin = new System.Windows.Forms.Padding(6);
-            this.Properties.Name = "Properties";
-            this.Properties.Size = new System.Drawing.Size(398, 509);
-            //
             // OpenMapDialog
             // 
             this.OpenMapDialog.Filter = "Unreal map files|*.umap";
@@ -264,7 +230,7 @@ namespace UE4MapEditor
             // 
             // Editor
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1198, 840);
             this.Controls.Add(this.Split);
@@ -284,33 +250,27 @@ namespace UE4MapEditor
             this.Split.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.Split)).EndInit();
             this.Split.ResumeLayout(false);
-            this.Sidebar.Panel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.Sidebar)).EndInit();
             this.Sidebar.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
-        }
-
-        #endregion
-
-        private MenuStrip MenuStrip;
-        private ToolStripMenuItem FileToolStrip;
-        private ToolStripMenuItem Open;
-        private ToolStripMenuItem Save;
-        private ToolStripMenuItem SaveAs;
-        private SplitContainer Split;
-        private SplitContainer Sidebar;
-        private OpenFileDialog OpenMapDialog;
-        private ToolStripComboBox UEVersion;
-        private SaveFileDialog SaveMapDialog;
-
-        //GL Editor Controls
-        private GL_EditorFramework.GL_Core.GL_ControlModern Display;
-        private GL_EditorFramework.SceneListView Objects;
-        private GL_EditorFramework.ObjectUIControl Properties;
-        private ToolStripMenuItem EditToolStrip;
-        private ToolStripMenuItem Add;
-        private OpenFileDialog AddObjectDialog;
     }
+
+    #endregion
+
+    private MenuStrip MenuStrip;
+    private ToolStripMenuItem FileToolStrip;
+    private ToolStripMenuItem Open;
+    private ToolStripMenuItem Save;
+    private ToolStripMenuItem SaveAs;
+    private SplitContainer Split;
+    private SplitContainer Sidebar;
+    private OpenFileDialog OpenMapDialog;
+    private ToolStripComboBox UEVersion;
+    private SaveFileDialog SaveMapDialog;
+    private ToolStripMenuItem EditToolStrip;
+    private ToolStripMenuItem Add;
+    private OpenFileDialog AddObjectDialog;
+    private GL_ControlModern Display;
 }
