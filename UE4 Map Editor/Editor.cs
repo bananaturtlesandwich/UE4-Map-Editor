@@ -11,6 +11,7 @@ using UAssetAPI;
 using UAssetAPI.UnrealTypes;
 
 namespace UE4MapEditor;
+
 public partial class Editor : Form
 {
     static DiscordRpcClient discord = new("975340497071669271");
@@ -47,7 +48,7 @@ public partial class Editor : Form
         if (arguments.Length > 1) ParseMap(arguments[1]);
     }
 
-    void OnClose(object sender, EventArgs e)
+    void OnClose(object sender, FormClosedEventArgs e)
     {
         Directory.CreateDirectory(configfile.Replace("config.txt", ""));
         File.WriteAllText(configfile, UEVersion.Text);
@@ -134,24 +135,6 @@ public partial class Editor : Form
     void SaveMapAs(object sender, EventArgs e)
     {
         if (SaveMapDialog.ShowDialog() == DialogResult.OK) Map.Write(SaveMapDialog.FileName);
-    }
-
-    void OnAddClicked(object sender, EventArgs e)
-    {
-        if (AddObjectDialog.ShowDialog() == DialogResult.OK)
-        {
-            if (UEVersion.Text == "Unknown Version")
-            {
-                MessageBox.Show("Please set a UE version for the map");
-                return;
-            }
-            UAsset NewMap = new(AddObjectDialog.FileName, Version[UEVersion.Text]);
-            if (!NewMap.VerifyBinaryEquality())
-            {
-                MessageBox.Show("Map will not maintain binary equality. Please create a github issue on the main UAssetAPI repository");
-                return;
-            }
-        }
     }
 
     readonly Dictionary<string, UE4Version> Version = new()
