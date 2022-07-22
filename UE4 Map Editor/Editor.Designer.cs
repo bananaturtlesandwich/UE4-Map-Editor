@@ -57,7 +57,6 @@ partial class Editor
             // 
             // MenuStrip
             // 
-            this.MenuStrip.GripMargin = new System.Windows.Forms.Padding(2, 2, 0, 2);
             this.MenuStrip.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.MenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.FileToolStrip,
@@ -65,7 +64,7 @@ partial class Editor
             this.UEVersion});
             this.MenuStrip.Location = new System.Drawing.Point(0, 0);
             this.MenuStrip.Name = "MenuStrip";
-            this.MenuStrip.Size = new System.Drawing.Size(1258, 37);
+            this.MenuStrip.Size = new System.Drawing.Size(967, 37);
             this.MenuStrip.TabIndex = 0;
             // 
             // FileToolStrip
@@ -115,7 +114,7 @@ partial class Editor
             // 
             this.Add.Name = "Add";
             this.Add.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.A)));
-            this.Add.Size = new System.Drawing.Size(270, 34);
+            this.Add.Size = new System.Drawing.Size(211, 34);
             this.Add.Text = "Add";
             // 
             // UEVersion
@@ -168,8 +167,8 @@ partial class Editor
             // Split.Panel2
             // 
             this.Split.Panel2.Controls.Add(this.Display);
-            this.Split.Size = new System.Drawing.Size(1258, 627);
-            this.Split.SplitterDistance = 500;
+            this.Split.Size = new System.Drawing.Size(967, 533);
+            this.Split.SplitterDistance = 384;
             this.Split.TabIndex = 1;
             // 
             // Sidebar
@@ -186,8 +185,8 @@ partial class Editor
             // Sidebar.Panel2
             // 
             this.Sidebar.Panel2.Controls.Add(this.PropertyList);
-            this.Sidebar.Size = new System.Drawing.Size(500, 627);
-            this.Sidebar.SplitterDistance = 229;
+            this.Sidebar.Size = new System.Drawing.Size(384, 533);
+            this.Sidebar.SplitterDistance = 194;
             this.Sidebar.TabIndex = 0;
             // 
             // Objects
@@ -198,7 +197,7 @@ partial class Editor
             this.Objects.Location = new System.Drawing.Point(0, 0);
             this.Objects.Name = "Objects";
             this.Objects.RootLists = ((System.Collections.Generic.Dictionary<string, System.Collections.IList>)(resources.GetObject("Objects.RootLists")));
-            this.Objects.Size = new System.Drawing.Size(500, 229);
+            this.Objects.Size = new System.Drawing.Size(384, 194);
             this.Objects.TabIndex = 0;
             // 
             // PropertyList
@@ -210,7 +209,7 @@ partial class Editor
             this.PropertyList.Location = new System.Drawing.Point(0, 0);
             this.PropertyList.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.PropertyList.Name = "PropertyList";
-            this.PropertyList.Size = new System.Drawing.Size(500, 394);
+            this.PropertyList.Size = new System.Drawing.Size(384, 335);
             this.PropertyList.TabIndex = 0;
             // 
             // Display
@@ -230,7 +229,7 @@ partial class Editor
             this.Display.Name = "Display";
             this.Display.NormPickingDepth = 0F;
             this.Display.ShowOrientationCube = true;
-            this.Display.Size = new System.Drawing.Size(754, 627);
+            this.Display.Size = new System.Drawing.Size(579, 533);
             this.Display.Stereoscopy = GL_EditorFramework.GL_Core.GL_ControlBase.StereoscopyType.DISABLED;
             this.Display.TabIndex = 0;
             this.Display.VSync = false;
@@ -250,7 +249,8 @@ partial class Editor
             this.SaveMapDialog.Title = "Navigate to where you want to save the file";
             // 
             // Editor
-            //
+            // 
+            this.ClientSize = new System.Drawing.Size(967, 570);
             this.Controls.Add(this.Split);
             this.Controls.Add(this.MenuStrip);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -275,7 +275,6 @@ partial class Editor
             this.Sidebar.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
-
     }
 
     #endregion
