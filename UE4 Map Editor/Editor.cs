@@ -94,7 +94,7 @@ public partial class Editor : Form
         Objects.SelectedItems = scene.SelectedObjects;
         //set current category
         Objects.SetRootList(file);
-        FocusCam(scene.objects.ToArray());
+        //FocusCam(scene.objects.ToArray());
     }
 
     void FocusCam(object[] targets)

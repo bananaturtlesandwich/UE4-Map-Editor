@@ -22,6 +22,7 @@ partial class Editor
 
         Objects.SelectionChanged += OnObjectSelectionChanged;
         Objects.ListExited += OnObjectListExited;
+        Objects.ItemClicked += OnItemClicked;
     }
 
     void OnSelectionChanged(object sender, EventArgs e)
@@ -89,7 +90,7 @@ partial class Editor
         scene.SetupObjectUIControl(PropertyList);
     }
 
-    void FocusObject(object sender, ItemClickedEventArgs Click)
+    void OnItemClicked(object sender, ItemClickedEventArgs Click)
     {
         if (Click.Clicks == 2 && Click.Item is IEditableObject obj) FocusCam(new[] { obj });
     }
